@@ -1,7 +1,9 @@
 import streamlit as st
 import pandas as pd
 
-uploaded_file = st.file_uploader("Choose your Actual Sales File")
+st.title("Upload your Actual Sales Data CSV")
+
+uploaded_file = st.file_uploader("Browse Files")
 if uploaded_file is not None:
     # To read file as bytes:
     bytes_data = uploaded_file.getvalue()
