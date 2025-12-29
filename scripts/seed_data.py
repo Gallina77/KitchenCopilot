@@ -12,7 +12,7 @@ db_path = data_dir / 'kitchencopilot.db'
 engine = create_engine(f'sqlite:///{db_path}')
 
 # Load CSV files
-holidays_df = pd.read_csv('data/raw/holidays_2025_2027.csv')
+holidays_df = pd.read_csv('data/raw/holidays/holidays_2025_2027.csv')
 
 # Insert into tables
 with engine.begin() as conn:
