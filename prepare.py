@@ -1,14 +1,11 @@
 import streamlit as st
 import pandas as pd
-import db_utils as db
-import weather_utils as weather
-import prediction_utils as prediction
-
+from utils import get_weather, categorize_weather, find_table, get_prediction, save_dataframe
 
 st.title("Prepare your data")
 
 # Fetch holidays from the database
-holidays = db.find("holidays")
+holidays = find_table("holidays")
 
 # Form for user input
 with st.form("date_form"):
@@ -33,13 +30,13 @@ if st.session_state['form_submitted']:
         business_days = pd.date_range(start=start_date, periods=number_of_days, freq='B')
         start_date = business_days.min().strftime('%Y-%m-%d')
         end_date = business_days.max().strftime('%Y-%m-%d')
-        weather_df = weather.get_weather(start_date=start_date, end_date=end_date)
+        weather_df = get_weather(start_date=start_date, end_date=end_date, type='forecast')
         for day in business_days:
             data.append({
                     "date": f"{day.strftime('%d-%m-%Y')}", 
                     "weekday": f"{day.strftime('%A')}",
                     "weather_temp": weather_df[weather_df['dates'] == day]['temperature_max'].values[0] if any(weather_df['dates'] == day) else None, 
-                    "weather_condition": weather_df[weather_df['dates'] == day]['weather_code'].values[0] if any(weather_df['dates'] == day) else None,
+                    "weather_condition": weather_df[weather_df['dates'] == day]['weather_conditions'].values[0] if any(weather_df['dates'] == day) else None,
                     "is_holiday": True if any(holidays['date'] == day.strftime('%Y-%m-%d')) else False, 
                     "holiday_desc": holidays[holidays['date'] == day.strftime('%Y-%m-%d')]['description'].values[0] if any(holidays['date'] == day.strftime('%Y-%m-%d')) else "",
                     "expected_capacity":None})
@@ -78,8 +75,8 @@ if st.session_state['form_submitted']:
         if st.session_state['forecast_df']['expected_capacity'].isnull().any():
             st.error("Please fill in all expected capacity values before submitting.")
         else: 
-            updated_df = prediction.get_prediction(st.session_state['forecast_df'])
-            prediction.save_dataframe(updated_df)
+            updated_df = get_prediction(st.session_state['forecast_df'])
+            save_dataframe(updated_df)
             st.success("Data saved and prediction generated! Navigate to the Prediction page to view predictions.")
             st.session_state['form_submitted'] = True  
       
