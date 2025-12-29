@@ -16,9 +16,9 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Jupyter checkpoints
-.ipynb_checkpoints/
-**/.ipynb_checkpoints/
+# Notebooks
+notebooks/*.ipynb
+notebooks/**/*.ipynb
 
 # Data files - keep structure, exclude contents except holidays
 data/raw/sales_data/*
