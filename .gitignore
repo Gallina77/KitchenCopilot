@@ -1,0 +1,6 @@
+.venv
+.streamlit/secrets.toml
+docs/
+data/external
+kitchencopilot.db
+notebooks
