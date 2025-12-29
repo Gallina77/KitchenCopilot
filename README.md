@@ -42,10 +42,9 @@ kitchencopilot/
 │   ├── processed/          # Processed training data
 │   ├── raw/                # raw data
 │   └── kitchencopilot.db   # SQLite database (created by init script)
-├── notebooks/
-│   └── extract_data.ipynb  # Data extraction and model training
 ├── scripts/
 │   └── init_db.py          # Database initialization script
+│   └── seed_data.py        # Seed database with Holiday Data
 ├── pages                   # Streamlit pages (auto-discovered)
 │   └── 1_Prepare.py        # Configure prediction timeframe and fetch weather
 │   └── 2_Prediction.py     # Display Predicted Meal Demand
@@ -120,6 +119,18 @@ Starting database initialization...
 ✓ Created 'predictions' table
 ✓ Created 'actual_sales' table
 ✓ Database initialization complete: data/kitchencopilot.db
+```
+
+6. **Seed the database**
+```bash
+python scripts/seed_data.py
+```
+You should see:
+```
+Starting data seeding...
+✓ Cleared existing holidays data
+✓ Seeded holidays table
+✓ Data seeding complete!
 ```
 
 ### Running the Application
