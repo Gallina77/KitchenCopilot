@@ -30,11 +30,13 @@ if st.session_state['form_submitted']:
         business_days = pd.date_range(start=start_date, periods=number_of_days, freq='B')
         start_date = business_days.min().strftime('%Y-%m-%d')
         end_date = business_days.max().strftime('%Y-%m-%d')
+
         weather_df = get_weather(start_date=start_date, end_date=end_date, type='forecast')
         for day in business_days:
             data.append({
                     "date": f"{day.strftime('%d-%m-%Y')}", 
                     "weekday": f"{day.strftime('%A')}",
+                    "month": f"{day.strftime('%b')}",
                     "weather_temp": weather_df[weather_df['dates'] == day]['temperature_max'].values[0] if any(weather_df['dates'] == day) else None, 
                     "weather_condition": weather_df[weather_df['dates'] == day]['weather_conditions'].values[0] if any(weather_df['dates'] == day) else None,
                     "is_holiday": True if any(holidays['date'] == day.strftime('%Y-%m-%d')) else False, 
@@ -69,7 +71,7 @@ if st.session_state['form_submitted']:
     )
     st.session_state['forecast_df'] = edited_df
 
-    submit = st.button("Save & Generate Prediction")
+    submit = st.button("Generate Prediction")
 
     if submit:
         if st.session_state['forecast_df']['expected_capacity'].isnull().any():
