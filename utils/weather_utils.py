@@ -33,21 +33,22 @@ def get_weather(start_date: str, end_date: str, type: str):
         url =  "https://archive-api.open-meteo.com/v1/archive"
     else: 
         url = "unkown"
+        
     r = requests.get(url, params=params)
     weather_data = r.json()
 
     # Extract the actual weather data
     if 'daily' in weather_data:
         daily_data = weather_data['daily']
-        dates = daily_data['time']
+        date = daily_data['time']
         temperature_max = daily_data['temperature_2m_max']
         weather_conditions = [categorize_weather(code) for code in daily_data['weather_code']]
 
         # Create a dataframe with the weather data
         weather_df = pd.DataFrame({
-            'dates': pd.to_datetime(dates),
+            'date': pd.to_datetime(date),
             'temperature_max': temperature_max,
-            'weather_conditions': weather_conditions
+            'weather_condition': weather_conditions
         })
 
         return weather_df
