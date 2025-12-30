@@ -1,5 +1,7 @@
 date,description,is_bank_holiday,is_semester_break,is_bridge_day
 2026-01-01,New Year,TRUE,FALSE,FALSE
+2026-01-05,Bridge Day (Heilige 3 K),FALSE,FALSE,TRUE
+2026-01-06,Heilige 3 K,TRUE,FALSE,FALSE
 2026-03-30,Easter Break Start,FALSE,TRUE,FALSE
 2026-03-31,Easter Break,FALSE,TRUE,FALSE
 2026-04-01,Easter Break,FALSE,TRUE,FALSE
@@ -165,5 +167,6 @@ date,description,is_bank_holiday,is_semester_break,is_bridge_day
 2027-10-14,Autumn Break,FALSE,TRUE,FALSE
 2027-10-15,Autumn Break,FALSE,TRUE,FALSE
 2027-10-16,Autumn Break End,FALSE,TRUE,FALSE
-2027-12-25,Christmas Day,TRUE,FALSE,FALSE
+2027-12-24,Christmas Day,TRUE,FALSE,FALSE
+2027-12-25,Boxing Day,TRUE,FALSE,FALSE
 2027-12-26,Boxing Day,TRUE,FALSE,FALSE
