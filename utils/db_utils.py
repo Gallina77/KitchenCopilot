@@ -1,4 +1,5 @@
 import streamlit as st
+from sqlalchemy import create_engine, text
 
 @st.cache_resource
 def get_connection():
@@ -13,17 +14,23 @@ def get_holidays(start_date, end_date):
         WHERE date >= '{start_date}' 
         AND date <= '{end_date}'
     """
-    print("SQL Query:", query)
     
     conn = get_connection()
     result = conn.query(query)
     
     return result
     
-def find_table(table_name: str):
-    conn = get_connection()
-    return conn.query(f"SELECT * FROM {table_name}")
-
 def save_prediction(df): 
     conn = get_connection()
-    df.to_sql('predictions', conn, if_exists='append', index=False)
+        # Get the underlying SQLAlchemy engine
+    with conn.session as session:
+        
+        # Use the connection from the session
+        df.to_sql(
+            'predictions', 
+            session.connection(),
+            if_exists='append', 
+            index=False
+        )
+        session.commit()
+    return len(df)

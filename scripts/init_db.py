@@ -18,7 +18,7 @@ with engine.begin() as conn:
 
     print("✓ Created 'holidays' table")
  
-    conn.execute(text('CREATE TABLE IF NOT EXISTS predictions (date DATE, weekday TEXT, expected_capacity INTEGER, ' \
+    conn.execute(text('CREATE TABLE IF NOT EXISTS predictions (date DATE, weekday TEXT, month TEXT, expected_capacity INTEGER, ' \
     'temperature_max FLOAT, weather_condition TEXT, is_bank_holiday BOOLEAN, is_bridge_day BOOLEAN, is_semester_break BOOLEAN, ' \
     'holiday_desc TEXT, predicted_meals INTEGER, prediction_timestamp DATETIME);'))
 
