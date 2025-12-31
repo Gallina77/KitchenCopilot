@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from utils import get_weather, get_prediction, save_dataframe, get_holidays, find_table
+from utils import get_weather, get_prediction, save_prediction, get_holidays
 
 st.title("Prepare your data")
 st.set_page_config(layout="wide")
@@ -32,7 +32,7 @@ if st.session_state['form_submitted']:
         end_date_str = business_days.max().strftime('%Y-%m-%d')
 
         # NOW fetch weather data using those dates
-       # weather_df = get_weather(start_date=start_date_str, end_date=end_date_str, type='forecast')
+        weather_df = get_weather(start_date=start_date_str, end_date=end_date_str, type='forecast')
 
         # Create base DataFrame with date features
         df = pd.DataFrame({'date': business_days})
@@ -40,12 +40,12 @@ if st.session_state['form_submitted']:
         df['month'] = df['date'].dt.month_name() 
 
         # Merge weather data
-       # df = df.merge(
-       #      weather_df[['date', 'temperature_max', 'weather_condition']], 
-        #     how='left',
-        #     left_on='date',
-        #     right_on='date'
-       #  )
+        df = df.merge(
+             weather_df[['date', 'temperature_max', 'weather_condition']], 
+             how='left',
+             left_on='date',
+             right_on='date'
+        )
 
         # Fetch holidays from the database
         holidays = get_holidays(start_date_str, end_date_str)
@@ -54,24 +54,24 @@ if st.session_state['form_submitted']:
         holidays['date'] = pd.to_datetime(holidays['date'])
 
         # Convert integer columns to boolean
-        holidays['is_semesterBreak'] = holidays['is_semesterBreak'].astype(bool)
-        holidays['is_bridgeDay'] = holidays['is_bridgeDay'].astype(bool)
+        holidays['is_semester_break'] = holidays['is_semester_break'].astype(bool)
+        holidays['is_bridge_day'] = holidays['is_bridge_day'].astype(bool)
     
         # Merge holiday data
         df = df.merge(
-            holidays[['date', 'description', 'is_bankHoliday', 'is_semesterBreak', 'is_bridgeDay']],
+            holidays[['date', 'description', 'is_bank_holiday', 'is_semester_break', 'is_bridge_day']],
             how='left',
             on='date'
         ).rename(columns={'description': 'holiday_desc'})
 
         # Remove bank holidays - ADD THIS LINE
-        df = df[(df['is_bankHoliday'] != 1) | (df['is_bankHoliday'].isna())]
+        df = df[(df['is_bank_holiday'] != 1) | (df['is_bank_holiday'].isna())]
         # Drop the column if you don't need it anymore
-        df = df.drop('is_bankHoliday', axis=1)
+        df = df.drop('is_bank_holiday', axis=1)
 
         # Handle missing values
-        df['is_semesterBreak'] = df['is_semesterBreak'].fillna(False)
-        df['is_bridgeDay'] = df['is_bridgeDay'].fillna(False)
+        df['is_semester_break'] = df['is_semester_break'].fillna(False)
+        df['is_bridge_day'] = df['is_bridge_day'].fillna(False)
         df['holiday_desc'] = df['holiday_desc'].fillna('')
         df['expected_capacity'] = None
 
@@ -87,8 +87,8 @@ if st.session_state['form_submitted']:
         "weekday": "Weekday",
         "month": "Month",
         "holiday_desc": "Description",
-        "is_semesterBreak": "Semester Break",
-        "is_bridgeDay": "Bridge Day",
+        "is_semester_break": "Semester Break",
+        "is_bridge_day": "Bridge Day",
         "expected_capacity": st.column_config.NumberColumn(
             "Expected Capacity",
             help="How many people are you expecting?",
@@ -101,8 +101,8 @@ if st.session_state['form_submitted']:
         "weather_condition": "Weather Condition"
     },
 
-    disabled=["date", "weekday", "weekday", "month", "holiday_desc","is_semesterBreak",
-                "is_bridgeDay", "temperature_max", "weather_condition"],
+    disabled=["date", "weekday", "weekday", "month", "holiday_desc","is_semester_break",
+                "is_bridge_day", "temperature_max", "weather_condition"],
     hide_index=True,
     
     )
@@ -114,7 +114,7 @@ if st.session_state['form_submitted']:
             st.error("Please fill in all expected capacity values before submitting.")
         else: 
             updated_df = get_prediction(st.session_state['forecast_df'])
-            save_dataframe(updated_df)
+            save_prediction(updated_df)
             st.success("Data saved and prediction generated! Navigate to the Prediction page to view predictions.")
             st.session_state['form_submitted'] = True  
       
