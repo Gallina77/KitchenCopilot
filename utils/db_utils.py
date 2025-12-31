@@ -23,3 +23,7 @@ def get_holidays(start_date, end_date):
 def find_table(table_name: str):
     conn = get_connection()
     return conn.query(f"SELECT * FROM {table_name}")
+
+def save_prediction(df): 
+    conn = get_connection()
+    df.to_sql('predictions', conn, if_exists='append', index=False)

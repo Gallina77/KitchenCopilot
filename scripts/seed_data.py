@@ -20,9 +20,9 @@ holidays_df = pd.read_csv(
 )
 
 # Then convert strings to int
-holidays_df['is_bankHoliday'] = holidays_df['is_bank_holiday'].str.strip().eq('TRUE').astype(int)
-holidays_df['is_semesterBreak'] = holidays_df['is_semester_break'].str.strip().eq('TRUE').astype(int)
-holidays_df['is_bridgeDay'] = holidays_df['is_bridge_day'].str.strip().eq('TRUE').astype(int)
+holidays_df['is_bank_holiday'] = holidays_df['is_bank_holiday'].str.strip().eq('TRUE').astype(int)
+holidays_df['is_semester_break'] = holidays_df['is_semester_break'].str.strip().eq('TRUE').astype(int)
+holidays_df['is_bridge_day'] = holidays_df['is_bridge_day'].str.strip().eq('TRUE').astype(int)
 
 # Insert into database
 with engine.begin() as conn:
@@ -31,7 +31,7 @@ with engine.begin() as conn:
     print("✓ Cleared existing holidays data")
     
     # Insert all rows at once using pandas to_sql
-    holidays_df[['date', 'description', 'is_bankHoliday', 'is_semesterBreak', 'is_bridgeDay']].to_sql(
+    holidays_df[['date', 'description', 'is_bank_holiday', 'is_semester_break', 'is_bridge_day']].to_sql(
         'holidays',
         conn,
         if_exists='append',
