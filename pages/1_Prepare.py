@@ -15,6 +15,10 @@ with st.form("date_form"):
 if 'form_submitted' not in st.session_state:
     st.session_state['form_submitted'] = False
 
+# Clear old forecast when form is resubmitted
+if 'forecast_df' in st.session_state:
+    del st.session_state['forecast_df']
+
 # If button clicked, set flag to True
 if submit_button:
     st.session_state['form_submitted'] = True
