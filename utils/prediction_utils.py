@@ -1,6 +1,5 @@
 import pandas as pd
 import joblib
-from sklearn.ensemble import RandomForestRegressor
 from pathlib import Path
 
 def get_prediction(new_data):
@@ -20,34 +19,43 @@ def get_prediction(new_data):
     month_dummies = pd.get_dummies(df_prepared['month'], prefix='month')
     weather_dummies = pd.get_dummies(df_prepared['weather_condition'], prefix='weather_condition')
     
+    df_prepared = pd.concat([df_prepared, weekday_dummies, month_dummies, weather_dummies], axis=1)
+    df_prepared = df_prepared.drop(['date', 'holiday_desc', 'weekday', 'month', 'weather_condition'], axis=1)
+
     # But the model expects ALL 12 months
     all_months = ['month_January', 'month_February', 'month_March', 'month_April', 
               'month_May', 'month_June', 'month_July', 'month_August',
               'month_September', 'month_October', 'month_November', 'month_December']
 
-
-    df_prepared = pd.concat([df_prepared, weekday_dummies, month_dummies, weather_dummies], axis=1)
-    df_prepared = df_prepared.drop(['date', 'holiday_desc', 'weekday', 'month', 'weather_condition'], axis=1)
-    
     # Add missing columns with zeros
     for month in all_months:
         if month not in df_prepared.columns:
             df_prepared[month] = 0
 
+    all_weather_conditions = ["Clear", "Cloudy", "Rainy", "Snowy"]
 
-    print(df_prepared.head(20))
+    for condition in all_weather_conditions
+        if condition not in df_prepared.columns: 
+            df_prepared[condition] = 0
 
-    # Use the loaded model to make predictions
-    result = loaded_model.predict(df_prepared)
+    # Define the desired column order
+    desired_order = ['is_semester_break','is_bridge_day', 'expected_capacity', 'temperature_max',
+                     'meal_count','weekday_Friday','weekday_Monday','weekday_Thursday','weekday_Tuesday',
+                     'weekday_Wednesday','month_April','month_August','month_December','month_February',
+                     'month_January','month_July','month_June','month_March','month_May','month_November',
+                     'month_October','month_September','weather_condition_Clear','weather_condition_Cloudy',
+                     'weather_condition_Rainy','weather_condition_Snowy']
+
+    # Use the loaded model to make predictions with the re-ordered dataframe
+    predictions = loaded_model.predict(df_prepared[desired_order])
     
 
-    #Add predictions to the DataFrame
+    #Add predictions to the original DataFrame
+    new_data['predicted_meals'] = predictions
+
     #Return the updated DataFrame
+    return new_data
  
-
-def save_dataframe(updated_df):
-    pass
     
 
 
-get_prediction
