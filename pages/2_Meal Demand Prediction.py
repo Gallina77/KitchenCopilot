@@ -5,14 +5,15 @@ from datetime import datetime, timedelta
 from utils import get_predictions
 import plotly.graph_objects as go
 
+logo = "styles/images/kitchencopilot_logo_transparent.png"
+st.logo(logo, size="medium", link=None, icon_image=None)
+
 st.set_page_config(page_title="Meal Predictions", layout="wide")
 
 st.title("Meal Demand Predictions")
 
 # Generate mock data to show the layout
 data = get_predictions()
-
-
 
 # === TOP METRICS SECTION ===
 st.subheader("Key Insights")
@@ -135,7 +136,7 @@ st.dataframe(
 
 # === FOOTER INSIGHTS ===
 st.divider()
-st.subheader("📝 Planning Notes")
+st.subheader("Planning Notes")
 
 # Identify high-demand days
 high_demand = data[data['predicted_meals'] > data['expected_capacity'] * 0.9]
