@@ -2,24 +2,17 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+from utils import get_predictions
+import plotly.graph_objects as go
 
 st.set_page_config(page_title="Meal Predictions", layout="wide")
 
 st.title("Meal Demand Predictions")
 
 # Generate mock data to show the layout
-dates = pd.date_range(start=datetime.now().date(), periods=7, freq='B')
-mock_data = pd.DataFrame({
-    'date': dates,
-    'predicted_meals': [145, 167, 189, 156, 142, 178, 163],
-    'expected_capacity': [150, 180, 200, 160, 150, 180, 170],
-    'temperature_max': [22, 24, 26, 23, 21, 25, 24],
-    'weather_condition': ['Clear', 'Cloudy', 'Clear', 'Rainy', 'Clear', 'Cloudy', 'Clear'],
-    'is_semester_break': [False, False, False, False, False, False, False],
-    'is_bridge_day': [False, False, False, False, False, False, False],
-    'holiday_desc': ['', '', '', '', '', '', ''],
-    'prediction_timestamp': [datetime.now()] * 7
-})
+data = get_predictions()
+mock_data = pd.DataFrame(data)
+
 
 # === TOP METRICS SECTION ===
 st.subheader("Key Insights")
@@ -63,18 +56,33 @@ with col4:
 st.divider()
 
 # === MAIN CHART SECTION ===
-st.subheader("7-Day Demand Forecast")
+st.subheader("Demand Forecast")
 
 # Prepare data for chart
 chart_data = mock_data[['date', 'predicted_meals', 'expected_capacity']].copy()
 chart_data['date'] = chart_data['date'].dt.strftime('%a %m/%d')
 chart_data = chart_data.set_index('date')
 
-st.line_chart(
-    chart_data,
-    height=400,
-    use_container_width=True
-)
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=chart_data.index,
+    y=chart_data['predicted_meals'],
+    mode='lines+markers',
+    name='Predicted Meals',
+    line=dict(color='#1f77b4', width=3)  # Blue
+))
+
+fig.add_trace(go.Scatter(
+    x=chart_data.index,
+    y=chart_data['expected_capacity'],
+    mode='lines+markers',
+    name='Expected Capacity',
+    line=dict(color='#ff7f0e', width=3)  # Orange
+))
+
+st.plotly_chart(fig, use_container_width=True)
+
 
 # Add explanation text
 st.caption("📈 Blue line shows predicted meal demand, orange line shows expected capacity")
@@ -109,7 +117,7 @@ display_df_final = display_df[list(display_columns.keys())].rename(columns=displ
 
 st.dataframe(
     display_df_final,
-    use_container_width=True,
+    width = 'stretch',
     hide_index=True,
     column_config={
         "Utilization %": st.column_config.ProgressColumn(

@@ -36,7 +36,10 @@ if st.session_state['form_submitted']:
     edited_df = st.data_editor(
         st.session_state['forecast_df'],
         column_config={ 
-        "date": "Date",
+        "date": st.column_config.DateColumn(
+        "Date",
+        format="DD-MM-YYYY"
+        ),
         "weekday": "Weekday",
         "month": "Month",
         "holiday_desc": "Description",
