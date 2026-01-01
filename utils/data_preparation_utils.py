@@ -55,7 +55,4 @@ def prepare_data(start_date, number_of_days):
     df['holiday_desc'] = df['holiday_desc'].fillna('').astype(str)
     df['expected_capacity'] = None
 
-    # Format date as string for display
-    df['date'] = df['date'].dt.strftime('%d-%m-%Y')
-
     return df
