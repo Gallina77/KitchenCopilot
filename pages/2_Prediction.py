@@ -11,7 +11,7 @@ st.title("Meal Demand Predictions")
 
 # Generate mock data to show the layout
 data = get_predictions()
-mock_data = pd.DataFrame(data)
+
 
 
 # === TOP METRICS SECTION ===
@@ -20,7 +20,7 @@ st.subheader("Key Insights")
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    total_meals = mock_data['predicted_meals'].sum()
+    total_meals = data['predicted_meals'].sum()
     st.metric(
         label="Total Predicted Meals",
         value=f"{int(total_meals):,}",
@@ -28,7 +28,7 @@ with col1:
     )
 
 with col2:
-    avg_meals = mock_data['predicted_meals'].mean()
+    avg_meals = data['predicted_meals'].mean()
     st.metric(
         label="Daily Average",
         value=f"{int(avg_meals)}",
@@ -36,7 +36,7 @@ with col2:
     )
 
 with col3:
-    peak_day = mock_data.loc[mock_data['predicted_meals'].idxmax()]
+    peak_day = data.loc[data['predicted_meals'].idxmax()]
     st.metric(
         label="Peak Demand Day",
         value=peak_day['date'].strftime('%a, %b %d'),
@@ -45,7 +45,7 @@ with col3:
 
 with col4:
     # Calculate capacity utilization
-    avg_utilization = (mock_data['predicted_meals'] / mock_data['expected_capacity']).mean() * 100
+    avg_utilization = (data['predicted_meals'] / data['expected_capacity']).mean() * 100
     st.metric(
         label="Avg Capacity Usage",
         value=f"{avg_utilization:.1f}%",
@@ -59,7 +59,7 @@ st.divider()
 st.subheader("Demand Forecast")
 
 # Prepare data for chart
-chart_data = mock_data[['date', 'predicted_meals', 'expected_capacity']].copy()
+chart_data = data[['date', 'predicted_meals', 'expected_capacity']].copy()
 chart_data['date'] = chart_data['date'].dt.strftime('%a %m/%d')
 chart_data = chart_data.set_index('date')
 
@@ -93,11 +93,14 @@ st.divider()
 st.subheader("Detailed Predictions")
 
 # Format the display dataframe
-display_df = mock_data.copy()
+display_df = data.copy()
 display_df['date'] = display_df['date'].dt.strftime('%a, %B %d, %Y')
 display_df['predicted_meals'] = display_df['predicted_meals'].astype(int)
 display_df['utilization_%'] = ((display_df['predicted_meals'] / display_df['expected_capacity']) * 100).round(1)
 display_df['prediction_timestamp'] = display_df['prediction_timestamp'].dt.strftime('%Y-%m-%d %H:%M')
+    # Convert integer columns to boolean
+display_df['is_semester_break'] = display_df['is_semester_break'].astype(bool)
+display_df['is_bridge_day'] = display_df['is_bridge_day'].astype(bool)
 
 # Select and rename columns for display
 display_columns = {
@@ -135,7 +138,7 @@ st.divider()
 st.subheader("📝 Planning Notes")
 
 # Identify high-demand days
-high_demand = mock_data[mock_data['predicted_meals'] > mock_data['expected_capacity'] * 0.9]
+high_demand = data[data['predicted_meals'] > data['expected_capacity'] * 0.9]
 
 if len(high_demand) > 0:
     st.warning(f"⚠️ **High demand alert**: {len(high_demand)} day(s) with utilization above 90%. Consider increasing capacity or adjusting menu.")
@@ -145,6 +148,6 @@ else:
     st.success("✅ All days within comfortable capacity limits")
 
 # Weather considerations
-rainy_days = mock_data[mock_data['weather_condition'] == 'Rainy']
+rainy_days = data[data['weather_condition'] == 'Rainy']
 if len(rainy_days) > 0:
     st.info(f"🌧️ {len(rainy_days)} rainy day(s) in forecast - may affect demand patterns")
