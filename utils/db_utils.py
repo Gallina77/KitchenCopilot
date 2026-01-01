@@ -62,6 +62,7 @@ def get_predictions():
     
     # Sort by date for display
     latest_predictions = latest_predictions.sort_values('date')
-    
-    return latest_predictions
+    all_predictions = pd.DataFrame(latest_predictions)
+
+    return all_predictions
 
