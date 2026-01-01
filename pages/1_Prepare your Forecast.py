@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 from utils import prepare_data, get_prediction, save_prediction
 
+
+logo = "styles/images/kitchencopilot_logo_transparent.png"
+st.logo(logo, size="medium", link=None, icon_image=None)
+
 st.title("Prepare your data")
 st.set_page_config(layout="wide")
 
@@ -73,4 +77,4 @@ if st.session_state['form_submitted']:
             save_prediction(updated_df)
             st.success("Data saved and prediction generated! Navigate to the Prediction page to view predictions.")
             st.session_state['form_submitted'] = True  
-      
+

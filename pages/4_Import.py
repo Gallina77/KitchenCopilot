@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 
+logo = "styles/images/kitchencopilot_logo_transparent.png"
+st.logo(logo, size="medium", link=None, icon_image=None)
 st.title("Upload your Actual Sales Data CSV")
 
 uploaded_file = st.file_uploader("Browse Files")
