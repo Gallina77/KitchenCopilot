@@ -41,9 +41,9 @@ def get_last_prediction_info():
         end_date = results.iloc[-1]['date']  # -1 means last row
         
         return {
-            'timestamp': datetime.fromisoformat(timestamp),
-            'start_date': datetime.fromisoformat(start_date),
-            'end_date': datetime.fromisoformat(end_date)
+            'timestamp': timestamp,
+            'start_date': start_date,
+            'end_date': end_date
         }
         
     except Exception as e:
