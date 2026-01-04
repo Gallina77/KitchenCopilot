@@ -1,6 +1,7 @@
 import streamlit as st
+from datetime import datetime
 from components.components import hero_section, journey_step, feature_card, roadmap_card, footer_section
-
+from utils.home_utils import load_model_metadata, check_database_status, check_weather_api_status, get_last_prediction_info
 
 # Page configuration
 st.set_page_config(
@@ -24,44 +25,76 @@ st.logo(logo, size="medium", link=None, icon_image=None)
 # Hero Section
 st.markdown(hero_section(), unsafe_allow_html=True)
 
-
 # System Status
 st.header("System Status")
 st.caption("Real-time overview of your forecasting system")
 
 col1, col2, col3, col4 = st.columns(4)
 
+model_timestamp = load_model_metadata()
+db_status = check_database_status()
+api_status = check_weather_api_status()
+last_prediction = get_last_prediction_info()
+    
 with col1:
     with st.container(border=True):
-        st.metric(
-            label="Model Status",
-            value="Active",
-            delta="Last trained: Dec 28, 2025"
-        )
+        if model_timestamp:
+            st.metric(
+                label="Model Status",
+                value="Active",
+                delta=f"Last trained: {model_timestamp.strftime('%d %b %Y')}"
+            )
+        else:
+            st.metric(
+                label="Model Status",
+                value="Not Trained",
+                delta="Train model to begin", delta_color="inverse"
+            )
 
 with col2:
     with st.container(border=True):
-        st.metric(
-            label="Last Prediction",
-            value="Today, 06:00",
-            delta="Jan 1 - Jan 7, 2026"
-        )
+        if last_prediction: 
+            st.metric(
+                label="Last Prediction",
+                value=last_prediction['timestamp'].strftime('%b, %d'),
+                delta=f"for: {last_prediction['start_date'].strftime('%b, %d')} - {last_prediction['end_date'].strftime('%b, %d')}"
+            )
+        else:
+            st.metric(
+                label="Last Prediction",
+                value="Failed",
+                delta="Date Missing", delta_color="inverse"
+            ) 
 
 with col3:
     with st.container(border=True):
-        st.metric(
-            label="Weather API",
-            value="Connected",
-            delta="OpenWeatherMap active"
-        )
+        if api_status: 
+            st.metric(
+                label="Weather API",
+                value="Connected",
+                delta="OpenWeatherMap active"
+            )
+        else: 
+            st.metric(
+                label="Weather API",
+                value="Failed",
+                delta="OpenWeatherMap not active", delta_color="inverse"
+            )   
 
 with col4:
     with st.container(border=True):
-        st.metric(
-            label="Database",
-            value="Ready",
-            delta="SQLite operational"
-        )
+        if db_status: 
+            st.metric(
+                label="Database",
+                value="Ready",
+                delta="SQLite operational"
+            )
+        else: 
+            st.metric(
+                label="Database",
+                value="Not Ready",
+                delta="SQLite not operational", delta_color="inverse"
+            )
 
 st.divider()
 
@@ -94,9 +127,9 @@ with tab1:
     """)
 
 with tab2:
-    st.subheader("Step 2: Generate Predictions")
+    st.subheader("Step 2: Meal Demand Prediction")
     st.write("""
-    On the Prediction page, review the prepared forecast data including dates, weather conditions, 
+    Review the prepared forecast data including dates, weather conditions, 
     and holiday information. The system displays your predictions with interactive visualizations 
     showing expected meal demand for each working day. You can export the results to Excel for 
     further analysis or sharing with your team.

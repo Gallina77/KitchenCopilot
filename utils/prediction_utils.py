@@ -3,16 +3,12 @@ import joblib
 from pathlib import Path
 from datetime import datetime, timezone
 import numpy as np
+from utils.paths import MODEL_PATH, FEATURES_PATH
 
 def get_prediction(new_data):
-    # Get absolute path to model
-    current_file = Path(__file__)  # /path/to/utils/prediction_utils.py
-    project_root = current_file.parent.parent  # /path/to/KüchenKompass
-    model_path = project_root / 'data' / 'models' / 'random_forest_model.pkl'
-    features_path = project_root / 'data' / 'models' / 'feature_columns.pkl'
     # 1. Load model and features
-    loaded_model = joblib.load(model_path)
-    expected_features = joblib.load(features_path)
+    loaded_model = joblib.load(MODEL_PATH)
+    expected_features = joblib.load(FEATURES_PATH)
     
     # 2. Prepare data
     df_prepared = new_data.copy()
