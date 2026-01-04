@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 from utils.paths import METADATA_PATH
+from utils.converters import normalize_datetime
 import streamlit as st
 import requests
 
@@ -41,9 +42,9 @@ def get_last_prediction_info():
         end_date = results.iloc[-1]['date']  # -1 means last row
         
         return {
-            'timestamp': timestamp,
-            'start_date': start_date,
-            'end_date': end_date
+            'timestamp': normalize_datetime(timestamp),
+            'start_date': normalize_datetime(start_date),
+            'end_date': normalize_datetime(end_date)
         }
         
     except Exception as e:
