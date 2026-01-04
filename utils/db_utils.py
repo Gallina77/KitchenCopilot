@@ -10,13 +10,11 @@ def get_connection():
 
 def get_holidays(start_date, end_date): 
     # Create your SQL query with date filtering
-
     query = f"""
         SELECT * FROM holidays 
         WHERE date >= '{start_date}' 
         AND date <= '{end_date}'
     """
-    
     conn = get_connection()
     result = conn.query(query)
     
@@ -24,7 +22,6 @@ def get_holidays(start_date, end_date):
     
 def save_prediction(df): 
     conn = get_connection()
-    
         # Get the underlying SQLAlchemy engine
     with conn.session as session:
         #session.execute(text('DELETE FROM predictions;'))
