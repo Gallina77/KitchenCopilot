@@ -3,5 +3,6 @@ from .weather_utils import get_weather, categorize_weather
 from .db_utils import get_holidays, save_prediction, get_predictions
 from .prediction_utils import get_prediction
 from .data_preparation_utils import prepare_data
+from .home_utils import load_model_metadata, check_database_status, check_weather_api_status, get_last_prediction_info
 
 # This allows: from utils import get_weather

@@ -51,7 +51,7 @@ def footer_section():
             <div class='footer-grid'>
                 <div>
                     <h4>KitchenCopilot v1.0</h4>
-                    <p>Last Updated: Januarym, 2026</p>
+                    <p>Last Updated: January, 2026</p>
                 </div>
                 <div>
                     <h4>References</h4>
