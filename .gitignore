@@ -28,9 +28,6 @@ data/raw/sales_data/*
 data/processed/*
 !data/processed/.gitkeep
 
-data/models/*
-!data/models/.gitkeep
-
 # OS files
 .DS_Store
 Thumbs.db
