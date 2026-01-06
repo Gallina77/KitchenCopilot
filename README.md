@@ -37,6 +37,8 @@ This project demonstrates end-to-end machine learning operations including data 
 
 ```
 kitchencopilot/
+├── components/
+│   ├── components.py/      # HTML components for Home Page
 ├── data/
 │   ├── models/             # trained models 
 │   ├── processed/          # Processed training data
@@ -44,7 +46,12 @@ kitchencopilot/
 │   └── kitchencopilot.db   # SQLite database (created by init script)
 ├── scripts/
 │   └── init_db.py          # Database initialization script
-│   └── seed_data.py        # Seed database with Holiday Data
+│   └── seed_data.py        # Seed database with Holiday Data of 2026
+├── styles/
+│   └── css                 
+│       └── main.css        # CSS Style for Homepage
+│   └── images              
+│       └── kitchencopilot_.# Kitchencopilot Logo Transparent for Home and Logo 
 ├── pages                   # Streamlit pages (auto-discovered)
 │   └── 1_Prepare.py        # Configure prediction timeframe and fetch weather
 │   └── 2_Prediction.py     # Display Predicted Meal Demand
@@ -102,9 +109,6 @@ Create a `.streamlit/secrets.toml` file:
 [connections.kitchencopilot_db]
 url = "sqlite:///data/kitchencopilot.db"
 
-[api]
-openweathermap_key = "your_api_key_here"
-```
 
 5. **Initialize the database**
 ```bash
