@@ -43,8 +43,9 @@ def save_prediction(df):
     conn = get_connection()
         # Get the underlying SQLAlchemy engine
     with conn.session as session:
-        #session.execute(text('DELETE FROM predictions;'))
+        #session.execute(text('DELETE FROM predictios;'))
         # Use the connection from the session
+        df['date'] = (df['date']).dt.date
         df.to_sql(
             'predictions', 
             session.connection(),
@@ -68,6 +69,7 @@ def get_todays_prediction():
     
     if result.empty:
         return result
+    
     
     # Convert to datetime
     result['date'] = pd.to_datetime(result['date'])
