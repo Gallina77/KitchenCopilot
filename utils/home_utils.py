@@ -36,7 +36,6 @@ def get_last_prediction_info():
         
         # Get the timestamp (same for all rows)
         timestamp = results.iloc[0]['prediction_timestamp']
-        
         # Get first and last dates
         start_date = results.iloc[0]['date']
         end_date = results.iloc[-1]['date']  # -1 means last row
