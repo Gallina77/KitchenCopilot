@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from utils import get_predictions
+from utils import get_todays_prediction
 import plotly.graph_objects as go
 
 logo = "styles/images/kitchencopilot_logo_transparent.png"
@@ -12,8 +12,8 @@ st.set_page_config(page_title="Meal Predictions", layout="wide")
 
 st.title("Meal Demand Predictions")
 
-# Generate mock data to show the layout
-data = get_predictions()
+# Get predictions from the last 7 days
+data = get_todays_prediction()
 
 # === TOP METRICS SECTION ===
 st.subheader("Key Insights")
