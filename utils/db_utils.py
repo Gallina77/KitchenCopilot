@@ -8,6 +8,25 @@ def get_connection():
     # Create the SQL connection to kitchencopilot_db as specified in your secrets file.
     return st.connection('kitchencopilot_db', type='sql')
 
+def style_difference(val):
+    # Highlighting max and min values
+    if val > 0:
+        color = 'green'
+    else:
+        color = 'red'
+    return 'color: %s' % color
+
+def apply_custom_styling(df):
+
+    styled_df = (
+    df.style
+    .format({'pct_error': '{:.0%}'})
+    .map(style_difference, subset=['difference', 'pct_error_actual'])
+    )
+
+    return styled_df
+
+
 def get_holidays(start_date, end_date): 
     # Create your SQL query with date filtering
     query = f"""
@@ -35,7 +54,7 @@ def save_prediction(df):
         session.commit()
     return len(df)
 
-def get_predictions():
+def get_todays_prediction():
     #Take Todays timestamp
     today = datetime.now().date()
     
@@ -62,4 +81,40 @@ def get_predictions():
     all_predictions = pd.DataFrame(latest_predictions)
 
     return all_predictions
+
+def get_actuals_and_predictions(start_date, end_date):
+
+    query = f"""SELECT predictions.date, predictions.predicted_meals, 
+    actual_sales.actual_meals
+    FROM predictions INNER JOIN actual_sales 
+    ON predictions.date=actual_sales.date        
+    WHERE actual_sales.date >= '{start_date}' 
+    AND actual_sales.date <= '{end_date}'"""
+
+    conn = get_connection()
+    df = conn.query(query)
+    df['date'] = pd.to_datetime(df['date'])
+    df['weekday'] = df['date'].dt.strftime('%A')
+    df['difference'] = df['actual_meals'] - df['predicted_meals']
+    df['pct_error_actual'] = (df['actual_meals'] - df['predicted_meals'])/df['predicted_meals']
+
+    return df
+
+def calculate_metrics(df, tolerance_pct=0.05):
+    """Calculate prediction metrics.
+    
+    Args:
+        df: DataFrame with actual_meals and predicted_meals columns
+        tolerance_pct: Percentage tolerance (0.05 = within 5%)
+    """
+    pct_error = ((df['actual_meals'] - df['predicted_meals']) / df['actual_meals']).abs()
+    
+    return {
+        'mae': (df['actual_meals'] - df['predicted_meals']).abs().mean(),
+        'over_predicted': (df['predicted_meals'] > df['actual_meals']).sum(),
+        'under_predicted': (df['predicted_meals'] < df['actual_meals']).sum(),
+        'accuracy_rate': (pct_error <= tolerance_pct).mean() * 100
+    }
+
+
 
