@@ -43,17 +43,23 @@ def save_prediction(df):
     conn = get_connection()
         # Get the underlying SQLAlchemy engine
     with conn.session as session:
-        #session.execute(text('DELETE FROM predictios;'))
-        # Use the connection from the session
-        df['date'] = (df['date']).dt.date
-        df.to_sql(
-            'predictions', 
-            session.connection(),
-            if_exists='append', 
-            index=False
-        )
-        session.commit()
-    return len(df)
+        try:
+            df['date'] = df['date'].dt.date
+            df.to_sql(
+                'predictions',
+                session.connection(),
+                if_exists='append',
+                index=False
+            )
+            session.commit()
+            message = "✓ Predictions saved to database."
+            return (True, message)
+    # code that might fail
+        except Exception as e:
+            # what to do when it fails
+            message = f"✗ Error saving predictions: {e}"
+            return (False, message)
+
 
 def get_todays_prediction():
     #Take Todays timestamp
