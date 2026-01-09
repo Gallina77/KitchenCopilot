@@ -74,7 +74,10 @@ if st.session_state['form_submitted']:
             st.error("Please fill in all expected capacity values before submitting.")
         else: 
             updated_df = get_prediction(st.session_state['forecast_df'])
-            save_prediction(updated_df)
-            st.success("Data saved and prediction generated! Navigate to the Prediction page to view predictions.")
+            is_success, message = save_prediction(updated_df)
+            if is_success:
+                st.success(message)         
+            else:
+                st.error(message)    
             st.session_state['form_submitted'] = True  
 
