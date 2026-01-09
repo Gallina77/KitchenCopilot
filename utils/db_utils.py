@@ -41,7 +41,6 @@ def get_holidays(start_date, end_date):
     
 def save_prediction(df): 
     conn = get_connection()
-        # Get the underlying SQLAlchemy engine
     with conn.session as session:
         try:
             df['date'] = df['date'].dt.date
@@ -54,7 +53,6 @@ def save_prediction(df):
             session.commit()
             message = "✓ Predictions saved to database."
             return (True, message)
-    # code that might fail
         except Exception as e:
             # what to do when it fails
             message = f"✗ Error saving predictions: {e}"
