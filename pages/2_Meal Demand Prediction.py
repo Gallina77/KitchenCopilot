@@ -131,7 +131,7 @@ if not data.empty:
 
     st.dataframe(
         display_df_final,
-        use_container_width=True,
+        width='stretch',
         hide_index=True,
         column_config={
             "Utilization %": st.column_config.ProgressColumn(
