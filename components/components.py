@@ -34,11 +34,19 @@ def feature_card(icon, title, description):
         </div>
     """
 
-def roadmap_card(badge_text, badge_color, badge_bg, icon, title, description):
-    """Returns a roadmap card HTML"""
+def roadmap_card(badge_text, badge_variant, icon, title, description):
+    """Returns a roadmap card HTML
+    
+    Args:
+        badge_text: Text to display in the badge
+        badge_variant: CSS class variant ('primary', 'success', 'warning', 'info')
+        icon: Bootstrap icon class name
+        title: Card title
+        description: Card description
+    """
     return f"""
         <div class='roadmap-card'>
-            <span class='roadmap-badge' style='background: {badge_bg}; color: {badge_color};'>{badge_text}</span>
+            <span class='roadmap-badge roadmap-badge-{badge_variant}'>{badge_text}</span>
             <h3><i class="bi {icon}"></i> {title}</h3>
             <p class='roadmap-description'>{description}</p>
         </div>

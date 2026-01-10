@@ -139,3 +139,24 @@ a:active {
     opacity: 0.7;
     margin: 0.25rem 0;
 }
+
+/* Roadmap Badge Variants */
+.roadmap-badge-primary {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.roadmap-badge-success {
+    background-color: #e8f5e9;
+    color: #388e3c;
+}
+
+.roadmap-badge-warning {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.roadmap-badge-info {
+    background-color: #e0f2f1;
+    color: #00796b;
+}
