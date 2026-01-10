@@ -5,10 +5,11 @@ from datetime import datetime, timedelta
 from utils import get_todays_prediction
 import plotly.graph_objects as go
 
+# Must be first Streamlit command
+st.set_page_config(page_title="Meal Predictions", layout="wide")
+
 logo = "styles/images/kitchencopilot_logo_transparent.png"
 st.logo(logo, size="medium", link=None, icon_image=None)
-
-st.set_page_config(page_title="Meal Predictions", layout="wide")
 
 st.title("Meal Demand Predictions")
 
@@ -23,44 +24,39 @@ col1, col2, col3, col4 = st.columns(4)
 if not data.empty:
     with col1:
         with st.container(border=True):
-                if data.empty==False:
-                    total_meals = data['predicted_meals'].sum()
-                    st.metric(
-                        label="Total Predicted Meals",
-                        value=f"{int(total_meals):,}"
-                    )
+            total_meals = data['predicted_meals'].sum()
+            st.metric(
+                label="Total Predicted Meals",
+                value=f"{int(total_meals):,}"
+            )
 
     with col2:
         with st.container(border=True):
-                if data.empty==False:
-                    avg_meals = data['predicted_meals'].mean()
-                    st.metric(
-                        label="Daily Average",
-                        value=f"{int(avg_meals)}"
-                    )
+            avg_meals = data['predicted_meals'].mean()
+            st.metric(
+                label="Daily Average",
+                value=f"{int(avg_meals)}"
+            )
 
     with col3:
         with st.container(border=True):
-            if data.empty==False:
-                peak_day = data.loc[data['predicted_meals'].idxmax()]
-                st.metric(
-                    label="Peak Demand Day",
-                    value=peak_day['date'].strftime('%a, %b %d'),
-                    delta=f"{int(peak_day['predicted_meals'])} meals"
-                )
-   
+            peak_day = data.loc[data['predicted_meals'].idxmax()]
+            st.metric(
+                label="Peak Demand Day",
+                value=peak_day['date'].strftime('%a, %b %d'),
+                delta=f"{int(peak_day['predicted_meals'])} meals"
+            )
 
     with col4:
         with st.container(border=True):
-            if data.empty==False:
-                # Calculate capacity utilization
-                avg_utilization = (data['predicted_meals'] / data['expected_capacity']).mean() * 100
-                st.metric(
-                    label="Avg Capacity Usage",
-                    value=f"{avg_utilization:.1f}%",
-                    delta=f"{avg_utilization - 85:.1f}%" if avg_utilization < 85 else f"+{avg_utilization - 85:.1f}%",
-                    delta_color="inverse"  # Red if over 85%, green if under
-                )
+            # Calculate capacity utilization
+            avg_utilization = (data['predicted_meals'] / data['expected_capacity']).mean() * 100
+            st.metric(
+                label="Avg Capacity Usage",
+                value=f"{avg_utilization:.1f}%",
+                delta=f"{avg_utilization - 85:.1f}%" if avg_utilization < 85 else f"+{avg_utilization - 85:.1f}%",
+                delta_color="inverse"
+            )
 else:
     st.error("No prediction data available for today. Please generate a forecast first.")
 
@@ -69,8 +65,8 @@ st.divider()
 # === MAIN CHART SECTION ===
 st.subheader("Demand Forecast")
 
-# Prepare data for chart
 if not data.empty:
+    # Prepare data for chart
     chart_data = data[['date', 'predicted_meals', 'expected_capacity']].copy()
     chart_data['date'] = chart_data['date'].dt.strftime('%a %m/%d')
     chart_data = chart_data.set_index('date')
@@ -82,7 +78,7 @@ if not data.empty:
         y=chart_data['predicted_meals'],
         mode='lines+markers',
         name='Predicted Meals',
-        line=dict(color='#1f77b4', width=3)  # Blue
+        line=dict(color='#1f77b4', width=3)
     ))
 
     fig.add_trace(go.Scatter(
@@ -90,14 +86,12 @@ if not data.empty:
         y=chart_data['expected_capacity'],
         mode='lines+markers',
         name='Expected Capacity',
-        line=dict(color='#ff7f0e', width=3)  # Orange
+        line=dict(color='#ff7f0e', width=3)
     ))
 
     st.plotly_chart(fig, use_container_width=True)
 
-
-    # Add explanation text
-    st.caption("📈 Blue line shows predicted meal demand, orange line shows expected capacity")
+    st.caption("Blue line shows predicted meal demand, orange line shows expected capacity")
 
 else:
     st.error("No prediction data available for today. Please generate a forecast first.")
@@ -107,14 +101,15 @@ st.divider()
 # === DETAILED DATA TABLE ===
 st.subheader("Detailed Predictions")
 
-# Format the display dataframe
 if not data.empty:
+    # Format the display dataframe
     display_df = data.copy()
     display_df['date'] = display_df['date'].dt.strftime('%a, %B %d, %Y')
     display_df['predicted_meals'] = display_df['predicted_meals'].astype(int)
     display_df['utilization_%'] = ((display_df['predicted_meals'] / display_df['expected_capacity']) * 100).round(1)
     display_df['prediction_timestamp'] = display_df['prediction_timestamp'].dt.strftime('%Y-%m-%d %H:%M')
-        # Convert integer columns to boolean
+    
+    # Convert integer columns to boolean
     display_df['is_semester_break'] = display_df['is_semester_break'].astype(bool)
     display_df['is_bridge_day'] = display_df['is_bridge_day'].astype(bool)
 
@@ -136,7 +131,7 @@ if not data.empty:
 
     st.dataframe(
         display_df_final,
-        width = 'stretch',
+        use_container_width=True,
         hide_index=True,
         column_config={
             "Utilization %": st.column_config.ProgressColumn(
@@ -156,20 +151,19 @@ st.divider()
 st.subheader("Planning Notes")
 
 if not data.empty:
-
     # Identify high-demand days
     high_demand = data[data['predicted_meals'] > data['expected_capacity'] * 0.9]
 
     if len(high_demand) > 0:
-        st.warning(f"⚠️ **High demand alert**: {len(high_demand)} day(s) with utilization above 90%. Consider increasing capacity or adjusting menu.")
+        st.warning(f"**High demand alert**: {len(high_demand)} day(s) with utilization above 90%. Consider increasing capacity or adjusting menu.")
         for idx, row in high_demand.iterrows():
-            st.write(f"• {row['date'].strftime('%A, %B %d')}: {int(row['predicted_meals'])} meals predicted ({int((row['predicted_meals']/row['expected_capacity'])*100)}% capacity)")
+            st.write(f"- {row['date'].strftime('%A, %B %d')}: {int(row['predicted_meals'])} meals predicted ({int((row['predicted_meals']/row['expected_capacity'])*100)}% capacity)")
     else:
-        st.success("✅ All days within comfortable capacity limits")
+        st.success("All days within comfortable capacity limits")
 
     # Weather considerations
     rainy_days = data[data['weather_condition'] == 'Rainy']
     if len(rainy_days) > 0:
-        st.info(f"🌧️ {len(rainy_days)} rainy day(s) in forecast - may affect demand patterns")
+        st.info(f"{len(rainy_days)} rainy day(s) in forecast - may affect demand patterns")
 else:
     st.error("No prediction data available to provide planning notes.")
