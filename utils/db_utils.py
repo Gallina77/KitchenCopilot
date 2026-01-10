@@ -1,5 +1,5 @@
 import streamlit as st
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
 import pandas as pd
 from datetime import datetime
 
@@ -17,26 +17,24 @@ def style_difference(val):
     return 'color: %s' % color
 
 def apply_custom_styling(df):
-
     styled_df = (
     df.style
     .format({'pct_error': '{:.0%}'})
     .map(style_difference, subset=['difference', 'pct_error_actual'])
     )
-
     return styled_df
 
-
 def get_holidays(start_date, end_date): 
-    # Create your SQL query with date filtering
-    query = f"""
-        SELECT * FROM holidays 
-        WHERE date >= '{start_date}' 
-        AND date <= '{end_date}'
-    """
     conn = get_connection()
-    result = conn.query(query)
-    
+
+    query = text("""
+        SELECT * FROM holidays 
+        WHERE date >= :start_date 
+        AND date <= :end_date
+    """)
+    params = {"start_date": start_date, "end_date": end_date}
+    result = conn.query(query, params=params)
+
     return result
     
 def save_prediction(df): 
@@ -60,20 +58,20 @@ def save_prediction(df):
 
 
 def get_todays_prediction():
+    conn = get_connection()
     #Take Todays timestamp
     today = datetime.now().date()
     
     query = f"""
         SELECT * FROM predictions 
-        WHERE date >= '{today}'
+        WHERE date >= :today
     """
     
-    conn = get_connection()
-    result = conn.query(query)
+    params = {"today": today}
+    result = conn.query(query, params=params)
     
     if result.empty:
         return result
-    
     
     # Convert to datetime
     result['date'] = pd.to_datetime(result['date'])
@@ -89,16 +87,18 @@ def get_todays_prediction():
     return all_predictions
 
 def get_actuals_and_predictions(start_date, end_date):
+    conn = get_connection()
 
     query = f"""SELECT predictions.date, predictions.predicted_meals, 
     actual_sales.actual_meals
     FROM predictions INNER JOIN actual_sales 
     ON predictions.date=actual_sales.date        
-    WHERE actual_sales.date >= '{start_date}' 
-    AND actual_sales.date <= '{end_date}'"""
+    WHERE actual_sales.date >= :start_date 
+    AND actual_sales.date <= :end_date"""
 
-    conn = get_connection()
-    df = conn.query(query)
+    params={"start_date": start_date, "end_date": end_date} 
+    df = conn.query(query, params=params)
+
     df['date'] = pd.to_datetime(df['date'])
     df['weekday'] = df['date'].dt.strftime('%A')
     df['difference'] = df['actual_meals'] - df['predicted_meals']
