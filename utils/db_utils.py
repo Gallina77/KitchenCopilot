@@ -1,5 +1,4 @@
 import streamlit as st
-from sqlalchemy import text
 import pandas as pd
 from datetime import datetime
 
@@ -27,14 +26,10 @@ def apply_custom_styling(df):
 def get_holidays(start_date, end_date): 
     conn = get_connection()
 
-    query = text("""
-        SELECT * FROM holidays 
-        WHERE date >= :start_date 
-        AND date <= :end_date
-    """)
+    sql_query = "SELECT * FROM holidays WHERE date >= :start_date AND date <= :end_date"
     params = {"start_date": start_date, "end_date": end_date}
-    result = conn.query(query, params=params)
-
+    result = conn.query(sql_query, params=params)
+    
     return result
     
 def save_prediction(df): 
@@ -62,13 +57,10 @@ def get_todays_prediction():
     #Take Todays timestamp
     today = datetime.now().date()
     
-    query = f"""
-        SELECT * FROM predictions 
-        WHERE date >= :today
-    """
+    sql_query = "SELECT * FROM predictions WHERE date >= :today"
     
     params = {"today": today}
-    result = conn.query(query, params=params)
+    result = conn.query(sql_query, params=params)
     
     if result.empty:
         return result
@@ -89,15 +81,10 @@ def get_todays_prediction():
 def get_actuals_and_predictions(start_date, end_date):
     conn = get_connection()
 
-    query = f"""SELECT predictions.date, predictions.predicted_meals, 
-    actual_sales.actual_meals
-    FROM predictions INNER JOIN actual_sales 
-    ON predictions.date=actual_sales.date        
-    WHERE actual_sales.date >= :start_date 
-    AND actual_sales.date <= :end_date"""
+    sql_query = "SELECT predictions.date, predictions.predicted_meals, actual_sales.actual_meals FROM predictions INNER JOIN actual_sales ON predictions.date=actual_sales.date WHERE actual_sales.date >= :start_date AND actual_sales.date <= :end_date"
 
     params={"start_date": start_date, "end_date": end_date} 
-    df = conn.query(query, params=params)
+    df = conn.query(sql_query, params=params)
 
     df['date'] = pd.to_datetime(df['date'])
     df['weekday'] = df['date'].dt.strftime('%A')
