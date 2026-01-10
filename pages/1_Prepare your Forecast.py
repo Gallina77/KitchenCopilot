@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from utils import prepare_data, get_prediction, save_prediction
+from datetime import date
 
 # Must be first Streamlit command
 st.set_page_config(layout="wide")
@@ -9,6 +10,13 @@ logo = "styles/images/kitchencopilot_logo_transparent.png"
 st.logo(logo, size="medium", link=None, icon_image=None)
 
 st.title("Prepare your data")
+
+if 'number_of_days' not in st.session_state:
+    st.session_state['number_of_days'] = 5  # default value
+
+if 'start_date' not in st.session_state:
+    st.session_state['start_date'] = date.today()  # or whatever default makes sense
+
 
 # Initialize session state for form submission
 if 'form_submitted' not in st.session_state:
