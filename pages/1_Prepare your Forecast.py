@@ -11,16 +11,19 @@ st.logo(logo, size="medium", link=None, icon_image=None)
 
 st.title("Prepare your data")
 
-if 'number_of_days' not in st.session_state:
-    st.session_state['number_of_days'] = 5  # default value
+# Initialize session state
+def initialize_session_state():
+    """Consolidate all session state initialization"""
+    if 'number_of_days' not in st.session_state:
+        st.session_state['number_of_days'] = 5
+    if 'start_date' not in st.session_state:
+        st.session_state['start_date'] = date.today()
+    if 'form_submitted' not in st.session_state:
+        st.session_state['form_submitted'] = False
+    if 'forecast_df' not in st.session_state:
+        st.session_state['forecast_df'] = None
 
-if 'start_date' not in st.session_state:
-    st.session_state['start_date'] = date.today()  # or whatever default makes sense
-
-
-# Initialize session state for form submission
-if 'form_submitted' not in st.session_state:
-    st.session_state['form_submitted'] = False
+initialize_session_state()
 
 # Form for user input
 with st.form("date_form"):
