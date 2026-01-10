@@ -31,13 +31,42 @@ st.caption("Real-time overview of your forecasting system")
 
 col1, col2, col3, col4 = st.columns(4)
 
-model_timestamp = load_model_metadata()
-db_status = check_database_status()
-api_status = check_weather_api_status()
-last_prediction = get_last_prediction_info()
+# Fetch status with error handling
+@st.cache_data(ttl=60)
+def get_all_status():
+    """Fetch all status checks with error handling"""
+    statuses = {}
+    try:
+        statuses['model'] = load_model_metadata()
+    except Exception as e:
+        st.error(f"Error loading model metadata: {e}")
+        statuses['model'] = None
     
+    try:
+        statuses['prediction'] = get_last_prediction_info()
+    except Exception as e:
+        st.error(f"Error loading prediction info: {e}")
+        statuses['prediction'] = None
+    
+    try:
+        statuses['api'] = check_weather_api_status()
+    except Exception as e:
+        st.error(f"Error checking weather API: {e}")
+        statuses['api'] = False
+    
+    try:
+        statuses['db'] = check_database_status()
+    except Exception as e:
+        st.error(f"Error checking database: {e}")
+        statuses['db'] = False
+    
+    return statuses
+
+statuses = get_all_status()
+
 with col1:
     with st.container(border=True):
+        model_timestamp = statuses['model']
         if model_timestamp:
             st.metric(
                 label="Model Status",
@@ -53,6 +82,7 @@ with col1:
 
 with col2:
     with st.container(border=True):
+        last_prediction = statuses['prediction']
         if last_prediction: 
             st.metric(
                 label="Last Prediction",
@@ -68,6 +98,7 @@ with col2:
 
 with col3:
     with st.container(border=True):
+        api_status = statuses['api']
         if api_status: 
             st.metric(
                 label="Weather API",
@@ -83,6 +114,7 @@ with col3:
 
 with col4:
     with st.container(border=True):
+        db_status = statuses['db']
         if db_status: 
             st.metric(
                 label="Database",
