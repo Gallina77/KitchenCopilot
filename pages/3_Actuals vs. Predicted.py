@@ -209,7 +209,7 @@ if st.session_state['form_submitted']:
 
     st.subheader("Model Insights")
     with st.spinner('Generating insights...'):
-        response = get_llm_insights(df.to_json())
+        response = get_llm_insights_for_actuals_vs_predicted(df.to_json())
 
     # Strip code fences
     response = response.strip()
