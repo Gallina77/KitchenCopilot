@@ -8,7 +8,7 @@ from anthropic import Anthropic
 def get_llm_insights_for_actuals_vs_predicted(data_json):
 
     client = Anthropic(
-        api_key=os.environ.get("ANTHROPIC_API_KEY"),  
+        api_key=st.secrets["ANTHROPIC_API_KEY"],
     )
 
     message = client.messages.create(
