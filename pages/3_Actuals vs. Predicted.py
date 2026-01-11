@@ -1,8 +1,11 @@
+from email.mime import message
 import streamlit as st
 import pandas as pd
+import json
 import plotly.graph_objects as go
 from datetime import timedelta, datetime, date 
 from utils import get_actuals_and_predictions, apply_custom_styling, calculate_metrics
+from utils.llm_insights import get_llm_insights_for_actuals_vs_predicted
 
 
 logo = "styles/images/kitchencopilot_logo_transparent.png"
@@ -193,7 +196,7 @@ if st.session_state['form_submitted']:
                 format="DD-MM-YY"
             ),
             "weekday": "Weekday",
-            "predicted_meals": "Predicted Meal Count", 
+            "predicted_meals": "Predicted Meal Count",
             "actual_meals": "Actual Meal Count",
             "difference": "Waste/Shortage", 
             "pct_error_actual": "% deviation from actual"
@@ -205,3 +208,26 @@ if st.session_state['form_submitted']:
     st.divider()
 
     st.subheader("Model Insights")
+    with st.spinner('Generating insights...'):
+        response = get_llm_insights(df.to_json())
+
+    # Strip code fences
+    response = response.strip()
+    if response.startswith("```"):
+        lines = response.split("\n")
+        response = "\n".join(lines[1:-1])
+
+    try:
+        insights = json.loads(response)
+        for insight in insights:
+            if insight['type'] == 'success':
+                st.success(f"**{insight['title']}** — {insight['message']}")
+            elif insight['type'] == 'info':
+                st.info(f"**{insight['title']}** — {insight['message']}")
+            elif insight['type'] == 'warning':
+                st.warning(f"**{insight['title']}** — {insight['message']}")
+            elif insight['type'] == 'error':
+                st.error(f"**{insight['title']}** — {insight['message']}")
+    except json.JSONDecodeError:
+        st.warning("Could not parse insights. Raw response:")
+        st.markdown(response)
