@@ -92,6 +92,7 @@ a:active {
     padding: 2rem;
     border-radius: 8px;
     border-left: 4px solid #ff4b4b;
+    height: 250px;
 }
 
 .roadmap-badge {

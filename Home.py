@@ -276,9 +276,8 @@ with col1:
     st.markdown(
         roadmap_card(
             "Coming Soon", 
-            "#856404", 
-            "#fff3cd", 
-            "bi-fork-knife", 
+            "primary",
+            "bi bi-cup-hot", 
             "Menu Planning Integration",
             "Learn how different meal offerings affect demand. Optimize your menu strategy based on historical preferences and patterns."
         ), 
@@ -289,14 +288,14 @@ with col2:
     st.markdown(
         roadmap_card(
             "Planned", 
-            "#004085", 
-            "#e7f3ff", 
-            "bi-bicycle", 
+            "success",
+            "bi bi-bicycle", 
             "Automated Scheduling",
             "Hands-free daily forecasts delivered automatically. Integrate seamlessly with your workflow and save valuable time."
         ), 
         unsafe_allow_html=True
     )
+
 
 st.divider()
 
