@@ -47,7 +47,7 @@ def roadmap_card(badge_text, badge_variant, icon, title, description):
     return f"""
         <div class='roadmap-card'>
             <span class='roadmap-badge roadmap-badge-{badge_variant}'>{badge_text}</span>
-            <h3><i class="bi {icon}"></i> {title}</h3>
+            <h3><i class="{icon}"></i> {title}</h3>
             <p class='roadmap-description'>{description}</p>
         </div>
     """
