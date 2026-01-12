@@ -43,3 +43,32 @@ def get_llm_insights_for_actuals_vs_predicted(data_json):
         model="claude-sonnet-4-5-20250929",
     )
     return message.content[0].text
+
+@st.cache_data
+def get_llm_planning_insights(forecast_json):
+
+    client = Anthropic(
+        api_key=st.secrets["ANTHROPIC_API_KEY"],
+    )
+
+    message = client.messages.create(
+        max_tokens=800,
+        messages=[
+            {
+                "role": "user",
+                "content": "You help kitchen teams plan based on meal demand forecasts. "
+                    "This data contains future dates, predicted meals, expected capacity, "
+                    "utilization percentage, temperature, weather condition, holiday description, "
+                    "semester break flag, bridge day flag, and prediction timestamp. "
+                    "List ONLY 2-3 inconsistencies or unusual patterns — "
+                    "things that don't match expected conditions (weather, holiday, day of week) "
+                    "or seem worth verifying. "
+                    "Do NOT include daily summaries, recommendations, or risk ratings. "
+                    "Keep it brief and simple, no jargon. Use bullet points."
+                    f"Here is the data: {forecast_json}"
+        
+            }
+        ],
+        model="claude-sonnet-4-5-20250929",
+    )
+    return message.content[0].text

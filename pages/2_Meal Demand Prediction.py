@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import json
 from datetime import datetime, timedelta
-from utils import get_todays_prediction
+from utils import get_todays_prediction, get_llm_planning_insights
 import plotly.graph_objects as go
 
 # Must be first Streamlit command
@@ -149,21 +150,49 @@ else:
 # === FOOTER INSIGHTS ===
 st.divider()
 st.subheader("Planning Notes")
-
 if not data.empty:
-    # Identify high-demand days
-    high_demand = data[data['predicted_meals'] > data['expected_capacity'] * 0.9]
+    with st.spinner('Generating insights...'):
+            response = get_llm_planning_insights(data.to_json())
+        
+    st.info(response)
 
-    if len(high_demand) > 0:
-        st.warning(f"**High demand alert**: {len(high_demand)} day(s) with utilization above 90%. Consider increasing capacity or adjusting menu.")
-        for idx, row in high_demand.iterrows():
-            st.write(f"- {row['date'].strftime('%A, %B %d')}: {int(row['predicted_meals'])} meals predicted ({int((row['predicted_meals']/row['expected_capacity'])*100)}% capacity)")
-    else:
-        st.success("All days within comfortable capacity limits")
+#         # Strip code fences
+#     response = response.strip()
+#     if response.startswith("```"):
+#         lines = response.split("\n")
+#         response = "\n".join(lines[1:-1])
 
-    # Weather considerations
-    rainy_days = data[data['weather_condition'] == 'Rainy']
-    if len(rainy_days) > 0:
-        st.info(f"{len(rainy_days)} rainy day(s) in forecast - may affect demand patterns")
-else:
-    st.error("No prediction data available to provide planning notes.")
+#         try:
+#             insights = json.loads(response)
+#             for insight in insights:
+#                 if insight['type'] == 'success':
+#                     st.success(f"**{insight['title']}** — {insight['message']}")
+#                 elif insight['type'] == 'info':
+#                     st.info(f"**{insight['title']}** — {insight['message']}")
+#                 elif insight['type'] == 'warning':
+#                     st.warning(f"**{insight['title']}** — {insight['message']}")
+#                 elif insight['type'] == 'error':
+#                     st.error(f"**{insight['title']}** — {insight['message']}")
+#         except json.JSONDecodeError:
+#             st.warning("Could not parse insights. Raw response:")
+#             st.markdown(response)   
+
+
+
+# if not data.empty:
+#     # Identify high-demand days
+#     high_demand = data[data['predicted_meals'] > data['expected_capacity'] * 0.9]
+
+#     if len(high_demand) > 0:
+#         st.warning(f"**High demand alert**: {len(high_demand)} day(s) with utilization above 90%. Consider increasing capacity or adjusting menu.")
+#         for idx, row in high_demand.iterrows():
+#             st.write(f"- {row['date'].strftime('%A, %B %d')}: {int(row['predicted_meals'])} meals predicted ({int((row['predicted_meals']/row['expected_capacity'])*100)}% capacity)")
+#     else:
+#         st.success("All days within comfortable capacity limits")
+
+#     # Weather considerations
+#     rainy_days = data[data['weather_condition'] == 'Rainy']
+#     if len(rainy_days) > 0:
+#         st.info(f"{len(rainy_days)} rainy day(s) in forecast - may affect demand patterns")
+# else:
+#     st.error("No prediction data available to provide planning notes.")
