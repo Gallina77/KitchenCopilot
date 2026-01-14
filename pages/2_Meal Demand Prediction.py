@@ -4,10 +4,16 @@ import numpy as np
 import json
 from datetime import datetime, timedelta
 from utils import get_todays_prediction, get_llm_planning_insights
+from components.sidebar import render_language_toggle
+from utils.translations_utils import get_translations
 import plotly.graph_objects as go
 
 # Must be first Streamlit command
 st.set_page_config(page_title="Meal Predictions", layout="wide")
+
+render_language_toggle()
+t = get_translations("predictions")
+display_columns = t["display_columns"]
 
 logo = "styles/images/kitchencopilot_logo_transparent.png"
 st.logo(logo, size="medium", link=None, icon_image=None)
@@ -100,7 +106,7 @@ else:
 st.divider()
 
 # === DETAILED DATA TABLE ===
-st.subheader("Detailed Predictions")
+st.subheader(t["detailed_data_subheader"])
 
 if not data.empty:
     # Format the display dataframe
@@ -115,29 +121,19 @@ if not data.empty:
     display_df['is_bridge_day'] = display_df['is_bridge_day'].astype(bool)
 
     # Select and rename columns for display
-    display_columns = {
-        'date': 'Date',
-        'predicted_meals': 'Predicted Meals',
-        'expected_capacity': 'Capacity',
-        'utilization_%': 'Utilization %',
-        'temperature_max': 'Temp (°C)',
-        'weather_condition': 'Weather',
-        'holiday_desc': 'Holiday',
-        'is_semester_break': 'Semester Break',
-        'is_bridge_day': 'Bridge Day',
-        'prediction_timestamp': 'Last Updated'
-    }
+    display_df.rename(columns=display_columns)
 
     display_df_final = display_df[list(display_columns.keys())].rename(columns=display_columns)
+   
 
     st.dataframe(
         display_df_final,
         width='stretch',
         hide_index=True,
         column_config={
-            "Utilization %": st.column_config.ProgressColumn(
-                "Utilization %",
-                help="Predicted demand as % of capacity",
+            display_columns["utilization_%"]: st.column_config.ProgressColumn(
+                display_columns["utilization_%"],
+                help=t["utilization_help"],
                 min_value=0,
                 max_value=100,
                 format="%.1f%%"
@@ -146,6 +142,9 @@ if not data.empty:
     )
 else:
     st.error("No prediction data available for today. Please generate a forecast first.")
+
+     
+
 
 # === FOOTER INSIGHTS ===
 st.divider()

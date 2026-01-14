@@ -1,0 +1,13 @@
+{
+  "EN": {
+    "page_title": "KitchenCopilot - Meal Demand Forecasting",
+    "model_status": "Model Status"
+
+  },
+    "DE": {
+        "page_title": "KitchenCopilot - Essensnachfrageprognose",
+        "model_status": "Modellstatus"
+    
+    }   
+
+}

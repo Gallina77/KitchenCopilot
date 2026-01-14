@@ -8,7 +8,7 @@ from components.sidebar import render_language_toggle
 st.set_page_config(layout="wide")
 
 render_language_toggle()
-t = get_translations()
+t = get_translations("prepare")
 
 logo = "styles/images/kitchencopilot_logo_transparent.png"
 st.logo(logo, size="medium", link=None, icon_image=None)
