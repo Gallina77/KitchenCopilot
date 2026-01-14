@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 render_language_toggle()
-t = get_translations()
+t = get_translations("home")
 
 
 
