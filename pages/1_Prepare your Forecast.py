@@ -1,15 +1,19 @@
 import streamlit as st
 import pandas as pd
-from utils import prepare_data, get_prediction, save_prediction
+from utils import prepare_data, get_prediction, save_prediction, get_translations
 from datetime import date
+from components.sidebar import render_language_toggle
 
 # Must be first Streamlit command
 st.set_page_config(layout="wide")
 
+render_language_toggle()
+t = get_translations()
+
 logo = "styles/images/kitchencopilot_logo_transparent.png"
 st.logo(logo, size="medium", link=None, icon_image=None)
 
-st.title("Prepare your data")
+st.title(t["prepare_your_forecast_title"])
 
 # Initialize session state
 def initialize_session_state():
@@ -27,9 +31,9 @@ initialize_session_state()
 
 # Form for user input
 with st.form("date_form"):
-    start_date = st.date_input('Pick a start date')
-    number_of_days = st.number_input('Number of days to predict', min_value=1, max_value=7, value=5, step=1)
-    submit_button = st.form_submit_button('Prepare Data')
+    start_date = st.date_input(t["start_date_label"])
+    number_of_days = st.number_input(t["number_of_days_label"], min_value=1, max_value=7, value=5, step=1)
+    submit_button = st.form_submit_button(t["predict_button"])
 
 # Handle form submission
 if submit_button:

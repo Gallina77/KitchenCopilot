@@ -12,9 +12,11 @@ This project demonstrates end-to-end machine learning operations including data 
 
 - **Automated Feature Engineering**: Automatically enriches forecasts with weather data (OpenWeatherMap API) and German holidays (Hessen)
 - **Interactive Forecasting Interface**: Streamlit-based dashboard for generating predictions with custom date ranges
+- **AI-powered Insights**: After displaying raw metrics, the app sends data to Claude (Anthropic API) which identifies actionable patterns — like systematic weekday biases or weather correlations — in plain language for kitchen staff.
 - **Performance Tracking**: Compare actual vs predicted meals with exportable Excel reports
 - **SQLite Data Persistence**: Stores predictions and actual sales for historical analysis
 - **Modular ML Pipeline**: Separate model training workflow using Jupyter notebooks
+- **Languages**: Support from English and German 
 
 ## Technology Stack
 
@@ -31,14 +33,17 @@ This project demonstrates end-to-end machine learning operations including data 
 - **requests 2.32.5**: HTTP client for API integration
 
 ### External APIs
-- **OpenWeatherMap API**: 7-day weather forecasts (free tier)
+- **OpenWeatherMap API**: 7-day weather forecasts (free tier). No API Key required.
+- **Claude API**: Prediction data is serialized to JSON and sent to the Anthropic API The Streamlit caching layer stores responses to avoid redundant API calls.
+
 
 ## Project Structure
 
 ```
 kitchencopilot/
 ├── components/
-│   ├── components.py/      # HTML components for Home Page
+│   ├── home.py/            # HTML components for Home Page
+│   ├── sidebar.py/         # Sidebar Translation Toggle
 ├── data/
 │   ├── models/             # trained models 
 │   ├── processed/          # Processed training data
@@ -58,10 +63,13 @@ kitchencopilot/
 │   └── 3_Actuals.py        # Actuals vs. Predictions
 │   └── 4_Import.py         # Import Page for actual sales data        
 ├── utils
-│   └── __init__.py         # Streamlit application
-│   └── db_utils.py         # Database operations
-│   └── prediction_utils.py # ML Prediction logic
-│   └── weather_utils.py    # API Integration
+│   └── __init__.py           # Streamlit application
+│   └── db_utils.py           # Database operations
+│   └── prediction_utils.py   # ML Prediction logic
+│   └── weather_utils.py      # API Integration
+│   └── llm_insights.py       # LLM connection, prompts and API Integration
+│   └── translations_utils.py # Translation logica
+│   └── translations_json     # English and German Translations with respective keys
 ├── .streamlit/
 │   └── secrets.toml        # Streamlit configuration (not in Git)
 ├── Home.py                 # Streamlit Landing Page
@@ -72,8 +80,9 @@ kitchencopilot/
 ## Setup Instructions
 
 ### Prerequisites
-- Python 3.9 or higher
+- Python 3.12 or higher
 - OpenWeatherMap API key (free tier: https://openweathermap.org/api)
+- Anthropic API key (https://console.anthropic.com)
 
 ### Installation Steps
 
@@ -106,9 +115,10 @@ pip install -r requirements.txt
 
 Create a `.streamlit/secrets.toml` file:
 ```toml
+ANTHROPIC_API_KEY = "your-key-here"
 [connections.kitchencopilot_db]
 url = "sqlite:///data/kitchencopilot.db"
-
+```
 
 5. **Initialize the database**
 ```bash

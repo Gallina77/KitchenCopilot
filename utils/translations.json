@@ -1,0 +1,26 @@
+{
+  "EN": {
+    "page_title": "KitchenCopilot - Meal Demand Forecasting",
+    "model_status": "Model Status",
+    "prepare_your_forecast_title": "Prepare your Forecast",
+    "start_date_label": "Pick a start date",
+    "end_date_label": "Pick an end date",
+    "number_of_days_label": "Number of days to predict", 
+    "predict_button": "Prepare Data",
+    "meal_demand_predictions_title": "Meal Demand Predictions"
+
+
+  },
+  "DE": {
+    "page_title": "KitchenCopilot - Essensnachfrageprognose",
+    "model_status": "Modellstatus", 
+    "prepare_your_forecast_title": "Bereiten Sie Ihre Prognose vor",
+    "start_date_label": "Wähle ein Startdatum",
+    "end_date_label": "Wähle ein Enddatum",
+    "number_of_days_label": "Anzahl der Tage zur Vorhersage",
+    "predict_button": "Daten vorbereiten",
+    "meal_demand_predictions_title": "Prognosen zur Essensnachfrage"
+
+
+  }
+}

@@ -1,7 +1,10 @@
 import streamlit as st
 from datetime import datetime
-from components.components import hero_section, journey_step, feature_card, roadmap_card, footer_section
+from components.home import hero_section, journey_step, feature_card, roadmap_card, footer_section
+from components.sidebar import render_language_toggle
 from utils.home_utils import load_model_metadata, check_database_status, check_weather_api_status, get_last_prediction_info
+from utils.translations_utils import get_translations   
+
 
 # Page configuration
 st.set_page_config(
@@ -10,6 +13,11 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
+render_language_toggle()
+t = get_translations()
+
+
 
 # Load external CSS
 def load_css(file_path):
@@ -69,7 +77,7 @@ with col1:
         model_timestamp = statuses['model']
         if model_timestamp:
             st.metric(
-                label="Model Status",
+                label=t["model_status"],
                 value="Active",
                 delta=f"Last trained: {model_timestamp.strftime('%d %b %Y')}"
             )
