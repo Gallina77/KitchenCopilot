@@ -5,11 +5,14 @@ import streamlit as st
 from anthropic import Anthropic
     
 @st.cache_data
-def get_llm_insights_for_actuals_vs_predicted(data_json):
+def get_llm_insights_for_actuals_vs_predicted(data_json: str, lang: str):
 
     client = Anthropic(
         api_key=st.secrets["ANTHROPIC_API_KEY"],
     )
+
+    response_language = "German" if st.session_state.lang == "DE" else "English"
+
 
     message = client.messages.create(
         max_tokens=800,
@@ -36,6 +39,7 @@ def get_llm_insights_for_actuals_vs_predicted(data_json):
                     "If the predictions are working well and there are no clear issues, say so briefly. "
                     "Use simple language for kitchen managers. No jargon."
                     "Return raw JSON only. DO NOT wrap in code fences or markdown."
+                    f"Respond in {response_language}."
                     f"Here is the data: {data_json}"
         
             }
@@ -45,11 +49,13 @@ def get_llm_insights_for_actuals_vs_predicted(data_json):
     return message.content[0].text
 
 @st.cache_data
-def get_llm_planning_insights(forecast_json):
+def get_llm_planning_insights(data_json: str, lang: str):
 
     client = Anthropic(
         api_key=st.secrets["ANTHROPIC_API_KEY"],
     )
+
+    response_language = "German" if st.session_state.lang == "DE" else "English"
 
     message = client.messages.create(
         max_tokens=800,
@@ -65,7 +71,8 @@ def get_llm_planning_insights(forecast_json):
                     "or seem worth verifying. "
                     "Do NOT include daily summaries, recommendations, or risk ratings. "
                     "Keep it brief and simple, no jargon. Use bullet points."
-                    f"Here is the data: {forecast_json}"
+                    f"Respond in {response_language}."
+                    f"Here is the data: {data_json}"
         
             }
         ],

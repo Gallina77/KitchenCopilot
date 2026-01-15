@@ -1,43 +1,72 @@
 {
   "EN": {
-    "meal_demand_predictions_title": "Meal Demand Predictions",
+    "predictions_page_title": "Meal Demand Predictions",
+    "metrics_subheader": "Key Insights",
+    "metrics_label_total_predicted_meals": "Total Predicted Meals (Next 7 Working Days)",
+    "metrics_label_daily_average_predicted_meals": "Daily Average",
+    "metrics_label_peak_demand_day": "Peak Demand Day",
+    "metrics_meals_label": "meals",
+    "metrics_label_average_capacity": "Average Capacity",
+    "chart_subheader": "Demand Forecast",
+    "chart_data": {
+        "predicted_meals": "Predicted Meals",
+        "expected_capacity": "Expected Capacity"
+    },
+    "chart_caption": "Blue line shows predicted meal demand, orange line shows expected capacity",
+    "error_message_no_data": "No prediction data available for today. Please generate a forecast first.",
     "detailed_data_subheader": "Detailed Predictions",
     "utilization_help": "Predicted demand as % of capacity",
-        "display_columns": {
-          "date": "Date",
-          "predicted_meals": "Predicted Meals",
-          "expected_capacity": "Capacity",
-          "utilization_%": "Utilization %",
-          "temperature_max": "Temp (°C)",
-          "weather_condition": "Weather",
-          "holiday_desc": "Holiday",
-          "is_semester_break": "Semester Break",
-          "is_bridge_day": "Bridge Day",
-          "prediction_timestamp": "Last Updated"
-    }
+    "display_columns": {
+        "date": "Date",
+        "predicted_meals": "Predicted Meals",
+        "expected_capacity": "Capacity",
+        "utilization_%": "Utilization %",
+        "temperature_max": "Temp (°C)",
+        "weather_condition": "Weather",
+        "holiday_desc": "Holiday",
+        "is_semester_break": "Semester Break",
+        "is_bridge_day": "Bridge Day",
+        "prediction_timestamp": "Last Updated"
+    },
+    "insights_subheader": "Planning Notes",
+    "insights_no_data": "No Planning Notes available. Please generate a forecast first."
 
 
   },
   "DE": {
-    "meal_demand_predictions_title": "Prognosen zur Essensnachfrage",
+    "predictions_page_title": "Prognosen zur Essensnachfrage",
+    "metrics_subheader": "Kennzahlen",
+    "metrics_label_total_predicted_meals": "Prognostizierte Gesamtmahlzeiten (nächste 7 Werktage)",
+    "metrics_label_daily_average_predicted_meals": "Täglicher Durchschnitt",
+    "metrics_label_peak_demand_day": "Spitzenbedarf Tag",
+    "metrics_meals_label": "Mahlzeiten",
+    "metrics_label_average_capacity": "Durchschnittliche Kapazität",
+    "error_message_no_data": "Keine Prognosedaten verfügbar. Bitte generieren Sie zuerst eine Vorhersage.",
+    "chart_subheader": "Nachfrageprognose",
+    "chart_data": {
+        "predicted_meals": "Prognostizierte Mahlzeiten",
+        "expected_capacity": "Erwartete Kapazität"
+    },
+    "chart_caption": "Die blaue Linie zeigt die prognostizierte Essensnachfrage, die orange Linie die erwartete Kapazität",
     "detailed_data_subheader": "Detaillierte Prognosen",
     "utilization_help": "Prognostizierte Nachfrage als % der Kapazität",
-        "display_columns": {
-          "date": "Datum",
-          "predicted_meals": "Prognostizierte Mahlzeiten",
-          "expected_capacity": "Kapazität",
-          "utilization_%": "Auslastung %",
-          "temperature_max": "Temp (°C)",
-          "weather_condition": "Wetter",
-          "holiday_desc": "Feiertag",
-          "is_semester_break": "Semesterferien",
-          "is_bridge_day": "Brückentag",
-          "prediction_timestamp": "Letzte Aktualisierung"
-
-    }
+    "display_columns": {
+        "date": "Datum",
+        "predicted_meals": "Prognostizierte Mahlzeiten",
+        "expected_capacity": "Kapazität",
+        "utilization_%": "Auslastung %",
+        "temperature_max": "Temp (°C)",
+        "weather_condition": "Wetter",
+        "holiday_desc": "Feiertag",
+        "is_semester_break": "Semesterferien",
+        "is_bridge_day": "Brückentag",
+        "prediction_timestamp": "Letzte Aktualisierung"
+    },
+    "insights_subheader": "Planungshinweise",
+    "insights_no_data": "Keine Hinweise verfügbar. Bitte generieren Sie zuerst eine Vorhersage."
+}
 
 
 
 
   }
-}
