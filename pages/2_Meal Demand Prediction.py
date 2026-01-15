@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import json
 from datetime import datetime, timedelta
+from babel.dates import format_date 
 from utils import get_todays_prediction, get_llm_planning_insights
 from components.sidebar import render_language_toggle
 from utils.translations_utils import get_translations
@@ -14,17 +15,18 @@ st.set_page_config(page_title="Meal Predictions", layout="wide")
 render_language_toggle()
 t = get_translations("predictions")
 display_columns = t["display_columns"]
+chart_data_labels = t["chart_data"]
 
 logo = "styles/images/kitchencopilot_logo_transparent.png"
 st.logo(logo, size="medium", link=None, icon_image=None)
 
-st.title("Meal Demand Predictions")
+st.title(t["predictions_page_title"])
 
 # Get predictions from the last 7 days
 data = get_todays_prediction()
 
 # === TOP METRICS SECTION ===
-st.subheader("Key Insights")
+st.subheader(t["metrics_subheader"])
 
 col1, col2, col3, col4 = st.columns(4)
 
@@ -33,7 +35,7 @@ if not data.empty:
         with st.container(border=True):
             total_meals = data['predicted_meals'].sum()
             st.metric(
-                label="Total Predicted Meals",
+                label=t["metrics_label_total_predicted_meals"],
                 value=f"{int(total_meals):,}"
             )
 
@@ -41,7 +43,7 @@ if not data.empty:
         with st.container(border=True):
             avg_meals = data['predicted_meals'].mean()
             st.metric(
-                label="Daily Average",
+                label=t["metrics_label_daily_average_predicted_meals"],
                 value=f"{int(avg_meals)}"
             )
 
@@ -49,9 +51,10 @@ if not data.empty:
         with st.container(border=True):
             peak_day = data.loc[data['predicted_meals'].idxmax()]
             st.metric(
-                label="Peak Demand Day",
-                value=peak_day['date'].strftime('%a, %b %d'),
-                delta=f"{int(peak_day['predicted_meals'])} meals"
+                label=t["metrics_label_peak_demand_day"],
+                value = format_date(peak_day['date'], format='EEE, MMM dd', 
+                                    locale=st.session_state.lang.lower()),
+                delta=f"{int(peak_day['predicted_meals'])} {t['metrics_meals_label']}"
             )
 
     with col4:
@@ -59,32 +62,35 @@ if not data.empty:
             # Calculate capacity utilization
             avg_utilization = (data['predicted_meals'] / data['expected_capacity']).mean() * 100
             st.metric(
-                label="Avg Capacity Usage",
+                label=t["metrics_label_average_capacity"],
                 value=f"{avg_utilization:.1f}%",
                 delta=f"{avg_utilization - 85:.1f}%" if avg_utilization < 85 else f"+{avg_utilization - 85:.1f}%",
                 delta_color="inverse"
             )
 else:
-    st.error("No prediction data available for today. Please generate a forecast first.")
+    st.error(t["error_message_no_data"])
 
 st.divider()
 
 # === MAIN CHART SECTION ===
-st.subheader("Demand Forecast")
+st.subheader(t["chart_subheader"])
 
 if not data.empty:
     # Prepare data for chart
     chart_data = data[['date', 'predicted_meals', 'expected_capacity']].copy()
-    chart_data['date'] = chart_data['date'].dt.strftime('%a %m/%d')
-    chart_data = chart_data.set_index('date')
+    locale = st.session_state.lang.lower()
 
+    chart_data['date'] = chart_data['date'].apply(
+    lambda d: format_date(d, format='EEE MM/dd', locale=locale)
+    )
+    chart_data = chart_data.set_index('date')
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(
         x=chart_data.index,
         y=chart_data['predicted_meals'],
         mode='lines+markers',
-        name='Predicted Meals',
+        name=chart_data_labels['predicted_meals'],
         line=dict(color='#1f77b4', width=3)
     ))
 
@@ -92,16 +98,16 @@ if not data.empty:
         x=chart_data.index,
         y=chart_data['expected_capacity'],
         mode='lines+markers',
-        name='Expected Capacity',
+        name=chart_data_labels['expected_capacity'],
         line=dict(color='#ff7f0e', width=3)
     ))
 
     st.plotly_chart(fig, use_container_width=True)
 
-    st.caption("Blue line shows predicted meal demand, orange line shows expected capacity")
+    st.caption(t["chart_caption"])  
 
 else:
-    st.error("No prediction data available for today. Please generate a forecast first.")
+    st.error(t["error_message_no_data"])
 
 st.divider()
 
@@ -141,18 +147,18 @@ if not data.empty:
         }
     )
 else:
-    st.error("No prediction data available for today. Please generate a forecast first.")
+    st.error(t["error_message_no_data"])
 
      
 
 
 # === FOOTER INSIGHTS ===
 st.divider()
-st.subheader("Planning Notes")
+st.subheader(t["insights_subheader"])
 if not data.empty:
-    with st.spinner('Generating insights...'):
-            response = get_llm_planning_insights(data.to_json())
+    with st.spinner(t["spinner_message"]):
+            response = get_llm_planning_insights(data.to_json(),st.session_state.lang)
         
     st.info(response)
 else:
-    st.error("No prediction data available for today. Please generate a forecast first.")   
+    st.error(t["insights_no_data"])

@@ -3,7 +3,8 @@
     "start_date_label": "Pick a start date",
     "end_date_label": "Pick an end date",
     "number_of_days_label": "Number of days to predict", 
-    "predict_button": "Prepare Data"
+    "predict_button": "Prepare Data",
+    "spinner_message": "Generating insights..."
     },
 
 
@@ -12,6 +13,7 @@
     "end_date_label": "Wähle ein Enddatum",
     "number_of_days_label": "Anzahl der Tage zur Vorhersage",
     "predict_button": "Daten vorbereiten"
+    ,"spinner_message": "Generiere Hinweise..."
     }
 
 
