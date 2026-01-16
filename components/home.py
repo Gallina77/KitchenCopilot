@@ -2,16 +2,16 @@
 HTML component templates for the KitchenCopilot homepage
 """
 
-def hero_section():
+def hero_section(t):
     """Returns the hero section HTML"""
-    return """
+    return f"""
         <div class='hero-section'>
             <h1>
                 <span class='hero-title'>
                     🍽️ KitchenCopilot
                 </span>
             </h1>
-            <p>Machine learning-powered meal demand forecasting for cafeterias</p>
+            <p>{t["hero_subtitle"]}</p>
         </div>
     """
 

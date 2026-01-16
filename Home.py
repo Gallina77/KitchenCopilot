@@ -16,6 +16,12 @@ st.set_page_config(
 
 render_language_toggle()
 t = get_translations("home")
+status = t["system_status"]
+howto = t["how_to_use"]
+features = t["features"]
+help_t = t["help"]
+pred = t["prediction_factors"]
+
 
 
 
@@ -31,11 +37,11 @@ st.logo(logo, size="medium", link=None, icon_image=None)
 
 
 # Hero Section
-st.markdown(hero_section(), unsafe_allow_html=True)
+st.markdown(hero_section(t), unsafe_allow_html=True)
 
 # System Status
-st.header("System Status")
-st.caption("Real-time overview of your forecasting system")
+st.header(status["header"])
+st.caption(status["subtitle"])
 
 col1, col2, col3, col4 = st.columns(4)
 
@@ -47,25 +53,25 @@ def get_all_status():
     try:
         statuses['model'] = load_model_metadata()
     except Exception as e:
-        st.error(f"Error loading model metadata: {e}")
+        st.error(f"t['errors']['loading_data']: {e}")
         statuses['model'] = None
     
     try:
         statuses['prediction'] = get_last_prediction_info()
     except Exception as e:
-        st.error(f"Error loading prediction info: {e}")
+        st.error(f"t['errors']['loading_data']: {e}")
         statuses['prediction'] = None
     
     try:
         statuses['api'] = check_weather_api_status()
     except Exception as e:
-        st.error(f"Error checking weather API: {e}")
+        st.error(f"t['errors']['connecting_weather']: {e}")
         statuses['api'] = False
     
     try:
         statuses['db'] = check_database_status()
     except Exception as e:
-        st.error(f"Error checking database: {e}")
+        st.error(f"t['errors']['connecting_database']: {e}")
         statuses['db'] = False
     
     return statuses
@@ -77,15 +83,15 @@ with col1:
         model_timestamp = statuses['model']
         if model_timestamp:
             st.metric(
-                label=t["model_status"],
-                value="Active",
-                delta=f"Last trained: {model_timestamp.strftime('%d %b %Y')}"
+                label=status['model_label'],
+                value=status['model_active'],
+                delta=status['model_last_trained'] + f" {model_timestamp.strftime('%d %b %Y')}"
             )
         else:
             st.metric(
-                label="Model Status",
-                value="Not Trained",
-                delta="Train model to begin", delta_color="inverse"
+                label=status['model_label'],
+                value=status['model_not_trained'],
+                delta=status['model_train_delta'], delta_color="inverse"
             )
 
 with col2:
@@ -93,15 +99,15 @@ with col2:
         last_prediction = statuses['prediction']
         if last_prediction: 
             st.metric(
-                label="Last Prediction",
+                label=status["prediction_label"],
                 value=last_prediction['timestamp'].strftime('%b, %d'),
                 delta=f"for: {last_prediction['start_date'].strftime('%b, %d')} - {last_prediction['end_date'].strftime('%b, %d')}"
             )
         else:
             st.metric(
-                label="Last Prediction",
-                value="Failed",
-                delta="Date Missing", delta_color="inverse"
+                label=status["prediction_label"],
+                value=status["prediction_failed"],
+                delta=status["prediction_date_missing"], delta_color="inverse"
             ) 
 
 with col3:
@@ -109,15 +115,15 @@ with col3:
         api_status = statuses['api']
         if api_status: 
             st.metric(
-                label="Weather API",
-                value="Connected",
-                delta="OpenWeatherMap active"
+                label=status["weather_label"],
+                value=status["weather_connected"],
+                delta=status["weather_active"]
             )
         else: 
             st.metric(
-                label="Weather API",
-                value="Failed",
-                delta="OpenWeatherMap not active", delta_color="inverse"
+                label=status["weather_label"],
+                value=status["weather_failed"],
+                delta=status["weather_not_active"], delta_color="inverse"
             )   
 
 with col4:
@@ -125,87 +131,65 @@ with col4:
         db_status = statuses['db']
         if db_status: 
             st.metric(
-                label="Database",
-                value="Ready",
-                delta="SQLite operational"
+                label=status["database_label"],
+                value=status["database_ready"],
+                delta=status["database_operational"]
             )
         else: 
             st.metric(
-                label="Database",
-                value="Not Ready",
-                delta="SQLite not operational", delta_color="inverse"
+                label=status["database_label"],
+                value=status["database_not_ready"],
+                delta=status["database_not_operational"], delta_color="inverse"
             )
 
 st.divider()
 
 # What is KitchenCopilot
-st.info("""
-**What is KitchenCopilot?**
+st.info(f"""
+**{t["what_is"]["title"]}**
 
-KitchenCopilot helps cafeteria managers predict daily meal demand by combining historical 
-sales data with real-time environmental factors. The system reduces food waste and improves 
-operational efficiency by providing accurate forecasts based on weather conditions, holidays, 
-and capacity planning.
+{t["what_is"]["text"]}
 """)
 
 st.divider()
 
 
 # How to Use the System
-st.header("How to Use the System")
-st.caption("Detailed walkthrough for each step of the process")
+st.header(howto["header"])
+st.caption(howto["subtitle"])
 
-tab1, tab2, tab3, tab4 = st.tabs(["PREPARE", "PREDICT", "TRACK", "IMPORT"])
+tab1, tab2, tab3, tab4 = st.tabs(list(howto["tabs"].values())
+)
 
 with tab1:
-    st.subheader("Step 1: Prepare Your Forecast")
-    st.write("""
-    Navigate to the Prepare page and select your forecast start date and period (up to 7 days). 
-    The system automatically fetches weather forecasts and checks for holidays in Hessen. Then 
-    enter expected daily capacity. The ML model combines this with weather data, weekday patterns, 
-    and holiday information to forecast meal demand.
-    """)
+    st.subheader(howto["step1_title"])
+    st.write(f"""{howto["step1_text"]}""")
 
 with tab2:
-    st.subheader("Step 2: Meal Demand Prediction")
-    st.write("""
-    Review the prepared forecast data including dates, weather conditions, 
-    and holiday information. The system displays your predictions with interactive visualizations 
-    showing expected meal demand for each working day. You can export the results to Excel for 
-    further analysis or sharing with your team.
-    """)
+    st.subheader(howto["step2_title"])
+    st.write(f"""{howto["step2_text"]}""")
 
 with tab3:
-    st.subheader("Step 3: Track Performance")
-    st.write("""
-    Use the Actuals page to compare predicted vs actual meal counts. This helps validate model 
-    accuracy and identify improvement opportunities. Review performance metrics, analyze trends 
-    over time, and download comparison reports that show how well the forecasts matched reality.
-    """)
+    st.subheader(howto["step3_title"])
+    st.write(f"""{howto["step3_text"]}""")
 
 with tab4:
-    st.subheader("Step 4: Import Actual Sales")
-    st.write("""
-    Upload actual sales data through the Import page to build your historical database and enable 
-    performance tracking. This data is stored in the SQLite database and used to calculate 
-    accuracy metrics, identify patterns, and can be used for future model retraining to improve 
-    forecast quality over time.
-    """)
+    st.subheader(howto["step4_title"])
+    st.write(f"""{howto["step4_text"]}""")
 
 st.divider()
 
 # Key Features
-st.header("Key Features")
-st.caption("Everything you need for accurate meal demand forecasting")
-
+st.header(features["header"])
+st.caption(features["subtitle"])    
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown(
         feature_card(
             "bi-robot",
-            "Automated Feature Engineering",
-            "The system automatically enriches your predictions with weather forecasts from OpenWeatherMap and holiday information for Hessen. Weekends and bank holidays are excluded from predictions."
+            features["automated_title"],
+            features["automated_text"]
         ),
         unsafe_allow_html=True
     ) 
@@ -213,8 +197,8 @@ with col1:
     st.markdown(
         feature_card(
             "bi-speedometer",
-            "Performance Tracking",
-            "Compare actual vs predicted meals with exportable Excel reports. Track model accuracy over time and identify patterns in forecast performance."
+            features["performance_title"],
+            features["performance_text"]
         ),
         unsafe_allow_html=True
     )
@@ -223,8 +207,8 @@ with col2:
     st.markdown(
         feature_card(
             "bi-clipboard-pulse",
-            "Interactive Dashboard",
-            "Streamlit-based interface for generating predictions with custom date ranges. Visualize forecasts with interactive charts and export results for further analysis."
+            features["dashboard_title"],
+            features["dashboard_text"]
         ),
         unsafe_allow_html=True
     )
@@ -232,8 +216,8 @@ with col2:
     st.markdown(
         feature_card(
             "bi-database",
-            "Data Persistence",
-            "SQLite database stores all predictions and actual sales data for historical analysis. Build a comprehensive record of forecasting performance over time."
+            features["persistence_title"],
+            features["persistence_text"]
         ),
         unsafe_allow_html=True
     )
@@ -241,53 +225,38 @@ with col2:
 st.divider()
 
 # Prediction Factors
-st.header("Prediction Factors")
-st.caption("The machine learning model considers multiple factors when generating forecasts")
+st.header(pred["header"])
+st.caption(pred["subtitle"])
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.markdown('<i class="bi bi-calendar-week"></i> <b>Calendar Information</b>', unsafe_allow_html=True)
-    st.markdown("""
-    - Day of the week
-    - Month of the year
-    - Public holidays in Hessen
-    - Semester breaks and bridge days
-    """)
+    st.markdown(f'<i class="bi bi-calendar-week"></i> <b>{pred["calendar_title"]}</b>', unsafe_allow_html=True)
+    st.markdown("\n".join(f"- {item}" for item in pred["calendar_items"]))
 
 with col2:
-    st.markdown('<i class="bi bi-cloud-sun"></i> <b>Weather Conditions</b>', unsafe_allow_html=True)
-    st.markdown("""
-    - Temperature
-    - Weather description
-    - Precipitation likelihood
-    - 7-day forecasts
-    """)
-
+    st.markdown(f'<i class="bi bi-cloud-sun"></i> <b>{pred["weather_title"]}</b>', unsafe_allow_html=True)
+    st.markdown("\n".join(f"- {item}" for item in pred["weather_items"]))   
 with col3:
-    st.markdown('<i class="bi bi-gear-wide"></i> <b>Operational Data</b>', unsafe_allow_html=True)
-    st.markdown("""
-    - Expected daily capacity
-    - Historical sales patterns
-    - Weekday trends
-    """)
+    st.markdown(f'<i class="bi bi-gear-wide"></i> <b>{pred["operational_title"]}</b>', unsafe_allow_html=True)
+    st.markdown("\n".join(f"- {item}" for item in pred["operational_items"]))
 
 st.divider()
 
 # Roadmap
-st.header("What's Next for KitchenCopilot")
-st.caption("Exciting features currently in development")
+st.header(t["roadmap"]["header"])
+st.caption(t["roadmap"]["subtitle"])
 
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown(
         roadmap_card(
-            "Coming Soon", 
+            t["roadmap"]["coming_soon"], 
             "primary",
             "bi bi-cup-hot", 
-            "Menu Planning Integration",
-            "Learn how different meal offerings affect demand. Optimize your menu strategy based on historical preferences and patterns."
+            t["roadmap"]["menu_title"],
+            t["roadmap"]["menu_text"]
         ), 
         unsafe_allow_html=True
     )
@@ -295,11 +264,11 @@ with col1:
 with col2:
     st.markdown(
         roadmap_card(
-            "Planned", 
+            t["roadmap"]["planned"], 
             "success",
             "bi bi-bicycle", 
-            "Automated Scheduling",
-            "Hands-free daily forecasts delivered automatically. Integrate seamlessly with your workflow and save valuable time."
+            t["roadmap"]["scheduling_title"],
+            t["roadmap"]["scheduling_text"]
         ), 
         unsafe_allow_html=True
     )
@@ -308,39 +277,23 @@ with col2:
 st.divider()
 
 # Help Section
-st.header("Need Help?")
+st.header(help_t["header"])
 
-with st.expander("Frequently Asked Questions"):
-    st.markdown("#### Understanding the Workflow")
-    st.markdown("""
-    - **Prepare:** Set your forecast timeframe and let the system fetch weather data
-    - **Predict:** Enter capacity and generate demand forecasts for working days only
-    - **Track:** Import actual sales to compare against predictions
-    - **Improve:** Use performance insights to refine capacity planning
-    """)
-    
-    st.markdown("#### What Gets Excluded")
-    st.markdown("""
-    - Weekends (Saturday and Sunday) are automatically filtered out
-    - Public holidays in Hessen are excluded from predictions
-    - Semester breaks and bridge days are marked in the holiday calendar
-    """)
-    
-    st.markdown("#### Understanding Your Data")
-    st.markdown("""
-    - Predictions are stored in the SQLite database with timestamps
-    - Actual sales can be imported through the Import page
-    - Excel exports include all features used for each prediction
-    """)
-    
-    st.markdown("#### Troubleshooting")
-    st.markdown("""
-    - If weather data fails to load, check your OpenWeatherMap API key in secrets.toml
-    - Ensure your start date is within the 7-day forecast window
-    - Database issues? Try reinitializing with scripts/init_db.py
-    - Contact support if the model status shows as inactive
-    """)
+with st.expander(help_t["faq_title"]):
+    st.markdown(f"#### {help_t['workflow_title']}")
+    lines = [f"- **{item['label']}:** {item['text']}" for item in help_t["workflow_items"]]
+    st.markdown("\n".join(lines))
 
+
+    st.markdown(f"#### {help_t['exclusions_title']}")
+    st.markdown("\n".join(f"- {item}" for item in help_t["exclusions_items"]))
+
+    st.markdown(f"#### {help_t['data_title']}")
+    st.markdown("\n".join(f"- {item}" for item in help_t["data_items"]))
+
+    st.markdown(f"#### {help_t['troubleshooting_title']}")
+    st.markdown("\n".join(f"- {item}" for item in help_t["troubleshooting_items"])) 
+ 
 st.divider()
 
 # Footer

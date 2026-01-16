@@ -1,13 +1,278 @@
 {
   "EN": {
     "page_title": "KitchenCopilot - Meal Demand Forecasting",
-    "model_status": "Model Status"
+    "hero_subtitle": "Machine learning-powered meal demand forecasting for cafeterias",
+    "system_status": {
+      "header": "System Status",
+      "subtitle": "Real-time overview of your forecasting system health",
+      "model_label": "Model Status",
+      "model_active": "Active",
+      "model_not_trained": "Not Trained",
+      "model_train_delta": "Train model to begin",
+      "model_last_trained": "Last trained:",
+      "prediction_label": "Last Prediction",
+      "prediction_failed": "Failed",
+      "prediction_date_missing": "Date Missing",
+      "prediction_for": "for:",
+      "weather_label": "Weather API",
+      "weather_connected": "Connected",
+      "weather_active": "OpenWeatherMap active",
+      "weather_failed": "Failed",
+      "weather_not_active": "OpenWeatherMap not active",
+      "database_label": "Database",
+      "database_ready": "Ready",
+      "database_operational": "Database operational",
+      "database_not_ready": "Not Ready",
+      "database_not_operational": "Database not operational"
+    },
 
+    "errors": {
+      "loading_data": "Error loading data",
+      "connecting_weather": "Error connecting to OpenWeather API",
+      "connecting_database": "Error connecting to the database"
+    },
+
+    "what_is": {
+      "title": "What is KitchenCopilot?",
+      "text": "KitchenCopilot helps cafeteria managers predict daily meal demand by combining historical sales data with real-time environmental factors. The system reduces food waste and improves operational efficiency by providing accurate forecasts based on weather conditions, holidays, and capacity planning."
+    },
+
+    "how_to_use": {
+      "header": "How to use the system",
+      "subtitle": "Follow these steps to generate accurate meal demand forecasts",
+      "tabs": {
+        "prepare": "PREPARE",
+        "predict": "PREDICT",
+        "track": "TRACK",
+        "import": "IMPORT"
+      },
+      "step1_title": "Step 1: Prepare Your Forecast",
+      "step1_text": "Navigate to the Prepare page and select your forecast start date and period (up to 7 days). The system automatically fetches weather forecasts and checks for holidays in Hessen. Then enter expected daily capacity. The ML model combines this with weather data, weekday patterns, and holiday information to forecast meal demand.",
+      "step2_title": "Step 2: Meal Demand Prediction",
+      "step2_text": "Review the prepared forecast data including dates, weather conditions, and holiday information. The system displays your predictions with interactive visualizations showing expected meal demand for each working day. You can export the results to Excel for further analysis or sharing with your team.",
+      "step3_title": "Step 3: Track Performance",
+      "step3_text": "Use the Actuals page to compare predicted vs actual meal counts. This helps validate model accuracy and identify improvement opportunities. Review performance metrics, analyze trends over time, and download comparison reports that show how well the forecasts matched reality.",
+      "step4_title": "Step 4: Import Actual Sales",
+      "step4_text": "Upload actual sales data through the Import page to build your historical database and enable performance tracking. This data is stored in the SQLite database and used to calculate accuracy metrics, identify patterns, and can be used for future model retraining to improve forecast quality over time."
+    },
+
+    "features": {
+      "header": "Key Features",
+      "subtitle": "Everything you need for accurate meal demand forecasting",
+      "automated_title": "Automated Feature Engineering",
+      "automated_text": "The system automatically enriches your predictions with weather forecasts from OpenWeatherMap and holiday information for Hessen. Weekends and bank holidays are excluded from predictions.",
+      "performance_title": "Performance Tracking",
+      "performance_text": "Compare actual vs predicted meals with exportable Excel reports. Track model accuracy over time and identify patterns in forecast performance.",
+      "dashboard_title": "Interactive Dashboard",
+      "dashboard_text": "Streamlit-based interface for generating predictions with custom date ranges. Visualize forecasts with interactive charts and export results for further analysis.",
+      "persistence_title": "Data Persistence",
+      "persistence_text": "SQLite database stores all predictions and actual sales data for historical analysis. Build a comprehensive record of forecasting performance over time."
+    },
+
+    "prediction_factors": {
+      "header": "Prediction Factors",
+      "subtitle": "The machine learning model considers multiple factors when generating forecasts",
+      "calendar_title": "Calendar Information",
+      "calendar_items": [
+        "Day of the week",
+        "Month of the year",
+        "Public holidays in Hessen",
+        "Semester breaks and bridge days"
+      ],
+      "weather_title": "Weather Conditions",
+      "weather_items": [
+        "Temperature",
+        "Weather description",
+        "Precipitation likelihood",
+        "7-day forecasts"
+      ],
+      "operational_title": "Operational Data",
+      "operational_items": [
+        "Expected daily capacity",
+        "Historical sales patterns",
+        "Weekday trends"
+      ]
+    },
+
+    "roadmap": {
+      "header": "What is Next for KitchenCopilot",
+      "subtitle": "Exciting features currently in development",
+      "coming_soon": "Coming Soon",
+      "menu_title": "Menu Planning Integration",
+      "menu_text": "Learn how different meal offerings affect demand. Optimize your menu strategy based on historical preferences and patterns.",
+      "planned": "Planned",
+      "scheduling_title": "Automated Scheduling",
+      "scheduling_text": "Hands-free daily forecasts delivered automatically. Integrate seamlessly with your workflow and save valuable time."
+    },
+
+    "help": {
+      "header": "Need Help?",
+      "faq_title": "Frequently Asked Questions",
+      "workflow_title": "Understanding the Workflow",
+      "workflow_items": [
+        {"label": "Prepare", "text": "Set your forecast timeframe and let the system fetch weather data"},
+        {"label": "Predict", "text": "Enter capacity and generate demand forecasts for working days only"},
+        {"label": "Track", "text": "Import actual sales to compare against predictions"},
+        {"label": "Improve", "text": "Use performance insights to refine capacity planning"}
+      ],
+      "exclusions_title": "What Gets Excluded",
+      "exclusions_items": [
+        "Weekends (Saturday and Sunday) are automatically filtered out",
+        "Public holidays in Hessen are excluded from predictions",
+        "Semester breaks and bridge days are marked in the holiday calendar"
+      ],
+      "data_title": "Understanding Your Data",
+      "data_items": [
+        "Predictions are stored in the SQLite database with timestamps",
+        "Actual sales can be imported through the Import page",
+        "Excel exports include all features used for each prediction"
+      ],
+      "troubleshooting_title": "Troubleshooting",
+      "troubleshooting_items": [
+        "If weather data fails to load, check your OpenWeatherMap API key in secrets.toml",
+        "Ensure your start date is within the 7-day forecast window",
+        "Database issues? Try reinitializing with scripts/init_db.py",
+        "Contact support if the model status shows as inactive"
+      ]
+    }
   },
-    "DE": {
-        "page_title": "KitchenCopilot - Essensnachfrageprognose",
-        "model_status": "Modellstatus"
-    
-    }   
 
+  "DE": {
+    "page_title": "KitchenCopilot - Essensnachfrageprognose",
+    "hero_subtitle": "Maschinelles Lernen zur Vorhersage der Essensnachfrage in Kantinen",
+    
+    "system_status": {
+      "header": "Systemstatus",
+      "subtitle": "Echtzeit-Übersicht über den Zustand Ihres Vorhersagesystems",
+      "model_label": "Modellstatus",
+      "model_active": "Aktiv",
+      "model_not_trained": "Nicht trainiert",
+      "model_train_delta": "Trainiere Modell, um zu beginnen",
+      "model_last_trained": "Zuletzt trainiert:",
+      "prediction_label": "Letzte Prognose",
+      "prediction_failed": "Fehlgeschlagen",
+      "prediction_date_missing": "Datum fehlt",
+      "prediction_for": "für:",
+      "weather_label": "Wetter-API",
+      "weather_connected": "Verbunden",
+      "weather_active": "OpenWeatherMap aktiv",
+      "weather_failed": "Fehlgeschlagen",
+      "weather_not_active": "OpenWeatherMap nicht aktiv",
+      "database_label": "Datenbank",
+      "database_ready": "Bereit",
+      "database_operational": "Databank betriebsbereit",
+      "database_not_ready": "Nicht bereit",
+      "database_not_operational": "Datenbank nicht betriebsbereit"
+    },
+
+    "errors": {
+      "loading_data": "Fehler beim Laden der Daten",
+      "connecting_weather": "Fehler bei der Verbindung zur OpenWeather-API",
+      "connecting_database": "Fehler bei der Verbindung zur Datenbank"
+    },
+
+    "what_is": {
+      "title": "Was ist KitchenCopilot?",
+      "text": "KitchenCopilot hilft Kantinenmanagern, den täglichen Mahlzeitenbedarf vorherzusagen, indem es historische Verkaufsdaten mit Echtzeit-Umweltfaktoren kombiniert. Das System reduziert Lebensmittelverschwendung und verbessert die betriebliche Effizienz, indem es präzise Prognosen auf Basis von Wetterbedingungen, Feiertagen und Kapazitätsplanung liefert."
+    },
+
+    "how_to_use": {
+      "header": "So verwenden Sie das System",
+      "subtitle": "Befolgen Sie diese Schritte, um genaue Bedarfsprognosen zu erstellen",
+      "tabs": {
+        "prepare": "VORBEREITEN",
+        "predict": "PROGNOSTIZIEREN",
+        "track": "VERFOLGEN",
+        "import": "IMPORTIEREN"
+      },
+      "step1_title": "Schritt 1: Prognose vorbereiten",
+      "step1_text": "Navigieren Sie zur Seite Vorbereiten und wählen Sie Ihr Startdatum und den Zeitraum (bis zu 7 Tage). Das System ruft automatisch Wettervorhersagen ab und prüft Feiertage in Hessen. Geben Sie dann die erwartete tägliche Kapazität ein. Das ML-Modell kombiniert dies mit Wetterdaten, Wochentagsmustern und Feiertagsinformationen zur Bedarfsprognose.",
+      "step2_title": "Schritt 2: Bedarfsprognose",
+      "step2_text": "Überprüfen Sie die vorbereiteten Prognosedaten einschließlich Daten, Wetterbedingungen und Feiertagsinformationen. Das System zeigt Ihre Prognosen mit interaktiven Visualisierungen, die den erwarteten Mahlzeitenbedarf für jeden Arbeitstag darstellen. Sie können die Ergebnisse zur weiteren Analyse oder zum Teilen mit Ihrem Team nach Excel exportieren.",
+      "step3_title": "Schritt 3: Leistung verfolgen",
+      "step3_text": "Verwenden Sie die Seite Ist-Werte, um prognostizierte mit tatsächlichen Mahlzeitenanzahlen zu vergleichen. Dies hilft, die Modellgenauigkeit zu validieren und Verbesserungsmöglichkeiten zu identifizieren. Überprüfen Sie Leistungskennzahlen, analysieren Sie Trends über die Zeit und laden Sie Vergleichsberichte herunter, die zeigen, wie gut die Prognosen mit der Realität übereinstimmten.",
+      "step4_title": "Schritt 4: Ist-Verkäufe importieren",
+      "step4_text": "Laden Sie tatsächliche Verkaufsdaten über die Import-Seite hoch, um Ihre historische Datenbank aufzubauen und die Leistungsverfolgung zu ermöglichen. Diese Daten werden in der SQLite-Datenbank gespeichert und zur Berechnung von Genauigkeitsmetriken, zur Mustererkennung und für zukünftiges Modell-Retraining zur Verbesserung der Prognosequalität verwendet."
+    },
+
+    "features": {
+      "header": "Hauptfunktionen",
+      "subtitle": "Alles was Sie für genaue Bedarfsprognosen benötigen",
+      "automated_title": "Automatisierte Feature-Generierung",
+      "automated_text": "Das System reichert Ihre Prognosen automatisch mit Wettervorhersagen von OpenWeatherMap und Feiertagsinformationen für Hessen an. Wochenenden und Feiertage werden von den Prognosen ausgeschlossen.",
+      "performance_title": "Leistungsverfolgung",
+      "performance_text": "Vergleichen Sie Ist- mit Prognose-Werten mit exportierbaren Excel-Berichten. Verfolgen Sie die Modellgenauigkeit über die Zeit und identifizieren Sie Muster in der Prognoseleistung.",
+      "dashboard_title": "Interaktives Dashboard",
+      "dashboard_text": "Streamlit-basierte Oberfläche zur Erstellung von Prognosen mit benutzerdefinierten Zeiträumen. Visualisieren Sie Prognosen mit interaktiven Diagrammen und exportieren Sie Ergebnisse zur weiteren Analyse.",
+      "persistence_title": "Datenpersistenz",
+      "persistence_text": "Die SQLite-Datenbank speichert alle Prognosen und Ist-Verkaufsdaten für historische Analysen. Erstellen Sie eine umfassende Aufzeichnung der Prognoseleistung über die Zeit."
+    },
+
+    "prediction_factors": {
+      "header": "Prognosefaktoren",
+      "subtitle": "Das Machine-Learning-Modell berücksichtigt mehrere Faktoren bei der Prognoseerstellung",
+      "calendar_title": "Kalenderinformationen",
+      "calendar_items": [
+        "Wochentag",
+        "Monat des Jahres",
+        "Feiertage in Hessen",
+        "Semesterferien und Brückentage"
+      ],
+      "weather_title": "Wetterbedingungen",
+      "weather_items": [
+        "Temperatur",
+        "Wetterbeschreibung",
+        "Niederschlagswahrscheinlichkeit",
+        "7-Tage-Vorhersagen"
+      ],
+      "operational_title": "Betriebsdaten",
+      "operational_items": [
+        "Erwartete tägliche Kapazität",
+        "Historische Verkaufsmuster",
+        "Wochentagstrends"
+      ]
+    },
+
+    "roadmap": {
+      "header": "Was kommt als Nächstes für KitchenCopilot",
+      "subtitle": "Spannende Funktionen, die derzeit entwickelt werden",
+      "coming_soon": "Demnächst",
+      "menu_title": "Menüplanungs-Integration",
+      "menu_text": "Erfahren Sie, wie verschiedene Speiseangebote die Nachfrage beeinflussen. Optimieren Sie Ihre Menüstrategie basierend auf historischen Präferenzen und Mustern.",
+      "planned": "Geplant",
+      "scheduling_title": "Automatisierte Planung",
+      "scheduling_text": "Automatisch bereitgestellte tägliche Prognosen ohne manuellen Aufwand. Nahtlose Integration in Ihren Arbeitsablauf und wertvolle Zeitersparnis."
+    },
+
+    "help": {
+      "header": "Brauchen Sie Hilfe?",
+      "faq_title": "Häufig gestellte Fragen",
+      "workflow_title": "Den Arbeitsablauf verstehen",
+      "workflow_items": [
+        {"label": "Vorbereiten", "text": "Legen Sie Ihren Prognosezeitraum fest und lassen Sie das System Wetterdaten abrufen"},
+        {"label": "Prognostizieren", "text": "Geben Sie die Kapazität ein und erstellen Sie Bedarfsprognosen nur für Arbeitstage"},
+        {"label": "Verfolgen", "text": "Importieren Sie Ist-Verkäufe zum Vergleich mit Prognosen"},
+        {"label": "Verbessern", "text": "Nutzen Sie Leistungserkenntnisse zur Verfeinerung der Kapazitätsplanung"}
+      ],
+      "exclusions_title": "Was wird ausgeschlossen",
+      "exclusions_items": [
+        "Wochenenden (Samstag und Sonntag) werden automatisch herausgefiltert",
+        "Feiertage in Hessen werden von Prognosen ausgeschlossen",
+        "Semesterferien und Brückentage sind im Feiertagskalender markiert"
+      ],
+      "data_title": "Ihre Daten verstehen",
+      "data_items": [
+        "Prognosen werden mit Zeitstempeln in der SQLite-Datenbank gespeichert",
+        "Ist-Verkäufe können über die Import-Seite importiert werden",
+        "Excel-Exporte enthalten alle für jede Prognose verwendeten Features"
+      ],
+      "troubleshooting_title": "Fehlerbehebung",
+      "troubleshooting_items": [
+        "Wenn Wetterdaten nicht geladen werden, überprüfen Sie Ihren OpenWeatherMap API-Schlüssel in secrets.toml",
+        "Stellen Sie sicher, dass Ihr Startdatum innerhalb des 7-Tage-Vorhersagefensters liegt",
+        "Datenbankprobleme? Versuchen Sie eine Neuinitialisierung mit scripts/init_db.py",
+        "Kontaktieren Sie den Support, wenn der Modellstatus als inaktiv angezeigt wird"
+      ]
+    }
+  }
 }
