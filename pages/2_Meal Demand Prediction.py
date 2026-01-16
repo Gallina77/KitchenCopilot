@@ -150,8 +150,6 @@ else:
     st.error(t["error_message_no_data"])
 
      
-
-
 # === FOOTER INSIGHTS ===
 st.divider()
 st.subheader(t["insights_subheader"])
