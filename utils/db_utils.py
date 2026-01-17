@@ -19,7 +19,7 @@ def apply_custom_styling(df):
     styled_df = (
     df.style
     .format({'pct_error': '{:.0%}'})
-    .map(style_difference, subset=['difference', 'pct_error_actual'])
+    .map(style_difference, subset=['difference', 'pct_error'])
     )
     return styled_df
 
@@ -89,7 +89,7 @@ def get_actuals_and_predictions(start_date, end_date):
     df['date'] = pd.to_datetime(df['date'])
     df['weekday'] = df['date'].dt.strftime('%A')
     df['difference'] = df['actual_meals'] - df['predicted_meals']
-    df['pct_error_actual'] = (df['actual_meals'] - df['predicted_meals'])/df['predicted_meals']
+    df['pct_error'] = (df['actual_meals'] - df['predicted_meals'])/df['predicted_meals']
 
     return df
 

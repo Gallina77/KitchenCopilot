@@ -28,7 +28,7 @@
         "is_bridge_day": "Bridge Day",
         "prediction_timestamp": "Last Updated"
     },
-    "insights_subheader": "Planning Notes",
+    "insights_subheader": "AI generated Planning Notes",
     "insights_no_data": "No Planning Notes available. Please generate a forecast first."
 
 
@@ -62,7 +62,7 @@
         "is_bridge_day": "Brückentag",
         "prediction_timestamp": "Letzte Aktualisierung"
     },
-    "insights_subheader": "Planungshinweise",
+    "insights_subheader": "KI gestützte Planungshinweise",
     "insights_no_data": "Keine Hinweise verfügbar. Bitte generieren Sie zuerst eine Vorhersage."
 }
 
