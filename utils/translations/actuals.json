@@ -18,7 +18,7 @@
     "daily_comparison_title": "Daily Comparison",
     "daily_comparison_columns": {
         "date": "Date",
-        "predicted_meals": "Predicted Meals",
+        "final_prediction": "Predicted Meals",
         "actual_meals": "Actual Meals",
         "difference": "Difference",
         "pct_error": "% Error Actual"
@@ -46,7 +46,7 @@
     "daily_comparison_title": "Täglicher Vergleich",
     "daily_comparison_columns": {
         "date": "Datum",
-        "predicted_meals": "Prognostiziert",
+        "final_prediction": "Prognostiziert",
         "actual_meals": "Tatsächlich",
         "difference": "Differenz",
         "pct_error": "% Fehlerquote "
