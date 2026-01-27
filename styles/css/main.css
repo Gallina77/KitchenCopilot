@@ -161,3 +161,29 @@ a:active {
     background-color: #e0f2f1;
     color: #00796b;
 }
+
+/* Forecast Container Badge Styling */
+.forecast-badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+    margin-right: 4px;
+}
+.forecast-badge-break {
+    background-color: rgba(255, 189, 69, 0.2);
+    color: #ffbd45;
+}
+.forecast-badge-holiday {
+    background-color: rgba(255, 75, 75, 0.2);
+    color: #ff4b4b;
+}
+.forecast-badge-bridge {
+    background-color: rgba(28, 131, 225, 0.2);
+    color: #1c83e1;.
+}
+.forecast-badge-weather {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #a3a8b8;
+}
