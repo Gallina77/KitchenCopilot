@@ -1,6 +1,6 @@
 {
   "EN": {
-    "page_title": "KitchenCopilot - Meal Demand Forecasting",
+    "page_title": "Küchenkompass - Meal Demand Forecasting",
     "hero_subtitle": "Machine learning-powered meal demand forecasting for cafeterias",
     "system_status": {
       "header": "System Status",
@@ -33,8 +33,8 @@
     },
 
     "what_is": {
-      "title": "What is KitchenCopilot?",
-      "text": "KitchenCopilot helps cafeteria managers predict daily meal demand by combining historical sales data with real-time environmental factors. The system reduces food waste and improves operational efficiency by providing accurate forecasts based on weather conditions, holidays, and capacity planning."
+      "title": "What is Küchenkompass?",
+      "text": "Küchenkompass helps cafeteria managers predict daily meal demand by combining historical sales data with real-time environmental factors. The system reduces food waste and improves operational efficiency by providing accurate forecasts based on weather conditions, holidays, and capacity planning."
     },
 
     "how_to_use": {
@@ -95,7 +95,7 @@
     },
 
     "roadmap": {
-      "header": "What is Next for KitchenCopilot",
+      "header": "What is Next for Küchenkompass",
       "subtitle": "Exciting features currently in development",
       "coming_soon": "Coming Soon",
       "menu_title": "Menu Planning Integration",
@@ -138,7 +138,7 @@
   },
 
   "DE": {
-    "page_title": "KitchenCopilot - Essensnachfrageprognose",
+    "page_title": "Küchenkompass - Essensnachfrageprognose",
     "hero_subtitle": "Maschinelles Lernen zur Vorhersage der Essensnachfrage in Kantinen",
     
     "system_status": {
@@ -172,8 +172,8 @@
     },
 
     "what_is": {
-      "title": "Was ist KitchenCopilot?",
-      "text": "KitchenCopilot hilft Kantinenmanagern, den täglichen Mahlzeitenbedarf vorherzusagen, indem es historische Verkaufsdaten mit Echtzeit-Umweltfaktoren kombiniert. Das System reduziert Lebensmittelverschwendung und verbessert die betriebliche Effizienz, indem es präzise Prognosen auf Basis von Wetterbedingungen, Feiertagen und Kapazitätsplanung liefert."
+      "title": "Was ist Küchenkompass?",
+      "text": "Küchenkompass hilft Kantinenmanagern, den täglichen Mahlzeitenbedarf vorherzusagen, indem es historische Verkaufsdaten mit Echtzeit-Umweltfaktoren kombiniert. Das System reduziert Lebensmittelverschwendung und verbessert die betriebliche Effizienz, indem es präzise Prognosen auf Basis von Wetterbedingungen, Feiertagen und Kapazitätsplanung liefert."
     },
 
     "how_to_use": {

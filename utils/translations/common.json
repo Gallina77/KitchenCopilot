@@ -3,6 +3,7 @@
     "start_date_label": "Pick a start date",
     "end_date_label": "Pick an end date",
     "number_of_days_label": "Number of days to predict", 
+    "number_of_days_placeholder": "Choose or add an option",
     "predict_button": "Prepare Data",
     "spinner_message": "Generating insights...",
     "error_loading_data": "Error loading data"
@@ -12,9 +13,10 @@
   "DE": {
     "start_date_label": "Wähle ein Startdatum",
     "end_date_label": "Wähle ein Enddatum",
-    "number_of_days_label": "Anzahl der Tage zur Vorhersage",
-    "predict_button": "Daten vorbereiten"
-    ,"spinner_message": "Generiere Hinweise...",
+    "number_of_days_label": "Anzahl der Tage für Vorhersage",
+    "number_of_days_placeholder": "Wählen Sie eine Option aus oder fügen Sie eine hinzu",
+    "predict_button": "Daten vorbereiten",
+    "spinner_message": "Generiere Hinweise...",
     "error_loading_data": "Fehler beim Laden der Daten"
     }
 

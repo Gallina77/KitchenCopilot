@@ -1,0 +1,54 @@
+{
+  "EN": {
+    "prepare_your_forecast_title": "Prepare your Forecast",
+    "prepare_your_forecast_subtitle": "Configure capacity and generate meal predictions for the upcoming days",
+    "load_days_button": "Load Days",
+    "semester_break": "Semester Break",
+    "bridge_day": "Bridge Day",
+    "expected_capacity_label": "Expected Capacity",
+    "generate_prediction_button": "Generate Prediction",
+    "error_missing_capacity": "Please fill in all expected capacity values before submitting.",
+    "success_message_prediction": "✓ Predictions generated!",
+    "step_2_title": "Review Predictions",
+    "step_2_subtitle": "Override if you have information the model doesn't know about.",
+    "prediction_label": "Prediction",
+    "override_button": "Override",
+    "override_value_label": "New Prediction",
+    "override_reason_label": "Reason",
+    "override_reason_placeholder": "Reason for Tracking",
+    "start_over_button": "Start over",
+    "save_forecast_button": "Save Forecast",
+    "save_success": "✓ Forecast saved successfully.",
+    "save_error": "✗ Error saving forecast",
+    "view_dashboard": "View Dashboard"
+
+  
+
+
+  },
+  "DE": {
+    "prepare_your_forecast_title": "Bereite deine Vorhersage vor",
+    "prepare_your_forecast_subtitle": "Konfiguriere die zu erwartende Auslatung und generiere die Voraussage für die kommenden Tage",
+    "load_days_button": "Lade Tage",
+    "expected_capacity_label": "Zu Erwartende Kapazität",
+    "semester_break": "Semesterferien",
+    "bridge_day": "Brückentag",
+    "generate_prediction_button": "Generiere Prognose",
+    "error_missing_capacity": "Bitte erst alle zu erwartendend Kapazitäten eintragen.",
+    "success_message_prediction": "✓ Prognose erstellt!",
+    "step_2_title": "Prüfe Prognose",
+    "step_2_subtitle": "Überschreibe, falls du Informationen hast die das Model nicht kennt.",
+    "prediction_label": "Prognose",
+    "override_button": "Überschreibe Prognose",
+    "override_value_label": "Neue Prognose",
+    "override_reason_label": "Begründung",
+    "override_reason_placeholder": "Begründung für überschreiben",
+    "start_over_button": "Beginne von vorn",
+    "save_forecast_button": "Speicher Prognose",
+    "save_success": "✓ Prognosen erfolgreich gespeichert.",
+    "save_error": "✗ Fehler beim Speichern der Prognosen",
+    "view_dashboard": "Gehe zur Übersicht"
+
+
+  }
+}
