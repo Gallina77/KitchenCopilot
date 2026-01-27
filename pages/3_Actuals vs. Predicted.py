@@ -40,7 +40,7 @@ with st.form("date_form"):
     cols = st.columns([1,1])
     start_date = cols[0].date_input(t["start_date_label"], value=st.session_state['start_date'])
     end_date = cols[1].date_input(t["end_date_label"], value=st.session_state['end_date']) 
-    submit_button = st.form_submit_button(t["analyze_period_button"])
+    submit_button = st.form_submit_button(t["analyze_period_button"], type="primary")
 
 # Handle form submission
 if submit_button:
@@ -165,7 +165,8 @@ if st.session_state['form_submitted']:
     st.subheader(t["chart_title"])
     # Prepare data for chart
     if not df.empty:
-        chart_data = df[['date', 'predicted_meals', 'actual_meals']].copy()
+
+        chart_data = df[['date', 'final_prediction', 'actual_meals']].copy()
         locale = st.session_state.lang.lower()
 
         chart_data['date'] = chart_data['date'].apply(
@@ -177,7 +178,7 @@ if st.session_state['form_submitted']:
 
         fig.add_trace(go.Scatter(
             x=chart_data.index,
-            y=chart_data['predicted_meals'],
+            y=chart_data['final_prediction'],
             mode='lines+markers',
             name=t["chart_label_predicted"],
             line=dict(color='#1f77b4', width=3)
@@ -195,7 +196,6 @@ if st.session_state['form_submitted']:
 
     else:
         st.error(t["no_data"])
-    
     st.divider()
     
 
@@ -214,7 +214,7 @@ if st.session_state['form_submitted']:
         styled_df,
         column_config={
         "date": daily_comparison_columns["date"],
-        "predicted_meals": daily_comparison_columns["predicted_meals"],
+        "predicted_meals": daily_comparison_columns["final_prediction"],
         "actual_meals": daily_comparison_columns["actual_meals"],
         "difference": daily_comparison_columns["difference"],
         "pct_error": daily_comparison_columns["pct_error"],

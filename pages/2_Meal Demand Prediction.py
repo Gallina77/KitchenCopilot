@@ -4,7 +4,7 @@ import numpy as np
 import json
 from datetime import datetime, timedelta
 from babel.dates import format_date 
-from utils import get_todays_prediction, get_llm_planning_insights
+from utils import get_future_predictions, get_llm_planning_insights
 from components.sidebar import render_language_toggle
 from utils.translations_utils import get_translations
 import plotly.graph_objects as go
@@ -23,8 +23,7 @@ st.logo(logo, size="medium", link=None, icon_image=None)
 st.title(t["predictions_page_title"])
 
 # Get predictions from the last 7 days
-data = get_todays_prediction()
-
+data = get_future_predictions()
 # === TOP METRICS SECTION ===
 st.subheader(t["metrics_subheader"])
 
@@ -33,7 +32,7 @@ col1, col2, col3, col4 = st.columns(4)
 if not data.empty:
     with col1:
         with st.container(border=True):
-            total_meals = data['predicted_meals'].sum()
+            total_meals = data['final_prediction'].sum()
             st.metric(
                 label=t["metrics_label_total_predicted_meals"],
                 value=f"{int(total_meals):,}"
@@ -41,7 +40,7 @@ if not data.empty:
 
     with col2:
         with st.container(border=True):
-            avg_meals = data['predicted_meals'].mean()
+            avg_meals = data['final_prediction'].mean()
             st.metric(
                 label=t["metrics_label_daily_average_predicted_meals"],
                 value=f"{int(avg_meals)}"
@@ -49,18 +48,18 @@ if not data.empty:
 
     with col3:
         with st.container(border=True):
-            peak_day = data.loc[data['predicted_meals'].idxmax()]
+            peak_day = data.loc[data['final_prediction'].idxmax()]
             st.metric(
                 label=t["metrics_label_peak_demand_day"],
                 value = format_date(peak_day['date'], format='EEE, MMM dd', 
                                     locale=st.session_state.lang.lower()),
-                delta=f"{int(peak_day['predicted_meals'])} {t['metrics_meals_label']}"
+                delta=f"{int(peak_day['final_prediction'])} {t['metrics_meals_label']}"
             )
 
     with col4:
         with st.container(border=True):
             # Calculate capacity utilization
-            avg_utilization = (data['predicted_meals'] / data['expected_capacity']).mean() * 100
+            avg_utilization = (data['final_prediction'] / data['expected_capacity']).mean() * 100
             st.metric(
                 label=t["metrics_label_average_capacity"],
                 value=f"{avg_utilization:.1f}%",
@@ -77,7 +76,7 @@ st.subheader(t["chart_subheader"])
 
 if not data.empty:
     # Prepare data for chart
-    chart_data = data[['date', 'predicted_meals', 'expected_capacity']].copy()
+    chart_data = data[['date', 'final_prediction', 'expected_capacity']].copy()
     locale = st.session_state.lang.lower()
 
     chart_data['date'] = chart_data['date'].apply(
@@ -88,7 +87,7 @@ if not data.empty:
 
     fig.add_trace(go.Scatter(
         x=chart_data.index,
-        y=chart_data['predicted_meals'],
+        y=chart_data['final_prediction'],
         mode='lines+markers',
         name=chart_data_labels['predicted_meals'],
         line=dict(color='#1f77b4', width=3)
@@ -118,8 +117,8 @@ if not data.empty:
     # Format the display dataframe
     display_df = data.copy()
     display_df['date'] = display_df['date'].dt.strftime('%a, %B %d, %Y')
-    display_df['predicted_meals'] = display_df['predicted_meals'].astype(int)
-    display_df['utilization_%'] = ((display_df['predicted_meals'] / display_df['expected_capacity']) * 100).round(1)
+    display_df['final_prediction'] = display_df['final_prediction'].astype(int)
+    display_df['utilization_%'] = ((display_df['final_prediction'] / display_df['expected_capacity']) * 100).round(1)
     display_df['prediction_timestamp'] = display_df['prediction_timestamp'].dt.strftime('%Y-%m-%d %H:%M')
     
     # Convert integer columns to boolean
