@@ -33,7 +33,7 @@ This project demonstrates end-to-end machine learning operations including data 
 - **requests 2.32.5**: HTTP client for API integration
 
 ### External APIs
-- **OpenWeatherMap API**: 7-day weather forecasts (free tier). No API Key required.
+- **Open Meteo API**: 7-day weather forecasts (free tier). No API Key required.
 - **Claude API**: Prediction data is serialized to JSON and sent to the Anthropic API The Streamlit caching layer stores responses to avoid redundant API calls.
 
 
