@@ -3,18 +3,12 @@ import pandas as pd
 
 
 def categorize_weather(code):
-    if code == 0:
-        return "Clear"
-    elif 1 <= code <= 3:
-        return "Cloudy"
-    elif code in range(51, 68) or code in range(80, 83):
-        return "Rainy"
-    elif code in range(71, 78) or code in range(85, 87):
-        return "Snowy"
-    elif code in range(95, 100):
-        return "Stormy"
-    else:
-        return "Cloudy"  # Default fallback for any edge cases
+    if code == 0: return "☀️", "Clear"
+    if 1 <= code <= 3: return "⛅", "Cloudy"
+    if 51 <= code <= 67 or 80 <= code <= 84: return "🌧️", "Rainy"
+    if 71 <= code <= 77 or 85 <= code <= 86: return "❄️", "Snowy"
+    if 95 <= code <= 99: return "⛈️", "Stormy"
+    return "☁️", "Cloudy" # If code is unknown, show cloudy
 
 
 def get_weather(start_date: str, end_date: str, type: str):
@@ -37,18 +31,17 @@ def get_weather(start_date: str, end_date: str, type: str):
     r = requests.get(url, params=params)
     weather_data = r.json()
 
-    # Extract the actual weather data
+    # --- Main Processing ---
     if 'daily' in weather_data:
-        daily_data = weather_data['daily']
-        date = daily_data['time']
-        temperature_max = daily_data['temperature_2m_max']
-        weather_conditions = [categorize_weather(code) for code in daily_data['weather_code']]
+    # 1. Create DataFrame directly from the daily JSON
+        weather_df = pd.DataFrame(weather_data['daily'])
+    
+    # 2. Map icons and text into two new columns
+    # .apply(pd.Series) splits the (icon, condition) tuple into columns
+    weather_df[['weather_icon', 'weather_condition']] = weather_df['weather_code'].apply(lambda x: pd.Series(categorize_weather(x)))
 
-        # Create a dataframe with the weather data
-        weather_df = pd.DataFrame({
-            'date': pd.to_datetime(date),
-            'temperature_max': temperature_max,
-            'weather_condition': weather_conditions
-        })
+    # 3. Optional: Convert time to actual datetime objects
+    weather_df['date'] = pd.to_datetime(weather_df['time'])
+    weather_df["temperature_max"] = weather_df["temperature_2m_max"]
 
-        return weather_df
+    return weather_df
