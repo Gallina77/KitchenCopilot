@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime
 from utils import get_holidays, get_weather
 
 def prepare_data(start_date, number_of_days):
@@ -9,17 +10,25 @@ def prepare_data(start_date, number_of_days):
     start_date_str = business_days.min().strftime('%Y-%m-%d')
     end_date_str = business_days.max().strftime('%Y-%m-%d')
 
-    # NOW fetch weather data using those dates
-    weather_df = get_weather(start_date=start_date_str, end_date=end_date_str, type='forecast')
+    #Determine if we need to go back in history or if we shall get a forecast 
+    this_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+    now = datetime.today().date()
+    if this_date < now: 
+        weather_type = "past"
+    else: 
+        weather_type = "forecast"
+
+     # NOW fetch weather data using those dates
+    weather_df = get_weather(start_date=start_date_str, end_date=end_date_str, type=weather_type)
 
     # Create base DataFrame with date features
     df = pd.DataFrame({'date': business_days})
-    df['weekday'] = df['date'].dt.day_name()
+    df['weekday'] = df['date'].dt.day_name()      # Add back
     df['month'] = df['date'].dt.month_name() 
 
     # Merge weather data
     df = df.merge(
-            weather_df[['date', 'temperature_max', 'weather_condition']], 
+            weather_df[['date', 'weather_icon', 'temperature_max', 'weather_condition']], 
             how='left',
             left_on='date',
             right_on='date'
@@ -56,3 +65,16 @@ def prepare_data(start_date, number_of_days):
     df['expected_capacity'] = None
 
     return df
+
+
+def render_badges(row,t):
+    badges = []
+    if row.get('temperature_max'):
+        badges.append(f'<span class="badge badge-weather">{row["weather_icon"]} {row["temperature_max"]}°C {row["weather_condition"]}</span>')
+    if row.get('is_semester_break'):
+        badges.append(f'<span class="badge badge-break">{t['semester_break']}</span>')
+    if row.get('is_bridge_day'):
+        badges.append(f'<span class="badge badge-bridge">{t['bridge_day']}</span>')
+    if row.get('holiday_desc'):
+        badges.append(f'<span class="badge badge-holiday">{row["holiday_desc"]}</span>')
+    return " ".join(badges) if badges else ""
