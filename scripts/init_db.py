@@ -12,21 +12,25 @@ engine = create_engine(f'sqlite:///{db_path}')
 #print(f"✓ Data directory ready at: {data_dir}")
 
 with engine.begin() as conn:
-    conn.execute(text('CREATE TABLE IF NOT EXISTS holidays '
-    '(date DATE, description TEXT, is_bank_holiday BOOLEAN, ' \
-    'is_semester_break BOOLEAN, is_bridge_day BOOLEAN);'))
+    # conn.execute(text('CREATE TABLE IF NOT EXISTS holidays '
+    # '(date DATE, description TEXT, is_bank_holiday BOOLEAN, ' \
+    # 'is_semester_break BOOLEAN, is_bridge_day BOOLEAN);'))
 
-    print("✓ Created 'holidays' table")
+    # print("✓ Created 'holidays' table")
  
-    conn.execute(text('CREATE TABLE IF NOT EXISTS predictions (date DATE, weekday TEXT, month TEXT, expected_capacity INTEGER, ' \
-    'temperature_max FLOAT, weather_condition TEXT, is_bank_holiday BOOLEAN, is_bridge_day BOOLEAN, is_semester_break BOOLEAN, ' \
-    'holiday_desc TEXT, predicted_meals INTEGER, prediction_timestamp TIMESTAMP);'))
-    #Datetime if I see the sql table 
+    # conn.execute(text('CREATE TABLE IF NOT EXISTS predictions (date DATE, weekday TEXT, month TEXT, expected_capacity INTEGER, ' \
+    # 'temperature_max FLOAT, weather_condition TEXT, is_bank_holiday BOOLEAN, is_bridge_day BOOLEAN, is_semester_break BOOLEAN, ' \
+    # 'holiday_desc TEXT, predicted_meals INTEGER, prediction_timestamp TIMESTAMP);'))
+    # #Datetime if I see the sql table 
 
-    print("✓ Created 'predictions' table")
+    # print("✓ Created 'predictions' table")
 
-    conn.execute(text('CREATE TABLE IF NOT EXISTS actual_sales(date DATE, actual_meals INTEGER)'))
+    # conn.execute(text('CREATE TABLE IF NOT EXISTS actual_sales(date DATE, actual_meals INTEGER)'))
 
-    print("✓ Created 'actual_sales' table")
+    # print("✓ Created 'actual_sales' table")
+
+    #conn.execute(text('ALTER TABLE predictions ADD COLUMN override_meal_prediction INTEGER;'))
+    #conn.execute(text('ALTER TABLE predictions ADD COLUMN override_reason TEXT;'))
+    conn.execute(text('ALTER TABLE predictions ADD COLUMN final_prediction INTEGER'))
 
 print(f"✓ Database initialization complete: {db_path}")

@@ -36,32 +36,38 @@ def save_prediction(df):
     conn = get_connection()
     with conn.session as session:
         try:
-            df['date'] = df['date'].dt.date
-            df.to_sql(
-                'predictions',
-                session.connection(),
-                if_exists='append',
-                index=False
-            )
+            df['date'] = pd.to_datetime(df['date']).dt.date
+            # Ensure override columns exist
+            if 'override_meal_prediction' not in df.columns:
+                df['override_meal_prediction'] = None
+            if 'override_reason' not in df.columns:
+                df['override_reason'] = None
+            
+            df['final_prediction'] = df.apply(
+                lambda row: row['override_meal_prediction'] if pd.notna(row['override_meal_prediction']) else row['predicted_meals'],
+                axis=1
+                )
+
+            df.to_sql('predictions', session.connection(), if_exists='append',index=False)
             session.commit()
-            message = "✓ Predictions saved to database."
-            return (True, message)
+            return (True, None)
+        
         except Exception as e:
             # what to do when it fails
-            message = f"✗ Error saving predictions: {e}"
-            return (False, message)
+            return (False, str(e))
 
 
-def get_todays_prediction():
+def get_future_predictions():
     conn = get_connection()
     #Take Todays timestamp
     today = datetime.now().date()
     
-    sql_query = "SELECT * FROM predictions WHERE date >= :today"
+    sql_query = "SELECT * FROM predictions WHERE date >= :today " \
+    "ORDER BY prediction_timestamp DESC"
     
     params = {"today": today}
-    result = conn.query(sql_query, params=params)
-    
+    result = conn.query(sql_query, params=params, ttl=0)
+
     if result.empty:
         return result
     
@@ -71,7 +77,7 @@ def get_todays_prediction():
     
     # Keep only the row with the latest prediction_timestamp for each date
     latest_predictions = result.sort_values('prediction_timestamp', ascending=False).drop_duplicates('date', keep='first')
-    
+
     # Sort by date for display
     latest_predictions = latest_predictions.sort_values('date')
     all_predictions = pd.DataFrame(latest_predictions)
@@ -81,15 +87,22 @@ def get_todays_prediction():
 def get_actuals_and_predictions(start_date, end_date):
     conn = get_connection()
 
-    sql_query = "SELECT predictions.date, predictions.predicted_meals, actual_sales.actual_meals FROM predictions INNER JOIN actual_sales ON predictions.date=actual_sales.date WHERE actual_sales.date >= :start_date AND actual_sales.date <= :end_date"
+    sql_query = "SELECT p.date, p.final_prediction, p.prediction_timestamp, a.actual_meals " \
+    "FROM predictions p INNER JOIN actual_sales a ON p.date = a.date " \
+    "WHERE p.prediction_timestamp = (SELECT MAX(prediction_timestamp) FROM predictions " \
+    "WHERE date = p.date) AND a.date >= :start_date AND a.date <= :end_date " \
+    "ORDER BY p.date ASC"
+
 
     params={"start_date": start_date, "end_date": end_date} 
-    df = conn.query(sql_query, params=params)
+    df = conn.query(sql_query, params=params,ttl=0)
+    # Final safety check: keeps the latest prediction for every unique date
+    df = df.sort_values('prediction_timestamp', ascending=False).drop_duplicates('date')
 
     df['date'] = pd.to_datetime(df['date'])
     df['weekday'] = df['date'].dt.strftime('%A')
-    df['difference'] = df['actual_meals'] - df['predicted_meals']
-    df['pct_error'] = (df['actual_meals'] - df['predicted_meals'])/df['predicted_meals']
+    df['difference'] = df['actual_meals'] - df['final_prediction']
+    df['pct_error'] = (df['actual_meals'] - df['final_prediction'])/df['final_prediction']
 
     return df
 
@@ -97,15 +110,15 @@ def calculate_metrics(df, tolerance_pct=0.05):
     """Calculate prediction metrics.
     
     Args:
-        df: DataFrame with actual_meals and predicted_meals columns
+        df: DataFrame with actual_meals and final_prediction columns
         tolerance_pct: Percentage tolerance (0.05 = within 5%)
     """
-    pct_error = ((df['actual_meals'] - df['predicted_meals']) / df['actual_meals']).abs()
+    pct_error = ((df['actual_meals'] - df['final_prediction']) / df['actual_meals']).abs()
     
     return {
-        'mae': (df['actual_meals'] - df['predicted_meals']).abs().mean(),
-        'over_predicted': (df['predicted_meals'] > df['actual_meals']).sum(),
-        'under_predicted': (df['predicted_meals'] < df['actual_meals']).sum(),
+        'mae': (df['actual_meals'] - df['final_prediction']).abs().mean(),
+        'over_predicted': (df['final_prediction'] > df['actual_meals']).sum(),
+        'under_predicted': (df['final_prediction'] < df['actual_meals']).sum(),
         'accuracy_rate': (pct_error <= tolerance_pct).mean() * 100
     }
 
