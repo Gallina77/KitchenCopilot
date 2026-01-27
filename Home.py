@@ -8,7 +8,7 @@ from utils.translations_utils import get_translations
 
 # Page configuration
 st.set_page_config(
-    page_title="KitchenCopilot - Meal Demand Forecasting",
+    page_title="Küchenkompass - Meal Demand Forecasting",
     page_icon="🍽️",
     layout="wide",
     initial_sidebar_state="collapsed"
