@@ -8,7 +8,7 @@ def hero_section(t):
         <div class='hero-section'>
             <h1>
                 <span class='hero-title'>
-                    🍽️ KitchenCopilot
+                    🍽️ Küchenkompass
                 </span>
             </h1>
             <p>{t["hero_subtitle"]}</p>
