@@ -141,7 +141,7 @@ if st.session_state['predictions_generated']:
             with st.container(border=True):
                 
                 st.markdown(f"**{row['date_display']}**")
-                st.markdown(render_badges(row, t), unsafe_allow_html=True)
+                st.markdown(render_badges(row,t), unsafe_allow_html=True)
                 
                 
                 # Row 2: Capacity | Prediction + Toggle
