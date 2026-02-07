@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def categorize_weather(code):
-    if code == 0: return "☀️", "Clear"
+    if code == 0: return "☀️", "Sunny"
     if 1 <= code <= 3: return "⛅", "Cloudy"
     if 51 <= code <= 67 or 80 <= code <= 84: return "🌧️", "Rainy"
     if 71 <= code <= 77 or 85 <= code <= 86: return "❄️", "Snowy"

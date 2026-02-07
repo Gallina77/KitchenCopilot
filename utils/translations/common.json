@@ -6,7 +6,14 @@
     "number_of_days_placeholder": "Choose or add an option",
     "predict_button": "Prepare Data",
     "spinner_message": "Generating insights...",
-    "error_loading_data": "Error loading data"
+    "error_loading_data": "Error loading data",
+    "weather_condition": {
+        "clear": "Clear",
+        "cloudy": "Cloudy",
+        "rainy": "Rainy",
+        "snowy": "Snowy",
+        "stormy": "Stormy"
+      }
     },
 
 
@@ -17,12 +24,15 @@
     "number_of_days_placeholder": "Wählen Sie eine Option aus oder fügen Sie eine hinzu",
     "predict_button": "Daten vorbereiten",
     "spinner_message": "Generiere Hinweise...",
-    "error_loading_data": "Fehler beim Laden der Daten"
+    "error_loading_data": "Fehler beim Laden der Daten",  
+    "weather_condition": {
+        "clear": "klar",
+        "cloudy": "bewölkt",
+        "rainy": "Regen",
+        "snowy": "Schneefall",
+        "stormy": "Sturm"
+      }
     }
-
-
-
-
   
 }
 

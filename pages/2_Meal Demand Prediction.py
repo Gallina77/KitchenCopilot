@@ -116,11 +116,17 @@ st.subheader(t["detailed_data_subheader"])
 if not data.empty:
     # Format the display dataframe
     display_df = data.copy()
-    display_df['date'] = display_df['date'].dt.strftime('%a, %B %d, %Y')
+    if 'date_display' not in display_df.columns:
+        display_df['date'] = display_df['date'].apply(
+            lambda d: format_date(d, format='EEEE, dd. MMMM', locale=locale)
+        )
+
     display_df['final_prediction'] = display_df['final_prediction'].astype(int)
     display_df['utilization_%'] = ((display_df['final_prediction'] / display_df['expected_capacity']) * 100).round(1)
     display_df['prediction_timestamp'] = display_df['prediction_timestamp'].dt.strftime('%Y-%m-%d %H:%M')
-    
+    condition = display_df['weather_condition'].apply(lambda x: x.lower())
+    display_df['weather_condition'] = condition.map(t['weather_condition'])
+
     # Convert integer columns to boolean
     display_df['is_semester_break'] = display_df['is_semester_break'].astype(bool)
     display_df['is_bridge_day'] = display_df['is_bridge_day'].astype(bool)

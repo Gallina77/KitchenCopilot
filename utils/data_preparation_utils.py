@@ -69,8 +69,14 @@ def prepare_data(start_date, number_of_days):
 
 def render_badges(row,t):
     badges = []
+    condition = row['weather_condition'].lower()  # "Cloudy" → "cloudy"
+    if condition in t['weather_condition']:       # Check if key exists
+        weather = t['weather_condition'][condition]  # Get translation
+    else:
+        weather = condition                        # Fallback (though shouldn't happen)
+
     if row.get('temperature_max'):
-        badges.append(f'<span class="badge badge-weather">{row["weather_icon"]} {row["temperature_max"]}°C {row["weather_condition"]}</span>')
+        badges.append(f'<span class="badge badge-weather">{row["weather_icon"]} {row["temperature_max"]}°C {weather}</span>')
     if row.get('is_semester_break'):
         badges.append(f'<span class="badge badge-break">{t['semester_break']}</span>')
     if row.get('is_bridge_day'):

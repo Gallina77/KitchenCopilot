@@ -72,8 +72,9 @@ def get_future_predictions():
         return result
     
     # Convert to datetime
-    result['date'] = pd.to_datetime(result['date'])
-    result['prediction_timestamp'] = pd.to_datetime(result['prediction_timestamp'])
+
+    result['date'] = pd.to_datetime(result['date'],format="ISO8601")
+    result['prediction_timestamp'] = pd.to_datetime(result['prediction_timestamp'],format="ISO8601")
     
     # Keep only the row with the latest prediction_timestamp for each date
     latest_predictions = result.sort_values('prediction_timestamp', ascending=False).drop_duplicates('date', keep='first')
