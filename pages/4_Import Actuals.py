@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from io import StringIO
 
 logo = "styles/images/kitchencopilot_logo_transparent.png"
 st.logo(logo, size="medium", link=None, icon_image=None)
