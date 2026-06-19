@@ -29,7 +29,8 @@
         "prediction_timestamp": "Last Updated"
     },
     "insights_subheader": "AI generated Planning Notes",
-    "insights_no_data": "No Planning Notes available. Please generate a forecast first."
+    "insights_no_data": "No Planning Notes available. Please generate a forecast first.",
+    "insights_error": "AI planning notes are temporarily unavailable. Please try again later."
 
 
   },
@@ -63,7 +64,8 @@
         "prediction_timestamp": "Letzte Aktualisierung"
     },
     "insights_subheader": "KI gestützte Planungshinweise",
-    "insights_no_data": "Keine Hinweise verfügbar. Bitte generieren Sie zuerst eine Vorhersage."
+    "insights_no_data": "Keine Hinweise verfügbar. Bitte generieren Sie zuerst eine Vorhersage.",
+    "insights_error": "KI-Planungshinweise sind vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
 }
 
 

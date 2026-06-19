@@ -45,7 +45,8 @@ def save_prediction(df):
                 df['override_reason'] = None
             
             df['final_prediction'] = df.apply(
-                lambda row: row['override_meal_prediction'] if pd.notna(row['override_meal_prediction']) else row['predicted_meals'],
+                lambda row: row['override_meal_prediction'] if pd.notna(row['override_meal_prediction']) 
+                else row['predicted_meals'],
                 axis=1
                 )
 

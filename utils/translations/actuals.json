@@ -24,7 +24,9 @@
         "pct_error": "% Error Actual"
     },
     "llm_title":"AI Data Insights",
-    "json_error": "Could not parse insights. Raw response:"
+    "json_error": "Could not parse insights. Raw response:",
+    "llm_error_title": "Service Unavailable",
+    "llm_error_message": "AI insights are temporarily unavailable. Please try again later."
    
   },
   "DE": {
@@ -52,7 +54,9 @@
         "pct_error": "% Fehlerquote "
     },
     "llm_title": "KI gestützte Erkenntnisse",
-    "json_error":"Insights konnten nicht geparst werden. Rohantwort:"
+    "json_error":"Insights konnten nicht geparst werden. Rohantwort:",
+    "llm_error_title": "Dienst nicht verfügbar",
+    "llm_error_message": "KI-Einblicke sind vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
    }   
 
 }
