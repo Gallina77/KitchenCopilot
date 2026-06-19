@@ -25,8 +25,7 @@ def get_weather(start_date: str, end_date: str, type: str):
         url = "https://api.open-meteo.com/v1/forecast"
     elif type == "past":
         url =  "https://archive-api.open-meteo.com/v1/archive"
-    else: 
-        url = "unkown"
+
         
     r = requests.get(url, params=params, timeout=5)
     weather_data = r.json()
