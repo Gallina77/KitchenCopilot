@@ -3,6 +3,8 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 from anthropic import Anthropic
+
+MODEL = "claude-sonnet-4-6"
     
 @st.cache_data
 def get_llm_insights_for_actuals_vs_predicted(data_json: str, lang: str):
@@ -44,9 +46,13 @@ def get_llm_insights_for_actuals_vs_predicted(data_json: str, lang: str):
         
             }
         ],
-        model="claude-sonnet-4-5-20250929",
+        model=MODEL,
     )
     return message.content[0].text
+
+#| 1.6 | `utils/llm_insights.py:49,81` | 
+# Wrap API call in `try/except`, return fallback string on failure | Entire page crashes if API is down |
+
 
 @st.cache_data
 def get_llm_planning_insights(data_json: str, lang: str):
@@ -76,6 +82,6 @@ def get_llm_planning_insights(data_json: str, lang: str):
         
             }
         ],
-        model="claude-sonnet-4-5-20250929",
+        model=MODEL,
     )
     return message.content[0].text
