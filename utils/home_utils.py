@@ -47,8 +47,8 @@ def get_last_prediction_info():
         }
         
     except Exception as e:
-        #print(f"Error: {e}")
-        return None
+        print(f"check_database_status failed: {e}")
+        return False
 
 
 #Testing weather API connectivity  
@@ -71,6 +71,6 @@ def check_database_status():
         # Test the connection with a simple query
         conn.query("SELECT 1")
         return True
-    except Exception:
+    except Exception as e:
+        print(f"check_database_status failed: {e}")
         return False
-
