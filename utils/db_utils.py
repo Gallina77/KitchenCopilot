@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import numpy as np
 
 @st.cache_resource
 def get_connection():
@@ -103,7 +104,7 @@ def get_actuals_and_predictions(start_date, end_date):
     df['date'] = pd.to_datetime(df['date'])
     df['weekday'] = df['date'].dt.strftime('%A')
     df['difference'] = df['actual_meals'] - df['final_prediction']
-    df['pct_error'] = (df['actual_meals'] - df['final_prediction'])/df['final_prediction']
+    df['pct_error'] = (df['actual_meals'] - df['final_prediction'])/df['final_prediction'].replace(0, np.nan)
 
     return df
 
@@ -114,8 +115,11 @@ def calculate_metrics(df, tolerance_pct=0.05):
         df: DataFrame with actual_meals and final_prediction columns
         tolerance_pct: Percentage tolerance (0.05 = within 5%)
     """
-    pct_error = ((df['actual_meals'] - df['final_prediction']) / df['actual_meals']).abs()
-    
+
+    numerator = (df['actual_meals'] - df['final_prediction']).abs()
+    denominator = df['final_prediction'].replace(0, np.nan)
+    pct_error= (numerator / denominator) * 100
+  
     return {
         'mae': (df['actual_meals'] - df['final_prediction']).abs().mean(),
         'over_predicted': (df['final_prediction'] > df['actual_meals']).sum(),
