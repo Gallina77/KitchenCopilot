@@ -1,7 +1,6 @@
 import streamlit as st  
 # Initialize session state for the toggle if it doesn't exist
 
-import streamlit as st
 
 def render_language_toggle():
     # 1. Check URL param first (only on initial load)
