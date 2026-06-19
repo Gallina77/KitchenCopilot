@@ -76,11 +76,11 @@ def render_badges(row,t):
         weather = condition                        # Fallback (though shouldn't happen)
 
     if row.get('temperature_max'):
-        badges.append(f'<span class="badge badge-weather">{row["weather_icon"]} {row["temperature_max"]}°C {weather}</span>')
+        badges.append(f'<span class="badge badge-weather">{row["weather_icon"]}{row["temperature_max"]}°C {weather}</span>')
     if row.get('is_semester_break'):
-        badges.append(f'<span class="badge badge-break">{t['semester_break']}</span>')
+        badges.append(f'<span class="badge badge-break">{t["semester_break"]}</span>')
     if row.get('is_bridge_day'):
-        badges.append(f'<span class="badge badge-bridge">{t['bridge_day']}</span>')
+        badges.append(f'<span class="badge badge-bridge">{t["bridge_day"]}</span>')
     if row.get('holiday_desc'):
         badges.append(f'<span class="badge badge-holiday">{row["holiday_desc"]}</span>')
     return " ".join(badges) if badges else ""
