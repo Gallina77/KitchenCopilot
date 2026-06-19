@@ -28,7 +28,7 @@ def get_weather(start_date: str, end_date: str, type: str):
     else: 
         url = "unkown"
         
-    r = requests.get(url, params=params)
+    r = requests.get(url, params=params, timeout=5)
     weather_data = r.json()
 
     # --- Main Processing ---
