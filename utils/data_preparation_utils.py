@@ -1,6 +1,9 @@
 import pandas as pd
 from datetime import datetime
-from utils import get_holidays, get_weather
+from utils import get_holidays, get_weather, day_themes
+
+# After building the date DataFrame, add: `df['day_theme'] = df['date'].dt.day_name().map(DAY_THEMES)`
+# `day_theme` will then be one-hot encoded at inference time alongside `weekday`, `month`, `weather_condition`
 
 def prepare_data(start_date, number_of_days):
 
@@ -25,6 +28,7 @@ def prepare_data(start_date, number_of_days):
     df = pd.DataFrame({'date': business_days})
     df['weekday'] = df['date'].dt.day_name()      # Add back
     df['month'] = df['date'].dt.month_name() 
+    df['day_theme'] = df['date'].dt.day_name().map(day_themes.DAY_THEMES)
 
     # Merge weather data
     df = df.merge(
