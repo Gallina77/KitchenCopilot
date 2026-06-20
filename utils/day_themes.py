@@ -1,10 +1,10 @@
 # Weekday (English, as returned by dt.day_name()) → theme name
 DAY_THEMES = {
-    "Monday":    "Wurst",
-    "Tuesday":   "Vital",
+    "Monday":    "Sausage",
+    "Tuesday":   "Vital",      # likely a "health/light meal" category, common in German canteens
     "Wednesday": "Chicken",
-    "Thursday":  "Schnitzel",
-    "Friday":    "Fisch",
+    "Thursday":  "Schnitzel",  # could also translate as "Breaded Cutlet"
+    "Friday":    "Fish",
 }
 
 # Veg/non-veg split ratio per theme (veg_ratio, non_veg_ratio) — must sum to 1.0

@@ -24,7 +24,7 @@ with engine.begin() as conn:
 
     print("✓ Created 'predictions' table")
 
-    conn.execute(text('CREATE TABLE IF NOT EXISTS actual_sales(date DATE, actual_meals INTEGER)'))
+    conn.execute(text('CREATE TABLE IF NOT EXISTS actual_sales(date DATE, actual_meals INTEGER, day_theme TEXT)'))
 
     print("✓ Created 'actual_sales' table")
 
