@@ -6,20 +6,16 @@
     "metrics_label_daily_average_predicted_meals": "Daily Average",
     "metrics_label_peak_demand_day": "Peak Demand Day",
     "metrics_meals_label": "meals",
-    "metrics_label_average_capacity": "Average Capacity",
     "chart_subheader": "Demand Forecast",
     "chart_data": {
-        "predicted_meals": "Predicted Meals",
-        "expected_capacity": "Expected Capacity"
+        "predicted_meals": "Predicted Meals"
     },
-    "chart_caption": "Blue line shows predicted meal demand, orange line shows expected capacity",
+    "chart_caption": "Blue line shows predicted meal demand",
     "error_message_no_data": "No prediction data available for today. Please generate a forecast first.",
     "detailed_data_subheader": "Detailed Predictions",
-    "utilization_help": "Predicted demand as % of capacity",
     "display_columns": {
         "date": "Date",
         "predicted_meals": "Predicted Meals",
-        "expected_capacity": "Capacity",
         "utilization_%": "Utilization %",
         "temperature_max": "Temp (°C)",
         "weather_condition": "Weather",
@@ -41,20 +37,17 @@
     "metrics_label_daily_average_predicted_meals": "Täglicher Durchschnitt",
     "metrics_label_peak_demand_day": "Spitzenbedarf Tag",
     "metrics_meals_label": "Mahlzeiten",
-    "metrics_label_average_capacity": "Durchschnittliche Kapazität",
     "error_message_no_data": "Keine Prognosedaten verfügbar. Bitte generieren Sie zuerst eine Vorhersage.",
     "chart_subheader": "Nachfrageprognose",
     "chart_data": {
-        "predicted_meals": "Prognostizierte Mahlzeiten",
-        "expected_capacity": "Erwartete Kapazität"
+        "predicted_meals": "Prognostizierte Mahlzeiten"
     },
-    "chart_caption": "Die blaue Linie zeigt die prognostizierte Essensnachfrage, die orange Linie die erwartete Kapazität",
+    "chart_caption": "Die blaue Linie zeigt die prognostizierte Essensnachfrage",
     "detailed_data_subheader": "Detaillierte Prognosen",
-    "utilization_help": "Prognostizierte Nachfrage als % der Kapazität",
+    "utilization_help": "Prognostizierte Nachfrage",
     "display_columns": {
         "date": "Datum",
         "predicted_meals": "Prognostizierte Mahlzeiten",
-        "expected_capacity": "Kapazität",
         "utilization_%": "Auslastung %",
         "temperature_max": "Temp (°C)",
         "weather_condition": "Wetter",

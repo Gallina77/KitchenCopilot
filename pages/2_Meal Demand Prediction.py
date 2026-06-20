@@ -56,16 +56,6 @@ if not data.empty:
                 delta=f"{int(peak_day['final_prediction'])} {t['metrics_meals_label']}"
             )
 
-    with col4:
-        with st.container(border=True):
-            # Calculate capacity utilization
-            avg_utilization = (data['final_prediction'] / data['expected_capacity']).mean() * 100
-            st.metric(
-                label=t["metrics_label_average_capacity"],
-                value=f"{avg_utilization:.1f}%",
-                delta=f"{avg_utilization - 85:.1f}%" if avg_utilization < 85 else f"+{avg_utilization - 85:.1f}%",
-                delta_color="inverse"
-            )
 else:
     st.error(t["error_message_no_data"])
 
@@ -76,7 +66,7 @@ st.subheader(t["chart_subheader"])
 
 if not data.empty:
     # Prepare data for chart
-    chart_data = data[['date', 'final_prediction', 'expected_capacity']].copy()
+    chart_data = data[['date', 'final_prediction']].copy()
     locale = st.session_state.lang.lower()
 
     chart_data['date'] = chart_data['date'].apply(
@@ -91,14 +81,6 @@ if not data.empty:
         mode='lines+markers',
         name=chart_data_labels['predicted_meals'],
         line=dict(color='#1f77b4', width=3)
-    ))
-
-    fig.add_trace(go.Scatter(
-        x=chart_data.index,
-        y=chart_data['expected_capacity'],
-        mode='lines+markers',
-        name=chart_data_labels['expected_capacity'],
-        line=dict(color='#ff7f0e', width=3)
     ))
 
     st.plotly_chart(fig, use_container_width=True)
@@ -122,7 +104,6 @@ if not data.empty:
         )
 
     display_df['final_prediction'] = display_df['final_prediction'].astype(int)
-    display_df['utilization_%'] = ((display_df['final_prediction'] / display_df['expected_capacity']) * 100).round(1)
     display_df['prediction_timestamp'] = display_df['prediction_timestamp'].dt.strftime('%Y-%m-%d %H:%M')
     condition = display_df['weather_condition'].apply(lambda x: x.lower())
     display_df['weather_condition'] = condition.map(t['weather_condition'])

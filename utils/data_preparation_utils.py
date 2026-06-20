@@ -62,7 +62,6 @@ def prepare_data(start_date, number_of_days):
     df['is_semester_break'] = df['is_semester_break'].astype('boolean').fillna(False)
     df['is_bridge_day'] = df['is_bridge_day'].astype('boolean').fillna(False)
     df['holiday_desc'] = df['holiday_desc'].fillna('').astype(str)
-    df['expected_capacity'] = None
 
     return df
 

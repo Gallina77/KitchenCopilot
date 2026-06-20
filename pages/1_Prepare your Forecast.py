@@ -147,11 +147,6 @@ if st.session_state['predictions_generated']:
                 # Row 2: Capacity | Prediction + Toggle
                 left_part, right_part = st.columns([1, 1])
                 
-                with left_part:
-                       st.markdown(f"{t['expected_capacity_label']}:  "
-                            f"<strong style='color: #6082B6; font-size: 18px;'>{int(row['expected_capacity'])}</strong>",
-                            unsafe_allow_html=True
-                        )
                      
                 with right_part:
                     pred_col, toggle_col = st.columns([3, 1])
@@ -258,50 +253,11 @@ else:
     if submit:
         st.session_state['form_submitted'] = True
         st.session_state['forecast_df'] = prepare_data(start_date, int(number_of_days))
-        st.rerun()
-    
-    # Capacity inputs (only shows in State 1)
-    if st.session_state['form_submitted']:
         df = st.session_state['forecast_df']
-        locale = st.session_state.lang.lower()
-
-        #Create a formatted display column (only if date is still datetime)
-        if pd.api.types.is_datetime64_any_dtype(df['date']):
-            df['date_display'] = df['date'].apply(lambda d: format_date(d, format='EEEE, dd. MMMM', locale=locale))
-        
-        for i, (idx, row) in enumerate(df.iterrows()):
-            if i % 2 == 0:
-                left_col, right_col = st.columns(2)
-            
-            col = left_col if i % 2 == 0 else right_col
-            
-            with col:
-                with st.container(border=True):
-                    st.markdown(f"**{row['date_display']}**")
-                    st.markdown(render_badges(row, t), unsafe_allow_html=True)
-                    st.number_input(
-                        label=t["expected_capacity_label"],
-                        key=f"cap_{row['date']}",
-                        label_visibility="visible",
-                        min_value=50,
-                        max_value=400,
-                        step=25
-                    )
-        
-        if st.button(t["generate_prediction_button"], type="primary"):
-        # Collect capacity values
-            for idx, row in df.iterrows():
-                df.at[idx, 'expected_capacity'] = st.session_state[f"cap_{row['date']}"]
-        
-            # Check for missing values
-            if df['expected_capacity'].isnull().any():
-                st.error(t["error_missing_capacity"])
-            else:
-                # Run prediction
-                df_pred = get_prediction(df)
-                st.session_state['forecast_df'] = df_pred
-                st.session_state['predictions_generated'] = True
-                st.rerun()  # Success message will show in State 2
+        df_pred = get_prediction(df)
+        st.session_state['predictions_generated'] = True
+        st.rerun()
+ 
 
 
 
