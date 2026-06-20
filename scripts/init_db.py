@@ -18,13 +18,14 @@ with engine.begin() as conn:
 
     print("✓ Created 'holidays' table")
  
-    conn.execute(text('CREATE TABLE IF NOT EXISTS predictions (date DATE, weekday TEXT, month TEXT, ' \
-    'temperature_max FLOAT, weather_condition TEXT, is_bank_holiday BOOLEAN, is_bridge_day BOOLEAN, is_semester_break BOOLEAN, ' \
-    'holiday_desc TEXT, predicted_meals INTEGER, prediction_timestamp TIMESTAMP);'))
+    conn.execute(text('CREATE TABLE IF NOT EXISTS predictions (date DATE PRIMARY KEY, weekday TEXT, month TEXT, ' \
+    'day_theme TEXT, temperature_max FLOAT, weather_condition TEXT, is_bank_holiday BOOLEAN, is_bridge_day BOOLEAN, is_semester_break BOOLEAN, ' \
+    'holiday_desc TEXT, predicted_meals INTEGER, predicted_meals_veg INTEGER, predicted_meals_non_veg INTEGER, prediction_timestamp TIMESTAMP);'))
 
     print("✓ Created 'predictions' table")
 
-    conn.execute(text('CREATE TABLE IF NOT EXISTS actual_sales(date DATE, actual_meals INTEGER, day_theme TEXT)'))
+    conn.execute(text('CREATE TABLE IF NOT EXISTS actual_sales(date DATE PRIMARY KEY, actual_meals INTEGER, ' \
+    'actual_meals_veg INTEGER, actual_meals_non_veg INTEGER)'))
 
     print("✓ Created 'actual_sales' table")
 
