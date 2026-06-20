@@ -13,8 +13,16 @@
         "rainy": "Rainy",
         "snowy": "Snowy",
         "stormy": "Stormy"
+      },
+    "day_themes": {
+        "Sausage": "Sausage",
+        "Vital": "Vital",
+        "Chicken": "Chicken",
+        "Schnitzel": "Schnitzel",
+        "Fish": "Fish"
       }
     },
+
 
 
   "DE": {
@@ -31,8 +39,15 @@
         "rainy": "Regen",
         "snowy": "Schneefall",
         "stormy": "Sturm"
+      },
+    "day_themes": {
+        "Sausage": "Wurst",
+        "Vital": "Vital",
+        "Chicken": "Hühnchen",
+        "Schnitzel": "Schnitzel",
+        "Fish": "Fisch"
       }
     }
-  
+
 }
 

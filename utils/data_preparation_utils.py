@@ -86,4 +86,7 @@ def render_badges(row,t):
         badges.append(f'<span class="badge badge-bridge">{t["bridge_day"]}</span>')
     if row.get('holiday_desc'):
         badges.append(f'<span class="badge badge-holiday">{row["holiday_desc"]}</span>')
+    if row.get('day_theme'):
+        badges.append(f'<span class="badge badge-day_theme">{row["day_theme"]}</span>')
+
     return " ".join(badges) if badges else ""

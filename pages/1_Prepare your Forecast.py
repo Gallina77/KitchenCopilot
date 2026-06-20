@@ -58,6 +58,12 @@ def inject_custom_css():
             color: #ffffff;
             border: 1px solid rgba(255, 75, 75, 0.3);
         }
+                
+        .badge-theme {
+            background-color: rgb(210, 243, 210);
+            color: #1a5c1a;
+            border: 1px solid rgba(26, 92, 26, 0.3);
+        }
         
         /* Day row container styling */
         .day-row-container {
