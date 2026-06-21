@@ -14,12 +14,12 @@ engine = create_engine(f'sqlite:///{db_path}')
 with engine.begin() as conn:
     conn.execute(text('CREATE TABLE IF NOT EXISTS holidays '
     '(date DATE, description TEXT, is_bank_holiday BOOLEAN, ' \
-    'is_semester_break BOOLEAN, is_bridge_day BOOLEAN);'))
+    'is_school_break BOOLEAN, is_bridge_day BOOLEAN);'))
 
     print("✓ Created 'holidays' table")
  
     conn.execute(text('CREATE TABLE IF NOT EXISTS predictions (date DATE PRIMARY KEY, weekday TEXT, month TEXT, ' \
-    'day_theme TEXT, temperature_max FLOAT, weather_condition TEXT, is_bank_holiday BOOLEAN, is_bridge_day BOOLEAN, is_semester_break BOOLEAN, ' \
+    'day_theme TEXT, temperature_max FLOAT, weather_condition TEXT, is_bank_holiday BOOLEAN, is_bridge_day BOOLEAN, is_school_break BOOLEAN, ' \
     'holiday_desc TEXT, predicted_meals INTEGER, predicted_meals_veg INTEGER, predicted_meals_non_veg INTEGER, prediction_timestamp TIMESTAMP);'))
 
     print("✓ Created 'predictions' table")
