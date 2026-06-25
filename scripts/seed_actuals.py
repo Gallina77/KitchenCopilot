@@ -1,6 +1,6 @@
 from pathlib import Path
 import pandas as pd
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
 from utils.db_conn import get_engine 
 
 
