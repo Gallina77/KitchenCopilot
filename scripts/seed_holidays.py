@@ -1,42 +1,51 @@
-import streamlit as st
-from sqlalchemy import text
+from pathlib import Path
 import pandas as pd
+from sqlalchemy import create_engine, text
+from utils.db_conn import get_engine 
+
 
 # ============================================
 # SEED HOLIDAYS
 # ============================================
 
-# 1. Load CSV
+# 1. File Path and Data Loading
+csv_path = Path("data/raw/holidays/holidays_2025_2027.csv")
 
-path = "data/raw/holidays/holidays_2025_2027.csv"
-df = pd.read_csv(path)
+if not csv_path.exists():
+    print(f"Error: CSV file not found at {csv_path.resolve()}")
+    exit(1)
 
-# Clean date format to YYYY-MM-DD string
-df['date'] = pd.to_datetime(df['date']).dt.strftime("%Y-%m-%d")
-
-# 2. Build the SQL rows
-sql_rows = []
-for _, row in df.iterrows():
-    # Formats exactly as: ('2025-01-03', 126)
-    sql_rows.append(f"('{row['date']}', '{row['description']}', '{row['is_bank_holiday']}','{row['is_school_break']}', '{row['is_bridge_day']}')")
-
-# Join rows with commas for a clean bulk insert
-values_string = ",\n".join(sql_rows)
+# Read CSV
+df = pd.read_csv(csv_path)
 
 
-# 3. Create the full INSERT statement
-table_name = "holidays"
-columns = "(date, description,is_bank_holiday, is_school_break, is_bridge_day)"
-    # Construct complete SQL Statement
-insert_query = f"""
-    INSERT INTO {table_name} {columns} 
-    VALUES 
-    {values_string};
-    """
+# 2. Securely Package Data into Parameters
+# This maps dataframe rows to a dictionary, isolating it from the SQL text
+data_to_insert = [
+    {
+        "date_val": pd.to_datetime(row['date']).strftime("%Y-%m-%d"), 
+        "desc_val": row["description"], 
+        "is_bank_hol_val": row["is_bank_holiday"], 
+        "is_school_break_val": row["is_school_break"], 
+        "is_bridge_day_val": row["is_bridge_day"], 
 
-conn = st.connection('kitchencopilot_db', type='sql')
-with conn.session as session:
-        session.execute(text(insert_query))
-        session.commit()
+    }
+    for _, row in df.iterrows()
+]
 
-print("Load complete")
+# 3. Pure Parameterized SQL Statement (100% Injection Proof)
+secure_query = text("""
+    INSERT INTO holidays (date, description,is_bank_holiday, is_school_break, is_bridge_day) 
+    VALUES (:date_val, :desc_val, :is_bank_hol_val, :is_school_break_val, :is_bridge_day_val);
+""")
+
+# 4. Execute directly via Engine Context Manager
+
+#Spin up the database connection engine
+engine = get_engine() 
+try:
+    with engine.begin() as connection:  # Now engine is valid and has .begin()
+        connection.execute(secure_query, data_to_insert)
+    print(f"Success: Securely inserted {len(data_to_insert)} rows into the holidays database.")
+except Exception as e:
+    print(f"Database operation failed: {e}")

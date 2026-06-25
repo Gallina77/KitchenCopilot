@@ -1,43 +1,50 @@
-import streamlit as st
-from sqlalchemy import text
+from pathlib import Path
 import pandas as pd
+from sqlalchemy import create_engine, text
+from utils.db_conn import get_engine 
+
 
 # ============================================
-# SEED HISTORICAL SALES DATA
+# SEED HOLIDAYS
 # ============================================
 
-# 1. Load CSV
+# 1. File Path and Data Loading
+csv_path = Path("data/raw/sales_data/sales_pp.csv")
 
-path = "data/raw/sales_data/sales_pp.csv"
-df = pd.read_csv(path, sep=";")
-print(df.head())
+if not csv_path.exists():
+    print(f"Error: CSV file not found at {csv_path.resolve()}")
+    exit(1)
 
-# Clean date format to YYYY-MM-DD string
-df['date'] = pd.to_datetime(df['date']).dt.strftime("%Y-%m-%d")
-
-# 2. Build the SQL rows
-sql_rows = []
-for _, row in df.iterrows():
-    # Formats exactly as: ('2025-01-03', 126)
-    sql_rows.append(f"('{row['date']}', '{int(row['total_day'])}', '{int(row['veg'])}', '{int(row['non_veg'])}')")
-
-# Join rows with commas for a clean bulk insert
-values_string = ",\n".join(sql_rows)
+# Read CSV
+df = pd.read_csv(csv_path, sep=";")
 
 
-# 3. Create the full INSERT statement
-table_name = "actual_sales"
-columns = "(date, actual_meals,actual_meals_veg, actual_meals_non_veg)"
-    # Construct complete SQL Statement
-insert_query = f"""
-    INSERT INTO {table_name} {columns} 
-    VALUES 
-    {values_string};
-    """
+# 2. Securely Package Data into Parameters
+# This maps dataframe rows to a dictionary, isolating it from the SQL text
+data_to_insert = [
+    {
+        "date_val": pd.to_datetime(row['date']).strftime("%Y-%m-%d"), 
+        "actual_meals_qty": int(row["total_day"]),
+        "actual_meals_veg_qty": int(row["veg"]), 
+        "actual_meals_non_veg_qty": int(row["non_veg"])
 
-conn = st.connection('kitchencopilot_db', type='sql')
-with conn.session as session:
-        session.execute(text(insert_query))
-        session.commit()
+    }
+    for _, row in df.iterrows()
+]
 
-print("Load complete")
+# 3. Pure Parameterized SQL Statement (100% Injection Proof)
+secure_query = text("""
+    INSERT INTO actual_sales (date, actual_meals,actual_meals_veg, actual_meals_non_veg) 
+    VALUES (:date_val, :actual_meals_qty, :actual_meals_veg_qty, :actual_meals_non_veg_qty);
+""")
+
+# 4. Execute directly via Engine Context Manager
+
+#Spin up the database connection engine
+engine = get_engine() 
+try:
+    with engine.begin() as connection:  # Now engine is valid and has .begin()
+        connection.execute(secure_query, data_to_insert)
+    print(f"Success: Securely inserted {len(data_to_insert)} rows into the actuals sales database.")
+except Exception as e:
+    print(f"Database operation failed: {e}")
