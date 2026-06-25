@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import numpy as np
+from utils.day_themes import DAY_THEMES, THEME_VEG_RATIO
+
 
 @st.cache_resource
 def get_connection():
@@ -128,5 +130,47 @@ def calculate_metrics(df, tolerance_pct=0.05):
         'accuracy_rate': (pct_error <= tolerance_pct).mean() * 100
     }
 
+def get_empirical_veg_ratio(theme: str) -> tuple[float, float]:
+    """Compute the empirical veg/non-veg ratio for a theme from actual_sales history.
+    Derives day_theme from each row's date directly 
+    Falls back to THEME_VEG_RATIO[theme] if zero historical rows exist for this theme."""
+   
+
+    fallback = THEME_VEG_RATIO.get(theme, (0.5, 0.5))
+    conn = get_connection()
+
+    sql_query = "SELECT date, actual_meals_veg, actual_meals_non_veg FROM actual_sales " \
+    "WHERE actual_meals_veg IS NOT NULL AND actual_meals_non_veg IS NOT NULL"
+
+    try:
+        result = conn.query(sql_query, ttl=0)
+    except Exception as e:
+        print(f"get_empirical_veg_ratio query failed: {e}")
+        return fallback
+
+    if result.empty:
+        return fallback
+
+    result['date'] = pd.to_datetime(result['date'])
+    result['day_theme'] = result['date'].dt.day_name().map(DAY_THEMES)
+    theme_rows = result[result['day_theme'] == theme]
+
+    if theme_rows.empty:
+        return fallback
+
+    avg_veg = theme_rows['actual_meals_veg'].mean()
+    avg_non_veg = theme_rows['actual_meals_non_veg'].mean()
+    total = avg_veg + avg_non_veg
+
+    if total == 0:
+        return fallback
+
+    return (avg_veg / total, avg_non_veg / total)
+
+
+if __name__ == "__main__":
+   
+    for theme in set(DAY_THEMES.values()):
+        print(theme, get_empirical_veg_ratio(theme))
 
 
