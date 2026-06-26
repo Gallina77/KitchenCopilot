@@ -1,4 +1,27 @@
 {
-    "number_of_features": 25,
-    "training_timestamp": "2026-01-04T13:04:26.066690"
+    "number_of_features": 14,
+    "training_timestamp": "2026-06-26T07:07:48.772952",
+    "training_row_count": 49,
+    "holdout_row_count": 10,
+    "baseline_mae": 8.47393318110124,
+    "baseline_rmse": 9.976151438995798,
+    "baseline_mape": 0.19921428487945309,
+    "feature_columns": [
+        "temperature_max",
+        "is_semester_break",
+        "is_bridge_day",
+        "month_April",
+        "month_June",
+        "month_May",
+        "weather_condition_Cloudy",
+        "weather_condition_Rainy",
+        "weather_condition_Sunny",
+        "day_theme_Chicken",
+        "day_theme_Fish",
+        "day_theme_Sausage",
+        "day_theme_Schnitzel",
+        "day_theme_Vital"
+    ],
+    "data_source": "data/raw/sales_data/sales_pp.csv",
+    "trained_on_real_data": true
 }
