@@ -8,15 +8,19 @@
     "metrics_meals_label": "meals",
     "chart_subheader": "Demand Forecast",
     "chart_data": {
-        "predicted_meals": "Predicted Meals"
+        "predicted_meals": "Predicted Meals",
+        "predicted_meals_veg": "Veg",
+        "predicted_meals_non_veg": "Non-Veg"
     },
-    "chart_caption": "Blue line shows predicted meal demand",
+    "chart_caption": "Blue line shows total predicted meal demand, green shows vegetarian, orange shows non-vegetarian",
     "error_message_no_data": "No prediction data available for today. Please generate a forecast first.",
     "detailed_data_subheader": "Detailed Predictions",
     "display_columns": {
         "date": "Date",
-        "predicted_meals": "Predicted Meals",
-        "utilization_%": "Utilization %",
+        "day_theme": "Theme",
+        "final_prediction": "Predicted Meals",
+        "predicted_meals_veg": "Veg",
+        "predicted_meals_non_veg": "Non-Veg",
         "temperature_max": "Temp (°C)",
         "weather_condition": "Weather",
         "holiday_desc": "Holiday",
@@ -26,9 +30,11 @@
     },
     "insights_subheader": "AI generated Planning Notes",
     "insights_no_data": "No Planning Notes available. Please generate a forecast first.",
-    "insights_error": "AI planning notes are temporarily unavailable. Please try again later."
-
-
+    "insights_error": "AI planning notes are temporarily unavailable. Please try again later.",
+    "veg_label": "veg",
+    "non_veg_label": "non-veg",
+    "peak_day_badge": "🔥 Peak Demand",
+    "overridden_badge": "✏️ Overridden"
   },
   "DE": {
     "predictions_page_title": "Prognosen zur Essensnachfrage",
@@ -40,15 +46,19 @@
     "error_message_no_data": "Keine Prognosedaten verfügbar. Bitte generieren Sie zuerst eine Vorhersage.",
     "chart_subheader": "Nachfrageprognose",
     "chart_data": {
-        "predicted_meals": "Prognostizierte Mahlzeiten"
+        "predicted_meals": "Prognostizierte Mahlzeiten",
+        "predicted_meals_veg": "Vegetarisch",
+        "predicted_meals_non_veg": "Nicht-Vegetarisch"
     },
-    "chart_caption": "Die blaue Linie zeigt die prognostizierte Essensnachfrage",
+    "chart_caption": "Die blaue Linie zeigt die gesamte prognostizierte Nachfrage, grün vegetarisch, orange nicht-vegetarisch",
     "detailed_data_subheader": "Detaillierte Prognosen",
     "utilization_help": "Prognostizierte Nachfrage",
     "display_columns": {
         "date": "Datum",
-        "predicted_meals": "Prognostizierte Mahlzeiten",
-        "utilization_%": "Auslastung %",
+        "day_theme": "Thema",
+        "final_prediction": "Prognostizierte Mahlzeiten",
+        "predicted_meals_veg": "Veg.",
+        "predicted_meals_non_veg": "Nicht-Veg.",
         "temperature_max": "Temp (°C)",
         "weather_condition": "Wetter",
         "holiday_desc": "Feiertag",
@@ -58,7 +68,11 @@
     },
     "insights_subheader": "KI gestützte Planungshinweise",
     "insights_no_data": "Keine Hinweise verfügbar. Bitte generieren Sie zuerst eine Vorhersage.",
-    "insights_error": "KI-Planungshinweise sind vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
+    "insights_error": "KI-Planungshinweise sind vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.",
+    "veg_label": "veg.",
+    "non_veg_label": "nicht-veg.",
+    "peak_day_badge": "🔥 Spitzenbedarf",
+    "overridden_badge": "✏️ Überschrieben"
 }
 
 
