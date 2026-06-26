@@ -20,7 +20,7 @@
         "temperature_max": "Temp (°C)",
         "weather_condition": "Weather",
         "holiday_desc": "Holiday",
-        "is_semester_break": "Semester Break",
+        "is_school_break": "School Break",
         "is_bridge_day": "Bridge Day",
         "prediction_timestamp": "Last Updated"
     },
@@ -52,7 +52,7 @@
         "temperature_max": "Temp (°C)",
         "weather_condition": "Wetter",
         "holiday_desc": "Feiertag",
-        "is_semester_break": "Semesterferien",
+        "is_school_break": "Schulferien",
         "is_bridge_day": "Brückentag",
         "prediction_timestamp": "Letzte Aktualisierung"
     },

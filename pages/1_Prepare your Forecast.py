@@ -34,35 +34,35 @@ def inject_custom_css():
             margin: 2px 4px 2px 0;
         }
         
-        /* Badge variants */
+        /* Badge variants - each a distinct hue for clear visual separation */
         .badge-weather {
-            background-color: rgb(255, 241, 203);
-            color: #111111;
-            border: 1px solid rgba(255, 241, 203, 0.3);
+            background-color: rgb(255, 211, 130);
+            color: #5c3a00;
+            border: 1px solid rgba(255, 170, 0, 0.4);
         }
-        
+
         .badge-break {
-            background-color: rgb(255, 143, 143);
-            color: #111111;
-            border: 1px solid rgba(255, 143, 143, 0.3);
+            background-color: rgb(214, 188, 250);
+            color: #4a1a8c;
+            border: 1px solid rgba(124, 58, 237, 0.4);
         }
-        
+
         .badge-bridge {
-            background-color: rgb(194, 226, 250);
-            color: #1c83e1;
-            border: 1px solid rgba(28, 131, 225, 0.3);
+            background-color: rgb(186, 222, 255);
+            color: #0b5fbd;
+            border: 1px solid rgba(11, 95, 189, 0.4);
         }
-        
+
         .badge-holiday {
-            background-color: rgb(255, 143, 143);
+            background-color: rgb(220, 38, 38);
             color: #ffffff;
-            border: 1px solid rgba(255, 75, 75, 0.3);
+            border: 1px solid rgba(150, 20, 20, 0.5);
         }
-                
+
         .badge-day_theme {
-            background-color: rgb(210, 243, 210);
-            color: #1a5c1a;
-            border: 1px solid rgba(26, 92, 26, 0.3);
+            background-color: rgb(167, 235, 167);
+            color: #14532d;
+            border: 1px solid rgba(20, 83, 45, 0.4);
         }
         
         /* Day row container styling */
@@ -150,7 +150,7 @@ if st.session_state['predictions_generated']:
                 st.markdown(render_badges(row,t), unsafe_allow_html=True)
                 
                 
-                # Row 2: Capacity | Prediction + Toggle
+                # Row 2: Prediction + Toggle
                 left_part, right_part = st.columns([1, 1])
                 
                      
@@ -161,6 +161,12 @@ if st.session_state['predictions_generated']:
                         st.markdown(
                             f"{t['prediction_label']}:  "
                             f"<strong style='color: #21c354; font-size: 18px;'>{int(row['predicted_meals'])}</strong>",
+                            unsafe_allow_html=True
+                        )
+                        st.markdown(
+                            f"<span style='font-size: 13px; color: #a3a8b8;'>"
+                            f"🥦 {int(row['predicted_meals_veg'])} veg &nbsp;|&nbsp; "
+                            f"🍗 {int(row['predicted_meals_non_veg'])} non-veg</span>",
                             unsafe_allow_html=True
                         )
             
@@ -258,9 +264,9 @@ else:
     
     if submit:
         st.session_state['form_submitted'] = True
-        st.session_state['forecast_df'] = prepare_data(start_date, int(number_of_days))
-        df = st.session_state['forecast_df']
+        df = prepare_data(start_date, int(number_of_days))
         df_pred = get_prediction(df)
+        st.session_state['forecast_df'] = df_pred
         st.session_state['predictions_generated'] = True
         st.rerun()
  
