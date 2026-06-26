@@ -17,6 +17,17 @@ THEME_VEG_RATIO = {
     "Fish":      (0.50, 0.50),  # 30 veg : 30 non-veg
 }
 
+# Accent color per theme for card borders on Page 2 (Meal Demand Prediction).
+# Deliberately distinct from the override-highlight and peak-day-highlight colors
+# used alongside these on the same cards.
+THEME_CARD_COLORS = {
+    "Sausage":   "#c0392b",  # brick red
+    "Vital":     "#27ae60",  # green
+    "Chicken":   "#d4ac0d",  # gold
+    "Schnitzel": "#8e5a2f",  # brown
+    "Fish":      "#2980b9",  # blue
+}
+
 
 
 
