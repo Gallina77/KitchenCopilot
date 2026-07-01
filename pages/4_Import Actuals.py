@@ -95,10 +95,6 @@ if uploaded_file is not None:
 # ============================================
 # QUICK SCREEN ENTRY & DETAILED DATA TABLE
 # ============================================
-"""
-- Show a table of upcoming/recent prediction dates (from `predictions` table)
-- For each date without an actual, display an editable number input
-"""
 
 st.subheader(t["update_manually"])
 
