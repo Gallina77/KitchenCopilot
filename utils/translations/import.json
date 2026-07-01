@@ -1,0 +1,14 @@
+{
+  "EN": {
+    "page_title": "Import Actuals",
+    "upload_description": "Upload your Actual Sales Data CSV",
+    "update_manually": "Update manually"
+   
+  },
+  "DE": {
+    "page_title": "Importiere aktuelle Zahlen",
+    "upload_description": "Lade die aktuellen Zahlen als CSV hoch",
+    "update_manually": "Aktualisiere manuell"
+  }
+
+}

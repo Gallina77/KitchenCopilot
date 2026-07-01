@@ -20,7 +20,31 @@
         "Chicken": "Chicken",
         "Schnitzel": "Schnitzel",
         "Fish": "Fish"
-      }
+      },
+    "display_columns": {
+        "date": "Date",
+        "day_theme": "Theme",
+        "final_prediction": "Predicted Meals",
+        "predicted_meals_veg": "Veg",
+        "predicted_meals_non_veg": "Non-Veg",
+        "temperature_max": "Temp (°C)",
+        "weather_condition": "Weather",
+        "holiday_desc": "Holiday",
+        "is_school_break": "School Break",
+        "is_bridge_day": "Bridge Day",
+        "prediction_timestamp": "Last Updated"
+    },
+    "display_columns_short": {
+        "date": "Date",
+        "day_theme": "Theme",
+        "final_prediction": "Forecast Total",
+        "predicted_meals_veg": "Forecast Veg",
+        "predicted_meals_non_veg": "Forecast Non-Veg",
+        "actual_meals": "Actual Total",
+        "actual_meals_veg": "Actual Veg",
+        "actual_meals_non_veg": "Actual Non-Veg"
+    }
+
     },
 
 
@@ -46,7 +70,30 @@
         "Chicken": "Hühnchen",
         "Schnitzel": "Schnitzel",
         "Fish": "Fisch"
-      }
+      },
+    "display_columns": {
+        "date": "Datum",
+        "day_theme": "Thema",
+        "final_prediction": "Prognostizierte Mahlzeiten",
+        "predicted_meals_veg": "Veg.",
+        "predicted_meals_non_veg": "Nicht-Veg.",
+        "temperature_max": "Temp (°C)",
+        "weather_condition": "Wetter",
+        "holiday_desc": "Feiertag",
+        "is_school_break": "Schulferien",
+        "is_bridge_day": "Brückentag",
+        "prediction_timestamp": "Letzte Aktualisierung"
+    },
+    "display_columns_short": {
+        "date": "Datum",
+        "day_theme": "Thema",
+        "final_prediction": "Prognose gesamt",
+        "predicted_meals_veg": "Prognose Veg.",
+        "predicted_meals_non_veg": "Prognose Nicht-Veg.",
+        "actual_meals": "Verkauft gesamt",
+        "actual_meals_veg": "Verkauft Veg.",
+        "actual_meals_non_veg": "Verkauft Nicht-Veg."
+    }
     }
 
 }
