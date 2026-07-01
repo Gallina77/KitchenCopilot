@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 from utils.day_themes import DAY_THEMES, THEME_VEG_RATIO
+from sqlalchemy import text
 
 
 @st.cache_resource
@@ -59,6 +60,37 @@ def save_prediction(df):
         except Exception as e:
             # what to do when it fails
             return (False, str(e))
+        
+def save_actuals(df): 
+    conn = get_connection()
+
+    with conn.session as session:
+        try:
+            df['date'] = pd.to_datetime(df['date']).dt.date
+            sql_query = text("""
+                INSERT INTO actual_sales (date, actual_meals, actual_meals_veg, actual_meals_non_veg)
+                VALUES (:date, :actual_meals, :actual_meals_veg, :actual_meals_non_veg)
+                ON CONFLICT(date) DO UPDATE SET
+                    actual_meals = excluded.actual_meals,
+                    actual_meals_veg = excluded.actual_meals_veg,
+                    actual_meals_non_veg = excluded.actual_meals_non_veg
+            """)
+
+            for _, row in df.iterrows():
+                session.execute(sql_query,
+                    {
+                        "date": row["date"],
+                        "actual_meals": row["actual_meals"],
+                        "actual_meals_veg": row["actual_meals_veg"],
+                        "actual_meals_non_veg": row["actual_meals_non_veg"],
+                    }
+                )
+            session.commit()
+            return (True, None)
+        
+        except Exception as e:
+            # what to do when it fails
+            return (False, str(e))
 
 
 def get_future_predictions():
@@ -89,15 +121,25 @@ def get_future_predictions():
 
     return all_predictions
 
+def get_missing_actuals():
+    conn = get_connection()
+    sql_query = "SELECT p.date, p.final_prediction, p.day_theme, p.predicted_meals_veg, p.predicted_meals_non_veg, "\
+    "a.actual_meals, a.actual_meals_veg, a.actual_meals_non_veg FROM predictions p LEFT JOIN actual_sales a ON p.date = a.date  "\
+    "WHERE a.date IS NULL ORDER BY p.date ASC"
+    df = conn.query(sql_query, ttl=0)
+    df['date'] = pd.to_datetime(df['date'])
+    return df
+
+
 def get_actuals_and_predictions(start_date, end_date):
     conn = get_connection()
 
     sql_query = "SELECT p.date, p.final_prediction, p.prediction_timestamp, a.actual_meals " \
+    "p.predicted_meals_veg, p.predicted_meals_non_veg " \
     "FROM predictions p INNER JOIN actual_sales a ON p.date = a.date " \
     "WHERE p.prediction_timestamp = (SELECT MAX(prediction_timestamp) FROM predictions " \
     "WHERE date = p.date) AND a.date >= :start_date AND a.date <= :end_date " \
     "ORDER BY p.date ASC"
-
 
     params={"start_date": start_date, "end_date": end_date} 
     df = conn.query(sql_query, params=params,ttl=0)
