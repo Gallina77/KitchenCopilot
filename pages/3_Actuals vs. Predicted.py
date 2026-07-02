@@ -216,6 +216,40 @@ if st.session_state['form_submitted']:
 
     else:
         st.error(t["no_data"])
+
+    st.subheader(t["error_chart_title"])
+    if not df.empty:
+        error_data = df[['date', 'difference', 'difference_veg', 'difference_non_veg']].copy()
+        locale = st.session_state.lang.lower()
+        error_data['date'] = error_data['date'].apply(
+            lambda d: format_date(d, format='EEE MM/dd', locale=locale)
+        )
+
+        fig_error = go.Figure()
+        fig_error.add_trace(go.Bar(
+            x=error_data['date'], y=error_data['difference'],
+            name=t["error_chart_label_total"], marker_color='#1f77b4'
+        ))
+        fig_error.add_trace(go.Bar(
+            x=error_data['date'], y=error_data['difference_veg'],
+            name=t["error_chart_label_veg"], marker_color='#2ca02c'
+        ))
+        fig_error.add_trace(go.Bar(
+            x=error_data['date'], y=error_data['difference_non_veg'],
+            name=t["error_chart_label_non_veg"], marker_color='#ff7f0e'
+        ))
+
+        fig_error.update_layout(
+            barmode='group',
+            yaxis_title=t["error_chart_y_axis"]
+        )
+        fig_error.add_hline(y=0, line_width=1, line_color='gray')
+
+        st.plotly_chart(fig_error, use_container_width=True)
+
+    else:
+        st.error(t["no_data"])
+    st.divider()
     
 
     # Format the display dataframe
@@ -223,25 +257,38 @@ if st.session_state['form_submitted']:
     df = st.session_state['analysis_df'].copy()
     locale = st.session_state.lang.lower()
     df['date'] = df['date'].apply(
-    lambda d: format_date(d, format='EEEE, dd.MMMM', locale=locale)
+        lambda d: format_date(d, format='EEEE, dd.MMMM', locale=locale)
     )
-    styled_df = apply_custom_styling(df[list(daily_comparison_columns.keys())])
 
+    table_columns = [
+        'date', 'final_prediction', 'actual_meals', 'pct_error',
+        'predicted_meals_veg', 'actual_meals_veg', 'pct_error_veg',
+        'predicted_meals_non_veg', 'actual_meals_non_veg', 'pct_error_non_veg'
+    ]
+    table_df = df[table_columns].copy()
+    for col in ['pct_error', 'pct_error_veg', 'pct_error_non_veg']:
+        table_df[col] = (table_df[col] * 100).round(0)
 
-    #Display 
+    styled_df = apply_custom_styling(table_df)
+
     st.dataframe(
         styled_df,
         column_config={
-        "date": daily_comparison_columns["date"],
-        "predicted_meals": daily_comparison_columns["final_prediction"],
-        "actual_meals": daily_comparison_columns["actual_meals"],
-        "difference": daily_comparison_columns["difference"],
-        "pct_error": daily_comparison_columns["pct_error"],
-
+            "date": st.column_config.TextColumn(label=daily_comparison_columns["date"], width="medium"),
+            "final_prediction": st.column_config.NumberColumn(label=daily_comparison_columns["final_prediction"], width="small"),
+            "actual_meals": st.column_config.NumberColumn(label=daily_comparison_columns["actual_meals"], width="small"),
+            "pct_error": st.column_config.NumberColumn(label=daily_comparison_columns["pct_error"], width="small"),
+            "predicted_meals_veg": st.column_config.NumberColumn(label=daily_comparison_columns["predicted_meals_veg"], width="small"),
+            "actual_meals_veg": st.column_config.NumberColumn(label=daily_comparison_columns["actual_meals_veg"], width="small"),
+            "pct_error_veg": st.column_config.NumberColumn(label=daily_comparison_columns["pct_error_veg"], width="small"),
+            "predicted_meals_non_veg": st.column_config.NumberColumn(label=daily_comparison_columns["predicted_meals_non_veg"], width="small"),
+            "actual_meals_non_veg": st.column_config.NumberColumn(label=daily_comparison_columns["actual_meals_non_veg"], width="small"),
+            "pct_error_non_veg": st.column_config.NumberColumn(label=daily_comparison_columns["pct_error_non_veg"], width="small"),
         },
         width='stretch',
         hide_index=True
     )
+ 
 
     st.divider()
 

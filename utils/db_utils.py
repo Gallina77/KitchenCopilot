@@ -21,11 +21,16 @@ def style_difference(val):
 
 def apply_custom_styling(df):
     styled_df = (
-    df.style
-    .format({'pct_error': '{:.0%}'})
-    .map(style_difference, subset=['difference', 'pct_error'])
+        df.style.format({
+            'pct_error': '{:.0%}',
+            'pct_error_veg': '{:.0%}',
+            'pct_error_non_veg': '{:.0%}'
+        }).map(style_difference, subset=[
+            'pct_error', 'pct_error_veg', 'pct_error_non_veg'
+        ])
     )
     return styled_df
+
 
 def get_holidays(start_date, end_date): 
     conn = get_connection()
@@ -151,6 +156,12 @@ def get_actuals_and_predictions(start_date, end_date):
     df['weekday'] = df['date'].dt.strftime('%A')
     df['difference'] = df['actual_meals'] - df['final_prediction']
     df['pct_error'] = (df['actual_meals'] - df['final_prediction'])/df['final_prediction'].replace(0, np.nan)
+  
+    # New: per-category differences for the error breakdown chart
+
+    df['pct_error_veg'] = (df['actual_meals_veg'] - df['predicted_meals_veg']) / df['predicted_meals_veg'].replace(0, np.nan)
+    df['pct_error_non_veg'] = (df['actual_meals_non_veg'] - df['predicted_meals_non_veg']) / df['predicted_meals_non_veg'].replace(0, np.nan)
+
 
     return df
 
