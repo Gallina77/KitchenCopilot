@@ -12,8 +12,12 @@
         "delta_description": "vs. last prediction"
     },
     "chart_title": "Actual vs. Predicted over the selected period",
-    "chart_label_actuals": "Actual Meals",
-    "chart_label_predicted": "Predicted Meals",
+    "chart_label_actuals": "Actual",
+    "chart_label_predicted": "Predicted",
+    "chart_label_predicted_veg": "Predicted (Veg)",
+    "chart_label_actuals_veg": "Actual (Veg)",
+    "chart_label_predicted_non_veg": "Predicted (Non-Veg)",
+    "chart_label_actuals_non_veg": "Actual (Non-Veg)",
     "no_data": "No data available for the selected period.",
     "daily_comparison_title": "Daily Comparison",
     "daily_comparison_columns": {
@@ -42,8 +46,12 @@
         "delta_description": "vs. letzte Prognose"
     },
     "chart_title": "Aktuell vs. Prognosewerte im Zeitverlauf",
-    "chart_label_actuals": "Tatsächliche Verkäufe",
-    "chart_label_predicted": "Prognostizierte Verkäufe",
+    "chart_label_actuals": "Tatsächliche",
+    "chart_label_predicted": "Prognostizierte",
+    "chart_label_predicted_veg": "Prognostiziert (Veg)",
+    "chart_label_actuals_veg": "Tatsächlich (Veg)",
+    "chart_label_predicted_non_veg": "Prognostiziert (Non-Veg)",
+    "chart_label_actuals_non_veg": "Tatsächlich (Non-Veg)",
     "no_data": "Für den ausgewählten Zeitraum sind keine Daten verfügbar.",
     "daily_comparison_title": "Täglicher Vergleich",
     "daily_comparison_columns": {

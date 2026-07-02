@@ -134,8 +134,9 @@ def get_missing_actuals():
 def get_actuals_and_predictions(start_date, end_date):
     conn = get_connection()
 
-    sql_query = "SELECT p.date, p.final_prediction, p.prediction_timestamp, a.actual_meals " \
-    "p.predicted_meals_veg, p.predicted_meals_non_veg " \
+    sql_query = "SELECT p.date, p.final_prediction, p.prediction_timestamp, p.day_theme, " \
+    "p.predicted_meals_veg, p.predicted_meals_non_veg, " \
+    "a.actual_meals, a.actual_meals_veg, a.actual_meals_non_veg  " \
     "FROM predictions p INNER JOIN actual_sales a ON p.date = a.date " \
     "WHERE p.prediction_timestamp = (SELECT MAX(prediction_timestamp) FROM predictions " \
     "WHERE date = p.date) AND a.date >= :start_date AND a.date <= :end_date " \

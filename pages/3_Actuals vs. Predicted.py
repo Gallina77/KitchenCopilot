@@ -162,40 +162,60 @@ if st.session_state['form_submitted']:
     st.divider()
 
     st.subheader(t["chart_title"])
-    # Prepare data for chart
     if not df.empty:
 
-        chart_data = df[['date', 'final_prediction', 'actual_meals']].copy()
+        chart_data = df[['date', 'final_prediction', 'actual_meals',
+                          'predicted_meals_veg', 'actual_meals_veg',
+                          'predicted_meals_non_veg', 'actual_meals_non_veg']].copy()
         locale = st.session_state.lang.lower()
 
         chart_data['date'] = chart_data['date'].apply(
-        lambda d: format_date(d, format='EEE MM/dd', locale=locale)
+            lambda d: format_date(d, format='EEE MM/dd', locale=locale)
         )
         chart_data = chart_data.set_index('date')
 
         fig = go.Figure()
 
+        # --- Total ---
         fig.add_trace(go.Scatter(
-            x=chart_data.index,
-            y=chart_data['final_prediction'],
-            mode='lines+markers',
-            name=t["chart_label_predicted"],
+            x=chart_data.index, y=chart_data['final_prediction'],
+            mode='lines+markers', name=t["chart_label_predicted"],
+            line=dict(color='#1f77b4', width=3, dash='dash')
+        ))
+        fig.add_trace(go.Scatter(
+            x=chart_data.index, y=chart_data['actual_meals'],
+            mode='lines+markers', name=t["chart_label_actuals"],
             line=dict(color='#1f77b4', width=3)
         ))
 
+        # --- Veg ---
         fig.add_trace(go.Scatter(
-            x=chart_data.index,
-            y=chart_data['actual_meals'],
-            mode='lines+markers',
-            name=t["chart_label_actuals"],
-            line=dict(color='#ff7f0e', width=3)
+            x=chart_data.index, y=chart_data['predicted_meals_veg'],
+            mode='lines+markers', name=t["chart_label_predicted_veg"],
+            line=dict(color='#2ca02c', width=2, dash='dash')
+        ))
+        fig.add_trace(go.Scatter(
+            x=chart_data.index, y=chart_data['actual_meals_veg'],
+            mode='lines+markers', name=t["chart_label_actuals_veg"],
+            line=dict(color='#2ca02c', width=2)
+        ))
+
+        # --- Non-Veg ---
+        fig.add_trace(go.Scatter(
+            x=chart_data.index, y=chart_data['predicted_meals_non_veg'],
+            mode='lines+markers', name=t["chart_label_predicted_non_veg"],
+            line=dict(color='#ff7f0e', width=2, dash='dash')
+        ))
+        fig.add_trace(go.Scatter(
+            x=chart_data.index, y=chart_data['actual_meals_non_veg'],
+            mode='lines+markers', name=t["chart_label_actuals_non_veg"],
+            line=dict(color='#ff7f0e', width=2)
         ))
 
         st.plotly_chart(fig, use_container_width=True)
 
     else:
         st.error(t["no_data"])
-    st.divider()
     
 
     # Format the display dataframe
