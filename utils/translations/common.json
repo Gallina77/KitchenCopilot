@@ -38,11 +38,11 @@
         "date": "Date",
         "day_theme": "Theme",
         "final_prediction": "Forecast Total",
-        "predicted_meals_veg": "Forecast Veg",
-        "predicted_meals_non_veg": "Forecast Non-Veg",
+        "predicted_meals_veg": "🥦 Forecast",
+        "predicted_meals_non_veg": "🍗 Forecast Non-Veg",
         "actual_meals": "Actual Total",
-        "actual_meals_veg": "Actual Veg",
-        "actual_meals_non_veg": "Actual Non-Veg"
+        "actual_meals_veg": "🥦 Actual",
+        "actual_meals_non_veg": "🍗 Actual"
     }
 
     },
@@ -88,11 +88,11 @@
         "date": "Datum",
         "day_theme": "Thema",
         "final_prediction": "Prognose gesamt",
-        "predicted_meals_veg": "Prognose Veg.",
-        "predicted_meals_non_veg": "Prognose Nicht-Veg.",
+        "predicted_meals_veg": "🥦 Prognose",
+        "predicted_meals_non_veg": "🍗Prognose",
         "actual_meals": "Verkauft gesamt",
-        "actual_meals_veg": "Verkauft Veg.",
-        "actual_meals_non_veg": "Verkauft Nicht-Veg."
+        "actual_meals_veg": "🥦 Verkauft",
+        "actual_meals_non_veg": "🍗 Verkauft"
     }
     }
 
