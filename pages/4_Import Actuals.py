@@ -73,23 +73,16 @@ st.title(t["page_title"])
 """
 
 st.caption(t["upload_description"])
-uploaded_file = st.file_uploader("Browse Files")
+uploaded_file = st.file_uploader("Browse Files", type="csv")
 if uploaded_file is not None:
-    # To read file as bytes:
-    bytes_data = uploaded_file.getvalue()
-    st.write(bytes_data)
-
-    # To convert to a string based IO:
-    stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-    st.write(stringio)
-
-    # To read file as string:
-    string_data = stringio.read()
-    st.write(string_data)
 
     # Can be used wherever a "file-like" object is accepted:
-    dataframe = pd.read_csv(uploaded_file)
-    st.write(dataframe)
+    dataframe = pd.read_csv(uploaded_file, sep=';', index_col=None)
+    st.table(dataframe)
+    if st.button(t["save_label"],type="primary", key="upload"):
+        pass
+
+
 
 
 # ============================================
@@ -146,7 +139,7 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
     )
     
     # 5. Save Button logic
-    if st.button("Save Changes"):
+    if st.button(t["save_label"], type="primary"):
         # Validate: actual_meals should equal actual_meals_veg + actual_meals_non_veg
         mismatch_mask = edited_df['actual_meals'] != (
             edited_df['actual_meals_veg'] + edited_df['actual_meals_non_veg']
@@ -154,7 +147,7 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
 
         if mismatch_mask.any():
             bad_rows = edited_df.loc[mismatch_mask, ['date', 'actual_meals', 'actual_meals_veg', 'actual_meals_non_veg']]
-            st.error("Validation failed: actual_meals must equal actual_meals_veg + actual_meals_non_veg")
+            st.error(t["error_msg_validation_meals_count"])
             st.dataframe(bad_rows)
         else:
             original_df = st.session_state["meals_df"]
