@@ -1,6 +1,9 @@
 import pandas as pd
 from datetime import datetime
-from utils import get_holidays, get_weather
+from utils import get_holidays, get_weather, day_themes
+
+# After building the date DataFrame, add: `df['day_theme'] = df['date'].dt.day_name().map(DAY_THEMES)`
+# `day_theme` will then be one-hot encoded at inference time alongside `weekday`, `month`, `weather_condition`
 
 def prepare_data(start_date, number_of_days):
 
@@ -25,6 +28,7 @@ def prepare_data(start_date, number_of_days):
     df = pd.DataFrame({'date': business_days})
     df['weekday'] = df['date'].dt.day_name()      # Add back
     df['month'] = df['date'].dt.month_name() 
+    df['day_theme'] = df['date'].dt.day_name().map(day_themes.DAY_THEMES)
 
     # Merge weather data
     df = df.merge(
@@ -41,12 +45,12 @@ def prepare_data(start_date, number_of_days):
     holidays['date'] = pd.to_datetime(holidays['date'])
 
     # Convert integer columns to boolean
-    holidays['is_semester_break'] = holidays['is_semester_break'].astype(bool)
+    holidays['is_school_break'] = holidays['is_school_break'].astype(bool)
     holidays['is_bridge_day'] = holidays['is_bridge_day'].astype(bool)
 
     # Merge holiday data
     df = df.merge(
-        holidays[['date', 'description', 'is_bank_holiday', 'is_semester_break', 'is_bridge_day']],
+        holidays[['date', 'description', 'is_bank_holiday', 'is_school_break', 'is_bridge_day']],
         how='left',
         on='date'
     ).rename(columns={'description': 'holiday_desc'})
@@ -59,10 +63,9 @@ def prepare_data(start_date, number_of_days):
     df = df.infer_objects(copy=False)
 
     # Handle missing values
-    df['is_semester_break'] = df['is_semester_break'].astype('boolean').fillna(False)
+    df['is_school_break'] = df['is_school_break'].astype('boolean').fillna(False)
     df['is_bridge_day'] = df['is_bridge_day'].astype('boolean').fillna(False)
     df['holiday_desc'] = df['holiday_desc'].fillna('').astype(str)
-    df['expected_capacity'] = None
 
     return df
 
@@ -77,10 +80,21 @@ def render_badges(row,t):
 
     if row.get('temperature_max'):
         badges.append(f'<span class="badge badge-weather">{row["weather_icon"]}{row["temperature_max"]}°C {weather}</span>')
-    if row.get('is_semester_break'):
-        badges.append(f'<span class="badge badge-break">{t["semester_break"]}</span>')
-    if row.get('is_bridge_day'):
-        badges.append(f'<span class="badge badge-bridge">{t["bridge_day"]}</span>')
-    if row.get('holiday_desc'):
-        badges.append(f'<span class="badge badge-holiday">{row["holiday_desc"]}</span>')
+
+    # School break / bridge day and holiday_desc describe the same event (the
+    # holidays CSV always sets a description like "Summer Break" alongside
+    # is_school_break) — show one badge, preferring the more specific text.
+    holiday_desc = row.get('holiday_desc')
+    holiday_desc_translated = t['holiday_descriptions'].get(holiday_desc, holiday_desc) if holiday_desc else holiday_desc
+    if row.get('is_school_break'):
+        badges.append(f'<span class="badge badge-break">{holiday_desc_translated or t["is_school_break"]}</span>')
+    elif row.get('is_bridge_day'):
+        badges.append(f'<span class="badge badge-bridge">{holiday_desc_translated or t["bridge_day"]}</span>')
+    elif holiday_desc_translated:
+        badges.append(f'<span class="badge badge-holiday">{holiday_desc_translated}</span>')
+
+    if row.get('day_theme'):
+        theme_translated = t['day_themes'].get(row['day_theme'], row['day_theme'])
+        badges.append(f'<span class="badge badge-day_theme">{theme_translated}</span>')
+
     return " ".join(badges) if badges else ""

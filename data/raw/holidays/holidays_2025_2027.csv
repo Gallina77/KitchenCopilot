@@ -1,4 +1,4 @@
-date,description,is_bank_holiday,is_semester_break,is_bridge_day
+date,description,is_bank_holiday,is_school_break,is_bridge_day
 2026-01-01,New Year,TRUE,FALSE,FALSE
 2026-01-05,Bridge Day (Heilige 3 K),FALSE,FALSE,TRUE
 2026-01-06,Heilige 3 K,TRUE,FALSE,FALSE

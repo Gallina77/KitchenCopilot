@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from utils import prepare_data, render_badges, get_prediction, save_prediction, get_translations
+from utils import prepare_data, render_badges, get_prediction, save_prediction, get_translations, split_veg_non_veg
 from datetime import date
 from babel.dates import format_date
 from components.sidebar import render_language_toggle
@@ -34,29 +34,35 @@ def inject_custom_css():
             margin: 2px 4px 2px 0;
         }
         
-        /* Badge variants */
+        /* Badge variants - each a distinct hue for clear visual separation */
         .badge-weather {
-            background-color: rgb(255, 241, 203);
-            color: #111111;
-            border: 1px solid rgba(255, 241, 203, 0.3);
+            background-color: rgb(255, 211, 130);
+            color: #5c3a00;
+            border: 1px solid rgba(255, 170, 0, 0.4);
         }
-        
+
         .badge-break {
-            background-color: rgb(255, 143, 143);
-            color: #111111;
-            border: 1px solid rgba(255, 143, 143, 0.3);
+            background-color: rgb(214, 188, 250);
+            color: #4a1a8c;
+            border: 1px solid rgba(124, 58, 237, 0.4);
         }
-        
+
         .badge-bridge {
-            background-color: rgb(194, 226, 250);
-            color: #1c83e1;
-            border: 1px solid rgba(28, 131, 225, 0.3);
+            background-color: rgb(186, 222, 255);
+            color: #0b5fbd;
+            border: 1px solid rgba(11, 95, 189, 0.4);
         }
-        
+
         .badge-holiday {
-            background-color: rgb(255, 143, 143);
+            background-color: rgb(220, 38, 38);
             color: #ffffff;
-            border: 1px solid rgba(255, 75, 75, 0.3);
+            border: 1px solid rgba(150, 20, 20, 0.5);
+        }
+
+        .badge-day_theme {
+            background-color: rgb(167, 235, 167);
+            color: #14532d;
+            border: 1px solid rgba(20, 83, 45, 0.4);
         }
         
         /* Day row container styling */
@@ -137,39 +143,57 @@ if st.session_state['predictions_generated']:
         
         col = left_col if i % 2 == 0 else right_col
 
+        # Use the same formatted date_key for widget keys here and when
+        # collecting overrides on save below - previously the toggle/number
+        # widgets were keyed off the raw Timestamp (e.g. "2026-07-06 00:00:00")
+        # while the save step looked them up by formatted date ("2026-07-06"),
+        # so overrides were silently never saved.
+        date_key = row['date'].strftime('%Y-%m-%d') if hasattr(row['date'], 'strftime') else str(row['date'])
+
         with col:
             with st.container(border=True):
-                
+
                 st.markdown(f"**{row['date_display']}**")
                 st.markdown(render_badges(row,t), unsafe_allow_html=True)
-                
-                
-                # Row 2: Capacity | Prediction + Toggle
+
+
+                # Row 2: Prediction + Toggle
                 left_part, right_part = st.columns([1, 1])
-                
-                with left_part:
-                       st.markdown(f"{t['expected_capacity_label']}:  "
-                            f"<strong style='color: #6082B6; font-size: 18px;'>{int(row['expected_capacity'])}</strong>",
-                            unsafe_allow_html=True
-                        )
-                     
+
+
                 with right_part:
                     pred_col, toggle_col = st.columns([3, 1])
-            
-                    with pred_col:
-                        st.markdown(
-                            f"{t['prediction_label']}:  "
-                            f"<strong style='color: #21c354; font-size: 18px;'>{int(row['predicted_meals'])}</strong>",
-                            unsafe_allow_html=True
-                        )
-            
+
                     with toggle_col:
                         override_on = st.toggle(
                             "✏️",
-                            key=f"override_{row['date']}",
+                            key=f"override_{date_key}",
                             label_visibility="collapsed"
                         )
-        
+
+                    # Reflect the overridden total (if any) in the veg/non-veg
+                    # split shown here, using the same theme-based ratio the
+                    # model prediction used - otherwise the split still adds
+                    # up to the old total instead of the overridden one.
+                    effective_total = (
+                        st.session_state.get(f"override_value_{date_key}", int(row['predicted_meals']))
+                        if override_on else int(row['predicted_meals'])
+                    )
+                    veg, non_veg = split_veg_non_veg(row.get('day_theme'), effective_total)
+
+                    with pred_col:
+                        st.markdown(
+                            f"{t['prediction_label']}:  "
+                            f"<strong style='color: #21c354; font-size: 18px;'>{int(effective_total)}</strong>",
+                            unsafe_allow_html=True
+                        )
+                        st.markdown(
+                            f"<span style='font-size: 13px; color: #a3a8b8;'>"
+                            f"🥦 {int(veg)} veg &nbsp;|&nbsp; "
+                            f"🍗 {int(non_veg)} non-veg</span>",
+                            unsafe_allow_html=True
+                        )
+
                     # Row 3: Override (only when toggle ON)
                 if override_on:
                     st.markdown(
@@ -177,19 +201,19 @@ if st.session_state['predictions_generated']:
                         unsafe_allow_html=True
                     )
                     override_col1, override_col2 = st.columns([1, 2])
-                    
+
                     with override_col1:
                         st.number_input(
                             label=t["override_value_label"],
-                            key=f"override_value_{row['date']}",
+                            key=f"override_value_{date_key}",
                             value=int(row['predicted_meals']),
                             step=25
                         )
-                    
+
                     with override_col2:
                         st.text_input(
                             label=t["override_reason_label"],
-                            key=f"override_reason_{row['date']}",
+                            key=f"override_reason_{date_key}",
                             placeholder=t["override_reason_placeholder"]
                         )
     # Action buttons
@@ -213,8 +237,16 @@ if st.session_state['predictions_generated']:
                     
                     # Check if override toggle is ON for this day
                     if st.session_state.get(f"override_{date_key}", False):
-                        df.at[idx, 'override_meal_prediction'] = st.session_state.get(f"override_value_{date_key}")
+                        override_value = st.session_state.get(f"override_value_{date_key}")
+                        df.at[idx, 'override_meal_prediction'] = override_value
                         df.at[idx, 'override_reason'] = st.session_state.get(f"override_reason_{date_key}")
+
+                        # Re-split veg/non-veg against the overridden total so
+                        # they stay consistent with final_prediction instead
+                        # of still summing to the original model prediction.
+                        veg, non_veg = split_veg_non_veg(row.get('day_theme'), override_value)
+                        df.at[idx, 'predicted_meals_veg'] = veg
+                        df.at[idx, 'predicted_meals_non_veg'] = non_veg
                     else:
                         df.at[idx, 'override_meal_prediction'] = None
                         df.at[idx, 'override_reason'] = None
@@ -257,51 +289,12 @@ else:
     
     if submit:
         st.session_state['form_submitted'] = True
-        st.session_state['forecast_df'] = prepare_data(start_date, int(number_of_days))
+        df = prepare_data(start_date, int(number_of_days))
+        df_pred = get_prediction(df)
+        st.session_state['forecast_df'] = df_pred
+        st.session_state['predictions_generated'] = True
         st.rerun()
-    
-    # Capacity inputs (only shows in State 1)
-    if st.session_state['form_submitted']:
-        df = st.session_state['forecast_df']
-        locale = st.session_state.lang.lower()
-
-        #Create a formatted display column (only if date is still datetime)
-        if pd.api.types.is_datetime64_any_dtype(df['date']):
-            df['date_display'] = df['date'].apply(lambda d: format_date(d, format='EEEE, dd. MMMM', locale=locale))
-        
-        for i, (idx, row) in enumerate(df.iterrows()):
-            if i % 2 == 0:
-                left_col, right_col = st.columns(2)
-            
-            col = left_col if i % 2 == 0 else right_col
-            
-            with col:
-                with st.container(border=True):
-                    st.markdown(f"**{row['date_display']}**")
-                    st.markdown(render_badges(row, t), unsafe_allow_html=True)
-                    st.number_input(
-                        label=t["expected_capacity_label"],
-                        key=f"cap_{row['date']}",
-                        label_visibility="visible",
-                        min_value=50,
-                        max_value=400,
-                        step=25
-                    )
-        
-        if st.button(t["generate_prediction_button"], type="primary"):
-        # Collect capacity values
-            for idx, row in df.iterrows():
-                df.at[idx, 'expected_capacity'] = st.session_state[f"cap_{row['date']}"]
-        
-            # Check for missing values
-            if df['expected_capacity'].isnull().any():
-                st.error(t["error_missing_capacity"])
-            else:
-                # Run prediction
-                df_pred = get_prediction(df)
-                st.session_state['forecast_df'] = df_pred
-                st.session_state['predictions_generated'] = True
-                st.rerun()  # Success message will show in State 2
+ 
 
 
 

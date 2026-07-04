@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 from utils.paths import METADATA_PATH
 from utils.converters import normalize_datetime
-import streamlit as st
+from utils.db_utils import get_connection
 import requests
 
 def load_model_metadata():
@@ -20,7 +20,7 @@ def load_model_metadata():
 #Retrieving last prediction information
 def get_last_prediction_info():
     try:
-        conn = st.connection("kitchencopilot_db", type="sql")
+        conn = get_connection()
         results = conn.query("""
             SELECT prediction_timestamp, date 
             FROM predictions 
@@ -67,7 +67,7 @@ def check_weather_api_status():
 #Checking database connection status
 def check_database_status():
     try:
-        conn = st.connection("kitchencopilot_db", type="sql")
+        conn = get_connection()
         # Test the connection with a simple query
         conn.query("SELECT 1")
         return True

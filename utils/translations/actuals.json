@@ -12,22 +12,37 @@
         "delta_description": "vs. last prediction"
     },
     "chart_title": "Actual vs. Predicted over the selected period",
-    "chart_label_actuals": "Actual Meals",
-    "chart_label_predicted": "Predicted Meals",
+    "chart_label_actuals": "Actual",
+    "chart_label_predicted": "Predicted",
+    "chart_label_predicted_veg": "Predicted (Veg)",
+    "chart_label_actuals_veg": "Actual (Veg)",
+    "chart_label_predicted_non_veg": "Predicted (Non-Veg)",
+    "chart_label_actuals_non_veg": "Actual (Non-Veg)",
+    "error_chart_title": "Prediction error by category",
+    "error_chart_label_total": "Total",
+    "error_chart_label_veg": "Veg",
+    "error_chart_label_non_veg": "Non-veg",
+    "error_chart_y_axis": "Actual minus predicted",
     "no_data": "No data available for the selected period.",
     "daily_comparison_title": "Daily Comparison",
+    "breakdown_expander_label": "Show veg / non-veg breakdown",
     "daily_comparison_columns": {
         "date": "Date",
-        "final_prediction": "Predicted Meals",
-        "actual_meals": "Actual Meals",
-        "difference": "Difference",
-        "pct_error": "% Error Actual"
+        "final_prediction": "Forecast",
+        "actual_meals": "Actual",
+        "pct_error": "% Error",
+        "predicted_meals_veg": "🥦 Forecast",
+        "actual_meals_veg": "🥦 Actual",
+        "pct_error_veg": "🥦 % Error",
+        "predicted_meals_non_veg": "🍗 Forecast",
+        "actual_meals_non_veg": "🍗 Actual",
+        "pct_error_non_veg": "🍗 % Error"
     },
     "llm_title":"AI Data Insights",
     "json_error": "Could not parse insights. Raw response:",
     "llm_error_title": "Service Unavailable",
     "llm_error_message": "AI insights are temporarily unavailable. Please try again later."
-   
+
   },
   "DE": {
     "actuals_title": "Aktuell vs. Prognose",
@@ -42,21 +57,37 @@
         "delta_description": "vs. letzte Prognose"
     },
     "chart_title": "Aktuell vs. Prognosewerte im Zeitverlauf",
-    "chart_label_actuals": "Tatsächliche Verkäufe",
-    "chart_label_predicted": "Prognostizierte Verkäufe",
+    "chart_label_actuals": "Tatsächliche",
+    "chart_label_predicted": "Prognostizierte",
+    "chart_label_predicted_veg": "Prognostiziert (Veg)",
+    "chart_label_actuals_veg": "Tatsächlich (Veg)",
+    "chart_label_predicted_non_veg": "Prognostiziert (Non-Veg)",
+    "chart_label_actuals_non_veg": "Tatsächlich (Non-Veg)",
+    "error_chart_title": "Prognosefehler nach Kategorie",
+    "error_chart_label_total": "Gesamt",
+    "error_chart_label_veg": "Vegetarisch",
+    "error_chart_label_non_veg": "Nicht-vegetarisch",
+    "error_chart_y_axis": "Ist minus Prognose",
     "no_data": "Für den ausgewählten Zeitraum sind keine Daten verfügbar.",
     "daily_comparison_title": "Täglicher Vergleich",
+    "breakdown_expander_label": "Aufschlüsselung Veg. / Non-Veg. anzeigen",
     "daily_comparison_columns": {
         "date": "Datum",
-        "final_prediction": "Prognostiziert",
-        "actual_meals": "Tatsächlich",
-        "difference": "Differenz",
-        "pct_error": "% Fehlerquote "
+        "final_prediction": "Prognose",
+        "actual_meals": "Ist",
+        "pct_error": "% Fehler",
+        "predicted_meals_veg": "🥦 Prognose",
+        "actual_meals_veg": "🥦 Ist",
+        "pct_error_veg": "🥦 % Fehler",
+        "predicted_meals_non_veg": "🍗 Prognose",
+        "actual_meals_non_veg": "🍗 Ist",
+        "pct_error_non_veg": "🍗 % Fehler"
     },
     "llm_title": "KI gestützte Erkenntnisse",
     "json_error":"Insights konnten nicht geparst werden. Rohantwort:",
     "llm_error_title": "Dienst nicht verfügbar",
     "llm_error_message": "KI-Einblicke sind vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
-   }   
+ 
+}   
 
 }

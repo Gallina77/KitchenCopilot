@@ -34,7 +34,7 @@
 
     "what_is": {
       "title": "What is Küchenkompass?",
-      "text": "Küchenkompass helps cafeteria managers predict daily meal demand by combining historical sales data with real-time environmental factors. The system reduces food waste and improves operational efficiency by providing accurate forecasts based on weather conditions, holidays, and capacity planning."
+      "text": "Küchenkompass helps cafeteria managers predict daily meal demand by combining historical sales data with real-time environmental factors. The system reduces food waste and improves operational efficiency by providing accurate forecasts - split into vegetarian and non-vegetarian portions - based on weather conditions, holidays, and weekday patterns."
     },
 
     "how_to_use": {
@@ -47,13 +47,13 @@
         "import": "IMPORT"
       },
       "step1_title": "Step 1: Prepare Your Forecast",
-      "step1_text": "Navigate to the Prepare page and select your forecast start date and period (up to 7 days). The system automatically fetches weather forecasts and checks for holidays in Hessen. Then enter expected daily capacity. The ML model combines this with weather data, weekday patterns, and holiday information to forecast meal demand.",
+      "step1_text": "Navigate to the Prepare page and select your forecast start date and period (up to 7 days). The system automatically fetches weather forecasts and checks for holidays in Hessen. The ML model combines this with weather data, weekday patterns, and holiday information to forecast meal demand.",
       "step2_title": "Step 2: Meal Demand Prediction",
-      "step2_text": "Review the prepared forecast data including dates, weather conditions, and holiday information. The system displays your predictions with interactive visualizations showing expected meal demand for each working day. You can export the results to Excel for further analysis or sharing with your team.",
+      "step2_text": "Review the prepared forecast data including dates, weather conditions, and holiday information. The system displays your predictions - split into vegetarian and non-vegetarian portions - with interactive visualizations showing expected meal demand for each working day.",
       "step3_title": "Step 3: Track Performance",
       "step3_text": "Use the Actuals page to compare predicted vs actual meal counts. This helps validate model accuracy and identify improvement opportunities. Review performance metrics, analyze trends over time, and download comparison reports that show how well the forecasts matched reality.",
       "step4_title": "Step 4: Import Actual Sales",
-      "step4_text": "Upload actual sales data through the Import page to build your historical database and enable performance tracking. This data is stored in the SQLite database and used to calculate accuracy metrics, identify patterns, and can be used for future model retraining to improve forecast quality over time."
+      "step4_text": "Upload actual sales data through the Import page to build your historical database and enable performance tracking. This data is stored in a Postgres database and used to calculate accuracy metrics, identify patterns, and can be used for future model retraining to improve forecast quality over time."
     },
 
     "features": {
@@ -62,11 +62,11 @@
       "automated_title": "Automated Feature Engineering",
       "automated_text": "The system automatically enriches your predictions with weather forecasts from OpenWeatherMap and holiday information for Hessen. Weekends and bank holidays are excluded from predictions.",
       "performance_title": "Performance Tracking",
-      "performance_text": "Compare actual vs predicted meals with exportable Excel reports. Track model accuracy over time and identify patterns in forecast performance.",
+      "performance_text": "Compare actual vs predicted meals, including a vegetarian/non-vegetarian breakdown. Track model accuracy over time and identify patterns in forecast performance.",
       "dashboard_title": "Interactive Dashboard",
       "dashboard_text": "Streamlit-based interface for generating predictions with custom date ranges. Visualize forecasts with interactive charts and export results for further analysis.",
       "persistence_title": "Data Persistence",
-      "persistence_text": "SQLite database stores all predictions and actual sales data for historical analysis. Build a comprehensive record of forecasting performance over time."
+      "persistence_text": "A Postgres database stores all predictions and actual sales data for historical analysis. Build a comprehensive record of forecasting performance over time."
     },
 
     "prediction_factors": {
@@ -88,9 +88,9 @@
       ],
       "operational_title": "Operational Data",
       "operational_items": [
-        "Expected daily capacity",
         "Historical sales patterns",
-        "Weekday trends"
+        "Weekday trends",
+        "Vegetarian / non-vegetarian split ratios"
       ]
     },
 
@@ -111,9 +111,9 @@
       "workflow_title": "Understanding the Workflow",
       "workflow_items": [
         {"label": "Prepare", "text": "Set your forecast timeframe and let the system fetch weather data"},
-        {"label": "Predict", "text": "Enter capacity and generate demand forecasts for working days only"},
+        {"label": "Predict", "text": "Generate vegetarian/non-vegetarian demand forecasts for working days only"},
         {"label": "Track", "text": "Import actual sales to compare against predictions"},
-        {"label": "Improve", "text": "Use performance insights to refine capacity planning"}
+        {"label": "Improve", "text": "Use performance insights to refine future forecasts"}
       ],
       "exclusions_title": "What Gets Excluded",
       "exclusions_items": [
@@ -123,15 +123,14 @@
       ],
       "data_title": "Understanding Your Data",
       "data_items": [
-        "Predictions are stored in the SQLite database with timestamps",
-        "Actual sales can be imported through the Import page",
-        "Excel exports include all features used for each prediction"
+        "Predictions are stored in the Postgres database with timestamps",
+        "Actual sales can be imported through the Import page"
       ],
       "troubleshooting_title": "Troubleshooting",
       "troubleshooting_items": [
         "If weather data fails to load, check your OpenWeatherMap API key in secrets.toml",
         "Ensure your start date is within the 7-day forecast window",
-        "Database issues? Try reinitializing with scripts/init_db.py",
+        "Database issues? Check your APP_ENV setting and Postgres connection in secrets.toml",
         "Contact support if the model status shows as inactive"
       ]
     }
@@ -173,7 +172,7 @@
 
     "what_is": {
       "title": "Was ist Küchenkompass?",
-      "text": "Küchenkompass hilft Kantinenmanagern, den täglichen Mahlzeitenbedarf vorherzusagen, indem es historische Verkaufsdaten mit Echtzeit-Umweltfaktoren kombiniert. Das System reduziert Lebensmittelverschwendung und verbessert die betriebliche Effizienz, indem es präzise Prognosen auf Basis von Wetterbedingungen, Feiertagen und Kapazitätsplanung liefert."
+      "text": "Küchenkompass hilft Kantinenmanagern, den täglichen Mahlzeitenbedarf vorherzusagen, indem es historische Verkaufsdaten mit Echtzeit-Umweltfaktoren kombiniert. Das System reduziert Lebensmittelverschwendung und verbessert die betriebliche Effizienz, indem es präzise Prognosen - aufgeteilt in vegetarische und nicht-vegetarische Portionen - auf Basis von Wetterbedingungen, Feiertagen und Wochentagsmustern liefert."
     },
 
     "how_to_use": {
@@ -186,13 +185,13 @@
         "import": "IMPORTIEREN"
       },
       "step1_title": "Schritt 1: Prognose vorbereiten",
-      "step1_text": "Navigieren Sie zur Seite Vorbereiten und wählen Sie Ihr Startdatum und den Zeitraum (bis zu 7 Tage). Das System ruft automatisch Wettervorhersagen ab und prüft Feiertage in Hessen. Geben Sie dann die erwartete tägliche Kapazität ein. Das ML-Modell kombiniert dies mit Wetterdaten, Wochentagsmustern und Feiertagsinformationen zur Bedarfsprognose.",
+      "step1_text": "Navigieren Sie zur Seite Vorbereiten und wählen Sie Ihr Startdatum und den Zeitraum (bis zu 7 Tage). Das System ruft automatisch Wettervorhersagen ab und prüft Feiertage in Hessen. Das ML-Modell kombiniert dies mit Wetterdaten, Wochentagsmustern und Feiertagsinformationen zur Bedarfsprognose.",
       "step2_title": "Schritt 2: Bedarfsprognose",
-      "step2_text": "Überprüfen Sie die vorbereiteten Prognosedaten einschließlich Daten, Wetterbedingungen und Feiertagsinformationen. Das System zeigt Ihre Prognosen mit interaktiven Visualisierungen, die den erwarteten Mahlzeitenbedarf für jeden Arbeitstag darstellen. Sie können die Ergebnisse zur weiteren Analyse oder zum Teilen mit Ihrem Team nach Excel exportieren.",
+      "step2_text": "Überprüfen Sie die vorbereiteten Prognosedaten einschließlich Daten, Wetterbedingungen und Feiertagsinformationen. Das System zeigt Ihre Prognosen - aufgeteilt in vegetarische und nicht-vegetarische Portionen - mit interaktiven Visualisierungen, die den erwarteten Mahlzeitenbedarf für jeden Arbeitstag darstellen.",
       "step3_title": "Schritt 3: Leistung verfolgen",
       "step3_text": "Verwenden Sie die Seite Ist-Werte, um prognostizierte mit tatsächlichen Mahlzeitenanzahlen zu vergleichen. Dies hilft, die Modellgenauigkeit zu validieren und Verbesserungsmöglichkeiten zu identifizieren. Überprüfen Sie Leistungskennzahlen, analysieren Sie Trends über die Zeit und laden Sie Vergleichsberichte herunter, die zeigen, wie gut die Prognosen mit der Realität übereinstimmten.",
       "step4_title": "Schritt 4: Ist-Verkäufe importieren",
-      "step4_text": "Laden Sie tatsächliche Verkaufsdaten über die Import-Seite hoch, um Ihre historische Datenbank aufzubauen und die Leistungsverfolgung zu ermöglichen. Diese Daten werden in der SQLite-Datenbank gespeichert und zur Berechnung von Genauigkeitsmetriken, zur Mustererkennung und für zukünftiges Modell-Retraining zur Verbesserung der Prognosequalität verwendet."
+      "step4_text": "Laden Sie tatsächliche Verkaufsdaten über die Import-Seite hoch, um Ihre historische Datenbank aufzubauen und die Leistungsverfolgung zu ermöglichen. Diese Daten werden in einer Postgres-Datenbank gespeichert und zur Berechnung von Genauigkeitsmetriken, zur Mustererkennung und für zukünftiges Modell-Retraining zur Verbesserung der Prognosequalität verwendet."
     },
 
     "features": {
@@ -201,11 +200,11 @@
       "automated_title": "Automatisierte Feature-Generierung",
       "automated_text": "Das System reichert Ihre Prognosen automatisch mit Wettervorhersagen von OpenWeatherMap und Feiertagsinformationen für Hessen an. Wochenenden und Feiertage werden von den Prognosen ausgeschlossen.",
       "performance_title": "Leistungsverfolgung",
-      "performance_text": "Vergleichen Sie Ist- mit Prognose-Werten mit exportierbaren Excel-Berichten. Verfolgen Sie die Modellgenauigkeit über die Zeit und identifizieren Sie Muster in der Prognoseleistung.",
+      "performance_text": "Vergleichen Sie Ist- mit Prognose-Werten, einschließlich einer vegetarisch/nicht-vegetarisch Aufschlüsselung. Verfolgen Sie die Modellgenauigkeit über die Zeit und identifizieren Sie Muster in der Prognoseleistung.",
       "dashboard_title": "Interaktives Dashboard",
       "dashboard_text": "Streamlit-basierte Oberfläche zur Erstellung von Prognosen mit benutzerdefinierten Zeiträumen. Visualisieren Sie Prognosen mit interaktiven Diagrammen und exportieren Sie Ergebnisse zur weiteren Analyse.",
       "persistence_title": "Datenpersistenz",
-      "persistence_text": "Die SQLite-Datenbank speichert alle Prognosen und Ist-Verkaufsdaten für historische Analysen. Erstellen Sie eine umfassende Aufzeichnung der Prognoseleistung über die Zeit."
+      "persistence_text": "Eine Postgres-Datenbank speichert alle Prognosen und Ist-Verkaufsdaten für historische Analysen. Erstellen Sie eine umfassende Aufzeichnung der Prognoseleistung über die Zeit."
     },
 
     "prediction_factors": {
@@ -227,9 +226,9 @@
       ],
       "operational_title": "Betriebsdaten",
       "operational_items": [
-        "Erwartete tägliche Kapazität",
         "Historische Verkaufsmuster",
-        "Wochentagstrends"
+        "Wochentagstrends",
+        "Vegetarisch- / Nicht-vegetarisch-Verhältnis"
       ]
     },
 
@@ -250,9 +249,9 @@
       "workflow_title": "Den Arbeitsablauf verstehen",
       "workflow_items": [
         {"label": "Vorbereiten", "text": "Legen Sie Ihren Prognosezeitraum fest und lassen Sie das System Wetterdaten abrufen"},
-        {"label": "Prognostizieren", "text": "Geben Sie die Kapazität ein und erstellen Sie Bedarfsprognosen nur für Arbeitstage"},
+        {"label": "Prognostizieren", "text": "Erstellen Sie vegetarische/nicht-vegetarische Bedarfsprognosen nur für Arbeitstage"},
         {"label": "Verfolgen", "text": "Importieren Sie Ist-Verkäufe zum Vergleich mit Prognosen"},
-        {"label": "Verbessern", "text": "Nutzen Sie Leistungserkenntnisse zur Verfeinerung der Kapazitätsplanung"}
+        {"label": "Verbessern", "text": "Nutzen Sie Leistungserkenntnisse zur Verfeinerung künftiger Prognosen"}
       ],
       "exclusions_title": "Was wird ausgeschlossen",
       "exclusions_items": [
@@ -262,15 +261,14 @@
       ],
       "data_title": "Ihre Daten verstehen",
       "data_items": [
-        "Prognosen werden mit Zeitstempeln in der SQLite-Datenbank gespeichert",
-        "Ist-Verkäufe können über die Import-Seite importiert werden",
-        "Excel-Exporte enthalten alle für jede Prognose verwendeten Features"
+        "Prognosen werden mit Zeitstempeln in der Postgres-Datenbank gespeichert",
+        "Ist-Verkäufe können über die Import-Seite importiert werden"
       ],
       "troubleshooting_title": "Fehlerbehebung",
       "troubleshooting_items": [
         "Wenn Wetterdaten nicht geladen werden, überprüfen Sie Ihren OpenWeatherMap API-Schlüssel in secrets.toml",
         "Stellen Sie sicher, dass Ihr Startdatum innerhalb des 7-Tage-Vorhersagefensters liegt",
-        "Datenbankprobleme? Versuchen Sie eine Neuinitialisierung mit scripts/init_db.py",
+        "Datenbankprobleme? Überprüfen Sie Ihre APP_ENV-Einstellung und die Postgres-Verbindung in secrets.toml",
         "Kontaktieren Sie den Support, wenn der Modellstatus als inaktiv angezeigt wird"
       ]
     }

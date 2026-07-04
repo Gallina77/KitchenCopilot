@@ -1,8 +1,21 @@
-import streamlit as st  
+import streamlit as st
+from utils.db_conn import get_active_connection_name
 # Initialize session state for the toggle if it doesn't exist
 
 
+def render_env_badge():
+    # Visible reminder of which DB (prod/test) this session is connected to,
+    # since switching requires an app restart and is otherwise invisible.
+    is_prod = get_active_connection_name() == "kitchencopilot_db_prod"
+    if is_prod:
+        st.sidebar.error("🔴 Connected to PROD database")
+    else:
+        st.sidebar.info("🟢 Connected to TEST database")
+
+
 def render_language_toggle():
+    render_env_badge()
+
     # 1. Check URL param first (only on initial load)
     if 'lang' not in st.session_state:
         params = st.query_params
