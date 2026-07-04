@@ -2,7 +2,7 @@ import json
 import streamlit as st
 from anthropic import Anthropic, APIError
 
-MODEL = "claude-sonnet-4-6"
+MODEL = "claude-sonnet-5"
 
 # Fallbacks keyed by lang — returned when the API is unreachable or fails.
 # Function 1 returns JSON so Page 3's existing json.loads handler renders it gracefully.
@@ -27,6 +27,12 @@ def get_llm_insights_for_actuals_vs_predicted(data_json: str, lang: str):
     try:
         message = client.messages.create(
             max_tokens=800,
+            # This is a short classification/summary task, not a reasoning task.
+            # Sonnet 5 runs adaptive thinking by default when `thinking` is
+            # omitted (unlike 4.6, which defaulted to thinking off) - left
+            # enabled, it could eat into the tight max_tokens budget and
+            # truncate the JSON output before pages/3's json.loads() sees it.
+            thinking={"type": "disabled"},
             messages=[
                 {
                     "role": "user",
@@ -72,6 +78,7 @@ def get_llm_planning_insights(data_json: str, lang: str):
     try:
         message = client.messages.create(
             max_tokens=800,
+            thinking={"type": "disabled"},
             messages=[
                 {
                     "role": "user",
