@@ -5,9 +5,11 @@ from pathlib import Path
 from dotenv import load_dotenv
 from sqlalchemy import create_engine as real_create_engine
 
-# Find the root by locating the main KitchenCopilot directory name securely
-current_path = Path(__file__).resolve()
-PROJECT_ROOT = next(p for p in current_path.parents if p.name == "KitchenCopilot")
+# utils/db_conn.py lives one level below the project root (utils/db_conn.py),
+# so parent.parent is the root regardless of what the checkout directory is
+# named - searching for a parent literally named "KitchenCopilot" broke on
+# Streamlit Cloud, which mounts the repo at /mount/src/kitchencopilot (lowercase).
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 load_dotenv(PROJECT_ROOT / ".env")
 
