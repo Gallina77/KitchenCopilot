@@ -255,40 +255,47 @@ if st.session_state['form_submitted']:
     # Format the display dataframe
     st.subheader(t["daily_comparison_title"])
     df = st.session_state['analysis_df'].copy()
-    locale = st.session_state.lang.lower()
-    df['date'] = df['date'].apply(
-        lambda d: format_date(d, format='EEEE, dd.MMMM', locale=locale)
-    )
 
-    table_columns = [
-        'date', 'final_prediction', 'actual_meals', 'pct_error',
-        'predicted_meals_veg', 'actual_meals_veg', 'pct_error_veg',
-        'predicted_meals_non_veg', 'actual_meals_non_veg', 'pct_error_non_veg'
-    ]
-    table_df = df[table_columns].copy()
-    for col in ['pct_error', 'pct_error_veg', 'pct_error_non_veg']:
-        table_df[col] = (table_df[col] * 100).round(0)
+    # An empty result comes back with object-dtype columns (nothing to infer
+    # a numeric type from), and .round() below rejects object dtype outright
+    # - guard the same way the two charts above already do for empty ranges.
+    if not df.empty:
+        locale = st.session_state.lang.lower()
+        df['date'] = df['date'].apply(
+            lambda d: format_date(d, format='EEEE, dd.MMMM', locale=locale)
+        )
 
-    styled_df = apply_custom_styling(table_df)
+        table_columns = [
+            'date', 'final_prediction', 'actual_meals', 'pct_error',
+            'predicted_meals_veg', 'actual_meals_veg', 'pct_error_veg',
+            'predicted_meals_non_veg', 'actual_meals_non_veg', 'pct_error_non_veg'
+        ]
+        table_df = df[table_columns].copy()
+        for col in ['pct_error', 'pct_error_veg', 'pct_error_non_veg']:
+            table_df[col] = (table_df[col] * 100).round(0)
 
-    st.dataframe(
-        styled_df,
-        column_config={
-            "date": st.column_config.TextColumn(label=daily_comparison_columns["date"], width="medium"),
-            "final_prediction": st.column_config.NumberColumn(label=daily_comparison_columns["final_prediction"], width="small"),
-            "actual_meals": st.column_config.NumberColumn(label=daily_comparison_columns["actual_meals"], width="small"),
-            "pct_error": st.column_config.NumberColumn(label=daily_comparison_columns["pct_error"], width="small"),
-            "predicted_meals_veg": st.column_config.NumberColumn(label=daily_comparison_columns["predicted_meals_veg"], width="small"),
-            "actual_meals_veg": st.column_config.NumberColumn(label=daily_comparison_columns["actual_meals_veg"], width="small"),
-            "pct_error_veg": st.column_config.NumberColumn(label=daily_comparison_columns["pct_error_veg"], width="small"),
-            "predicted_meals_non_veg": st.column_config.NumberColumn(label=daily_comparison_columns["predicted_meals_non_veg"], width="small"),
-            "actual_meals_non_veg": st.column_config.NumberColumn(label=daily_comparison_columns["actual_meals_non_veg"], width="small"),
-            "pct_error_non_veg": st.column_config.NumberColumn(label=daily_comparison_columns["pct_error_non_veg"], width="small"),
-        },
-        width='stretch',
-        hide_index=True
-    )
- 
+        styled_df = apply_custom_styling(table_df)
+
+        st.dataframe(
+            styled_df,
+            column_config={
+                "date": st.column_config.TextColumn(label=daily_comparison_columns["date"], width="medium"),
+                "final_prediction": st.column_config.NumberColumn(label=daily_comparison_columns["final_prediction"], width="small"),
+                "actual_meals": st.column_config.NumberColumn(label=daily_comparison_columns["actual_meals"], width="small"),
+                "pct_error": st.column_config.NumberColumn(label=daily_comparison_columns["pct_error"], width="small"),
+                "predicted_meals_veg": st.column_config.NumberColumn(label=daily_comparison_columns["predicted_meals_veg"], width="small"),
+                "actual_meals_veg": st.column_config.NumberColumn(label=daily_comparison_columns["actual_meals_veg"], width="small"),
+                "pct_error_veg": st.column_config.NumberColumn(label=daily_comparison_columns["pct_error_veg"], width="small"),
+                "predicted_meals_non_veg": st.column_config.NumberColumn(label=daily_comparison_columns["predicted_meals_non_veg"], width="small"),
+                "actual_meals_non_veg": st.column_config.NumberColumn(label=daily_comparison_columns["actual_meals_non_veg"], width="small"),
+                "pct_error_non_veg": st.column_config.NumberColumn(label=daily_comparison_columns["pct_error_non_veg"], width="small"),
+            },
+            width='stretch',
+            hide_index=True
+        )
+    else:
+        st.error(t["no_data"])
+
 
     st.divider()
 
