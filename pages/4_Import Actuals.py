@@ -34,15 +34,13 @@ labels = t["display_columns_short"]
 
 
 # ============================================
-# INITIALIZE SESSION STATE
+# HELPER: load + cast the "missing actuals" dataframe
 # ============================================
-
-
-
-if "meals_df" not in st.session_state:
+# Pulled out into its own function so both page-init AND post-save
+# refreshes use the exact same casting logic (previously duplicated).
+def load_missing_actuals():
     raw_df = get_missing_actuals()
-    
-    # Strictly guarantee and cast numeric columns to integer frameworks right away
+
     if raw_df is not None and not raw_df.empty:
         raw_df['date'] = pd.to_datetime(raw_df['date'])
         for col in ['final_prediction', 'predicted_meals_veg', 'predicted_meals_non_veg']:
@@ -51,8 +49,16 @@ if "meals_df" not in st.session_state:
         for col in ['actual_meals', 'actual_meals_veg', 'actual_meals_non_veg']:
             if col in raw_df.columns:
                 raw_df[col] = raw_df[col].astype('Int64')
-                
-    st.session_state["meals_df"] = raw_df
+
+    return raw_df
+
+
+# ============================================
+# INITIALIZE SESSION STATE
+# ============================================
+
+if "meals_df" not in st.session_state:
+    st.session_state["meals_df"] = load_missing_actuals()
 
 
 # ============================================
@@ -78,31 +84,43 @@ uploaded_file = st.file_uploader("Browse Files", type="csv")
 
 if uploaded_file is not None:
 
-
     dataframe = pd.read_csv(uploaded_file, sep=None, engine='python')
-    if csv_validation(dataframe):
-        result, message, df = csv_validation(dataframe)
-        if result==True:
-            st.table(dataframe)
-            if st.button(t["save_label"],type="primary", key="upload"):
-                is_success, message = save_actuals(dataframe)
-                if is_success:
-                    st.session_state['actuals_saved'] = True
-                    st.rerun()
-                else:
-                    st.error(message)
-        else:
-            st.error(message)
+
+    # FIX: call csv_validation ONCE (previously called twice, and the first
+    # call's result was thrown into an `if` check where a tuple is always
+    # truthy, so it never actually gated anything).
+    result, message, df = csv_validation(dataframe)
+
+    if result:
+        # FIX: display and save the RENAMED df returned by csv_validation,
+        # not the raw upload (which may still have original/aliased column names).
+        st.table(df)
+        if st.button(t["save_label"], type="primary", key="upload"):
+            is_success, message = save_actuals(df)
+            if is_success:
+                st.session_state['actuals_saved'] = True
+
+                # FIX: refresh meals_df so newly-imported dates drop out of
+                # the "still missing actuals" list below, instead of the
+                # manual-edit table silently showing stale data.
+                st.session_state["meals_df"] = load_missing_actuals()
+
+                st.rerun()
+            else:
+                st.error(message)
+    else:
+        st.error(message)
+# success message shown right here, near the CSV upload section
+if st.session_state.get('csv_saved', False):
+    st.success("Changes saved!")
+    st.session_state['csv_saved'] = False
+
 
 # ============================================
 # QUICK SCREEN ENTRY & DETAILED DATA TABLE
 # ============================================
 
 st.subheader(t["update_manually"])
-
-if st.session_state.get('actuals_saved', False):
-    st.success("Changes saved!")
-    st.session_state['actuals_saved'] = False
 
 if st.session_state["meals_df"] is not None and not st.session_state["meals_df"].empty:
     
@@ -146,6 +164,10 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
                       "actual_meals", "actual_meals_veg", "actual_meals_non_veg"],
         hide_index=True
     )
+    #Success message for manual edits shown right here, near the table
+    if st.session_state.get('manual_saved', False):
+        st.success("Changes saved!")
+        st.session_state['manual_saved'] = False
     
     # 5. Save Button logic
     if st.button(t["save_label"], type="primary"):
@@ -177,6 +199,10 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
             is_success, message = save_actuals(changed_rows)
             if is_success:
                 st.session_state['actuals_saved'] = True
+
+                # FIX: refresh here too, for consistency with the CSV path above.
+                st.session_state["meals_df"] = load_missing_actuals()
+
                 st.rerun()
             else:
                 st.error(message)

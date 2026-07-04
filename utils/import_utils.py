@@ -102,8 +102,3 @@ def sum_validation(df):
     
     return True, None
 
-
-
-csv_path = Path("data/raw/sales_data/test_data/acceptable.csv")
-ok, message, df= csv_validation(pd.read_csv(csv_path, sep=None, engine='python'))
-print(ok, message)

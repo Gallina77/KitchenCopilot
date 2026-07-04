@@ -134,6 +134,7 @@ def get_missing_actuals():
     "WHERE a.date IS NULL ORDER BY p.date ASC"
     df = conn.query(sql_query, ttl=0)
     df['date'] = pd.to_datetime(df['date'])
+    print(df)
     return df
 
 
