@@ -2,7 +2,7 @@ import json
 import streamlit as st
 from anthropic import Anthropic, APIError
 
-MODEL = "claude-sonnet-4-6"
+MODEL = "claude-sonnet-5"
 
 # Fallbacks keyed by lang — returned when the API is unreachable or fails.
 # Function 1 returns JSON so Page 3's existing json.loads handler renders it gracefully.
@@ -27,14 +27,22 @@ def get_llm_insights_for_actuals_vs_predicted(data_json: str, lang: str):
     try:
         message = client.messages.create(
             max_tokens=800,
+            # This is a short classification/summary task, not a reasoning task.
+            # Sonnet 5 runs adaptive thinking by default when `thinking` is
+            # omitted (unlike 4.6, which defaulted to thinking off) - left
+            # enabled, it could eat into the tight max_tokens budget and
+            # truncate the JSON output before pages/3's json.loads() sees it.
+            thinking={"type": "disabled"},
             messages=[
                 {
                     "role": "user",
                     "content": "You help kitchen teams review how well their meal predictions performed. "
-                        "This data compares past predictions against actual results. "
-                        "The data contains dates, weekdays, predicted meals, actual meals, difference, and percentage error. "
-                        "Look for meaningful patterns: Are certain weekdays consistently off? "
-                        "Do holidays or low-volume days cause problems? Is there a bias in the predictions? "
+                        "This data compares past predictions against actual results, broken down into vegetarian and non-vegetarian portions. "
+                        "The data contains dates, weekdays, day themes, predicted meals (total, vegetarian, non-vegetarian), "
+                        "actual meals (total, vegetarian, non-vegetarian), differences, and percentage errors for each. "
+                        "Look for meaningful patterns: Are certain weekdays or day themes consistently off? "
+                        "Is the bias specifically in the vegetarian or non-vegetarian split rather than the total? "
+                        "Do holidays or low-volume days cause problems? Is there a systematic bias in the predictions? "
                         "Only report patterns that are significant and actionable. "
                         "Return your response as a JSON array only. No other text, no markdown, no explanation. "
                         "Each insight should be an object with three fields: "
@@ -72,13 +80,14 @@ def get_llm_planning_insights(data_json: str, lang: str):
     try:
         message = client.messages.create(
             max_tokens=800,
+            thinking={"type": "disabled"},
             messages=[
                 {
                     "role": "user",
                     "content": "You help kitchen teams plan based on meal demand forecasts. "
-                        "This data contains future dates, predicted meals, expected capacity, "
-                        "utilization percentage, temperature, weather condition, holiday description, "
-                        "semester break flag, bridge day flag, and prediction timestamp. "
+                        "This data contains future dates, day themes, predicted meals (total, vegetarian, non-vegetarian), "
+                        "temperature, weather condition, holiday description, "
+                        "school break flag, bridge day flag, and prediction timestamp. "
                         "List ONLY 2-3 inconsistencies or unusual patterns — "
                         "things that don't match expected conditions (weather, holiday, day of week) "
                         "or seem worth verifying. "
