@@ -2,8 +2,9 @@ import streamlit as st
 import pandas as pd
 from io import StringIO
 from babel.dates import format_date
-from utils import get_translations, get_missing_actuals, save_actuals
+from utils import csv_validation, get_translations, get_missing_actuals, save_actuals
 from components.sidebar import render_language_toggle
+
 
 
 # ============================================
@@ -74,16 +75,24 @@ st.title(t["page_title"])
 
 st.caption(t["upload_description"])
 uploaded_file = st.file_uploader("Browse Files", type="csv")
+
 if uploaded_file is not None:
 
-    # Can be used wherever a "file-like" object is accepted:
-    dataframe = pd.read_csv(uploaded_file, sep=';', index_col=None)
-    st.table(dataframe)
-    if st.button(t["save_label"],type="primary", key="upload"):
-        pass
 
-
-
+    dataframe = pd.read_csv(uploaded_file, sep=None, engine='python')
+    if csv_validation(dataframe):
+        result, message, df = csv_validation(dataframe)
+        if result==True:
+            st.table(dataframe)
+            if st.button(t["save_label"],type="primary", key="upload"):
+                is_success, message = save_actuals(dataframe)
+                if is_success:
+                    st.session_state['actuals_saved'] = True
+                    st.rerun()
+                else:
+                    st.error(message)
+        else:
+            st.error(message)
 
 # ============================================
 # QUICK SCREEN ENTRY & DETAILED DATA TABLE

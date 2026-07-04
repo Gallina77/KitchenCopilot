@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 import numpy as np
 from utils.day_themes import DAY_THEMES, THEME_VEG_RATIO
 from sqlalchemy import text
@@ -102,11 +102,12 @@ def get_future_predictions():
     conn = get_connection()
     #Take Todays timestamp
     today = datetime.now().date()
+    monday = today - timedelta(days=today.weekday())
     
     sql_query = "SELECT * FROM predictions WHERE date >= :today " \
     "ORDER BY prediction_timestamp DESC"
     
-    params = {"today": today}
+    params = {"today": monday}
     result = conn.query(sql_query, params=params, ttl=0)
 
     if result.empty:
@@ -225,9 +226,5 @@ def get_empirical_veg_ratio(theme: str) -> tuple[float, float]:
     return (avg_veg / total, avg_non_veg / total)
 
 
-if __name__ == "__main__":
-   
-    for theme in set(DAY_THEMES.values()):
-        print(theme, get_empirical_veg_ratio(theme))
 
 
