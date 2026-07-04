@@ -71,63 +71,63 @@ st.title(t["page_title"])
 # IMPORT AREA
 # ============================================
 
-"""
-- Accept CSV with columns: `date` (YYYY-MM-DD), `actual_meals` (integer)
-- Validate: correct columns present, dates parseable, meals > 0
-- Show a preview table before committing
-- On confirm: upsert into `actual_sales` (INSERT OR REPLACE)
-- Show success count and any skipped/errored rows
-"""
-
 st.caption(t["upload_description"])
-uploaded_file = st.file_uploader("Browse Files", type="csv")
+st.markdown(t["csv_import_instructions"])
+uploaded_file = st.file_uploader(t["browse_files_label"], type="csv")
 
 if uploaded_file is not None:
 
-    dataframe = pd.read_csv(uploaded_file, sep=None, engine='python')
+    try:
+        dataframe = pd.read_csv(uploaded_file, sep=None, engine='python')
+    except Exception as e:
+        print(f"CSV read failed: {e}")
+        dataframe = None
+        st.error(t["error_csv_unreadable"])
 
-    # FIX: call csv_validation ONCE. Previously it was called twice, and the
-    # first call's 3-tuple result was used in an `if` check — a non-empty
-    # tuple is always truthy in Python, so that check never actually gated
-    # anything; it just wasted a redundant validation call.
-    result, message, df = csv_validation(dataframe)
+    if dataframe is not None:
+        # FIX: call csv_validation ONCE. Previously it was called twice, and the
+        # first call's 3-tuple result was used in an `if` check — a non-empty
+        # tuple is always truthy in Python, so that check never actually gated
+        # anything; it just wasted a redundant validation call.
+        result, message, df = csv_validation(dataframe)
 
-    if result:
-        # FIX: display and save the RENAMED df returned by csv_validation,
-        # not the raw upload — `dataframe` may still have original/aliased
-        # column names (e.g. "Datum", "Gesamt") that downstream code
-        # (save_actuals, etc.) doesn't expect.
-        st.table(df)
-        if st.button(t["save_label"], type="primary", key="upload"):
-            is_success, message = save_actuals(df)
-            if is_success:
-                # FIX: refresh meals_df so newly-imported dates drop out of
-                # the "still missing actuals" list below, instead of the
-                # manual-edit table silently showing stale data.
-                st.session_state["meals_df"] = load_missing_actuals()
+        if result:
+            # FIX: display and save the RENAMED df returned by csv_validation,
+            # not the raw upload — `dataframe` may still have original/aliased
+            # column names (e.g. "Datum", "Gesamt") that downstream code
+            # (save_actuals, etc.) doesn't expect.
+            st.table(df)
+            if st.button(t["save_label"], type="primary", key="upload"):
+                is_success, message = save_actuals(df)
+                if is_success:
+                    # FIX: refresh meals_df so newly-imported dates drop out of
+                    # the "still missing actuals" list below, instead of the
+                    # manual-edit table silently showing stale data.
+                    st.session_state["meals_df"] = load_missing_actuals()
 
-                # Dedicated flag for THIS section's success message. It is
-                # intentionally NOT cleared here — per your preference, it
-                # should stay visible until the next CSV save overwrites it
-                # (which happens naturally, since this line runs again on
-                # the next successful save).
-                st.session_state["csv_saved"] = True
-                st.rerun()
-            else:
-                st.error(message)
-    else:
-        st.error(message)
+                    # Dedicated flag for THIS section's success message. It is
+                    # intentionally NOT cleared here — per your preference, it
+                    # should stay visible until the next CSV save overwrites it
+                    # (which happens naturally, since this line runs again on
+                    # the next successful save).
+                    st.session_state["csv_saved"] = True
+                    st.rerun()
+                else:
+                    st.error(message)
+        else:
+            st.error(message)
 
 # Shown right here, near the upload section — stays visible across reruns
 # until the next successful CSV save (no auto-clear).
 if st.session_state.get("csv_saved", False):
-    st.success("Changes saved!")
+    st.success(t["csv_save_success"])
 
 # ============================================
 # QUICK SCREEN ENTRY & DETAILED DATA TABLE
 # ============================================
 
 st.subheader(t["update_manually"])
+st.caption(t["manual_update_instructions"])
 
 if st.session_state["meals_df"] is not None and not st.session_state["meals_df"].empty:
     
@@ -143,20 +143,22 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
     display_df['day_theme'] = display_df['day_theme'].map(t['day_themes'])
 
     # 3. Dynamic Column Headers Mapping (using your localized labels object)
+    # Only the actual_* columns are editable - date/theme/forecast columns
+    # are read-only context, not something a manual entry should change.
     column_configuration = {
-        "date_display": st.column_config.TextColumn(  
-            label=labels.get("date", "Date"),               
-            disabled=True                     
+        "date_display": st.column_config.TextColumn(
+            label=labels.get("date", "Date"),
+            disabled=True
         ),
-        "day_theme": st.column_config.TextColumn(label=labels.get("day_theme", "Theme")),
-        "final_prediction": st.column_config.NumberColumn(label=labels.get("final_prediction", 
-                                                                           "Forecast Total"), format="%d"),
-        "predicted_meals_veg": st.column_config.NumberColumn(label=labels.get("predicted_meals_veg", 
-                                                                              "Forecast Veg"), format="%d"),
-        "predicted_meals_non_veg": st.column_config.NumberColumn(label=labels.get("predicted_meals_non_veg", "Forecast Non-Veg"), format="%d"),
+        "day_theme": st.column_config.TextColumn(label=labels.get("day_theme", "Theme"), disabled=True),
+        "final_prediction": st.column_config.NumberColumn(label=labels.get("final_prediction",
+                                                                           "Forecast Total"), format="%d", disabled=True),
+        "predicted_meals_veg": st.column_config.NumberColumn(label=labels.get("predicted_meals_veg",
+                                                                              "Forecast Veg"), format="%d", disabled=True),
+        "predicted_meals_non_veg": st.column_config.NumberColumn(label=labels.get("predicted_meals_non_veg", "Forecast Non-Veg"), format="%d", disabled=True),
         "actual_meals": st.column_config.NumberColumn(label=labels.get("actual_meals", "Actual Total"), format="%d"),
         "actual_meals_veg": st.column_config.NumberColumn(label=labels.get("actual_meals_veg", "Actual Veg"), format="%d"),
-        "actual_meals_non_veg": st.column_config.NumberColumn(label=labels.get("actual_meals_non_veg", "Actual Non-Veg"), format="%d"), 
+        "actual_meals_non_veg": st.column_config.NumberColumn(label=labels.get("actual_meals_non_veg", "Actual Non-Veg"), format="%d"),
         "date": None,  # hide the raw datetime column from the editor
     }
 
@@ -175,7 +177,7 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
     # Shown right here, near the manual-edit table — stays visible across
     # reruns until the next successful manual save (no auto-clear).
     if st.session_state.get("manual_saved", False):
-        st.success("Changes saved!")
+        st.success(t["manual_save_success"])
 
     # 5. Save Button logic
     if st.button(t["save_label"], type="primary"):

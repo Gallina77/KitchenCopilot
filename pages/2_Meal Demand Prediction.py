@@ -132,6 +132,7 @@ if not data.empty:
     display_df['prediction_timestamp'] = display_df['prediction_timestamp'].dt.strftime('%Y-%m-%d %H:%M')
     condition = display_df['weather_condition'].apply(lambda x: x.lower())
     display_df['weather_condition'] = condition.map(t['weather_condition'])
+    display_df['day_theme'] = display_df['day_theme'].map(t['day_themes'])
 
     # Convert integer columns to boolean
     display_df['is_school_break'] = display_df['is_school_break'].astype(bool)

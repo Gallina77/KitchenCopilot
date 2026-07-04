@@ -48,11 +48,14 @@ def get_prediction(new_data):
     return new_data
 
 
-def _split_veg(row):
-    theme = row.get('day_theme', 'Unknown')
-    veg_r, nonveg_r = get_empirical_veg_ratio(theme)
-    total = row['predicted_meals']
+def split_veg_non_veg(day_theme, total):
+    """Split a meal total into veg/non-veg using the empirical ratio for the given theme."""
+    veg_r, nonveg_r = get_empirical_veg_ratio(day_theme)
     veg = math.ceil(total * veg_r)
     non_veg = int(total) - veg  # ensure sum == total
     return veg, non_veg
+
+
+def _split_veg(row):
+    return split_veg_non_veg(row.get('day_theme', 'Unknown'), row['predicted_meals'])
 

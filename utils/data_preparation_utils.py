@@ -80,13 +80,21 @@ def render_badges(row,t):
 
     if row.get('temperature_max'):
         badges.append(f'<span class="badge badge-weather">{row["weather_icon"]}{row["temperature_max"]}°C {weather}</span>')
+
+    # School break / bridge day and holiday_desc describe the same event (the
+    # holidays CSV always sets a description like "Summer Break" alongside
+    # is_school_break) — show one badge, preferring the more specific text.
+    holiday_desc = row.get('holiday_desc')
+    holiday_desc_translated = t['holiday_descriptions'].get(holiday_desc, holiday_desc) if holiday_desc else holiday_desc
     if row.get('is_school_break'):
-        badges.append(f'<span class="badge badge-break">{t["is_school_break"]}</span>')
-    if row.get('is_bridge_day'):
-        badges.append(f'<span class="badge badge-bridge">{t["bridge_day"]}</span>')
-    if row.get('holiday_desc'):
-        badges.append(f'<span class="badge badge-holiday">{row["holiday_desc"]}</span>')
+        badges.append(f'<span class="badge badge-break">{holiday_desc_translated or t["is_school_break"]}</span>')
+    elif row.get('is_bridge_day'):
+        badges.append(f'<span class="badge badge-bridge">{holiday_desc_translated or t["bridge_day"]}</span>')
+    elif holiday_desc_translated:
+        badges.append(f'<span class="badge badge-holiday">{holiday_desc_translated}</span>')
+
     if row.get('day_theme'):
-        badges.append(f'<span class="badge badge-day_theme">{row["day_theme"]}</span>')
+        theme_translated = t['day_themes'].get(row['day_theme'], row['day_theme'])
+        badges.append(f'<span class="badge badge-day_theme">{theme_translated}</span>')
 
     return " ".join(badges) if badges else ""

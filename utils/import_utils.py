@@ -75,17 +75,21 @@ def column_validation(df):
     
 def value_validation(df):
     #Validation 2: Date and Integers
+    t = get_translations("import")
     validator = Pandantic(schema=DataFrameSchema)
 
     # Validate with error raising
     try:
         validator.validate(dataframe=df, errors="raise")
-        ok=True
+        ok = True
         message = None
     except ValueError as e:
+        # Surface a translated, human-readable message instead of the raw
+        # Pydantic error (field names, type codes, a link to pydantic.dev).
+        print(f"value_validation failed: {e}")
         ok = False
-        message = e
-    
+        message = t["error_invalid_values"]
+
     return ok, message
 
 def sum_validation(df):

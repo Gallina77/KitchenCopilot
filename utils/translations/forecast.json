@@ -1,7 +1,7 @@
 {
   "EN": {
     "prepare_your_forecast_title": "Prepare your Forecast",
-    "prepare_your_forecast_subtitle": "Configure capacity and generate meal predictions for the upcoming days",
+    "prepare_your_forecast_subtitle": "Select a date range and generate meal predictions for the upcoming days",
     "load_days_button": "Load Days",
     "is_school_break": "School Break",
     "bridge_day": "Bridge Day",
@@ -26,7 +26,7 @@
   },
   "DE": {
     "prepare_your_forecast_title": "Bereite deine Vorhersage vor",
-    "prepare_your_forecast_subtitle": "Konfiguriere die zu erwartende Auslatung und generiere die Voraussage für die kommenden Tage",
+    "prepare_your_forecast_subtitle": "Wähle einen Zeitraum aus und generiere die Voraussage für die kommenden Tage",
     "load_days_button": "Lade Tage",
     "is_school_break": "Schulferien",
     "bridge_day": "Brückentag",

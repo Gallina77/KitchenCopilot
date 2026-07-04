@@ -22,6 +22,23 @@
         "Schnitzel": "Schnitzel",
         "Fish": "Fish"
       },
+    "holiday_descriptions": {
+        "Summer Break": "Summer Break",
+        "Summer Break Start": "Summer Break Start",
+        "Summer Break End": "Summer Break End",
+        "Autumn Break": "Autumn Break",
+        "Autumn Break Start": "Autumn Break Start",
+        "Autumn Break End": "Autumn Break End",
+        "Christmas Break": "Christmas Break",
+        "Christmas Break Start": "Christmas Break Start",
+        "Christmas Break End": "Christmas Break End",
+        "Easter Break": "Easter Break",
+        "Easter Break Start": "Easter Break Start",
+        "Easter Break End": "Easter Break End",
+        "Bridge Day (Heilige 3 K)": "Bridge Day (Epiphany)",
+        "Bridge Day (after Ascension)": "Bridge Day (after Ascension)",
+        "Bridge Day (after Corpus Christi)": "Bridge Day (after Corpus Christi)"
+      },
     "display_columns": {
         "date": "Date",
         "day_theme": "Theme",
@@ -72,6 +89,23 @@
         "Chicken": "Hühnchen",
         "Schnitzel": "Schnitzel",
         "Fish": "Fisch"
+      },
+    "holiday_descriptions": {
+        "Summer Break": "Sommerferien",
+        "Summer Break Start": "Sommerferien Beginn",
+        "Summer Break End": "Sommerferien Ende",
+        "Autumn Break": "Herbstferien",
+        "Autumn Break Start": "Herbstferien Beginn",
+        "Autumn Break End": "Herbstferien Ende",
+        "Christmas Break": "Weihnachtsferien",
+        "Christmas Break Start": "Weihnachtsferien Beginn",
+        "Christmas Break End": "Weihnachtsferien Ende",
+        "Easter Break": "Osterferien",
+        "Easter Break Start": "Osterferien Beginn",
+        "Easter Break End": "Osterferien Ende",
+        "Bridge Day (Heilige 3 K)": "Brückentag (Heilige Drei Könige)",
+        "Bridge Day (after Ascension)": "Brückentag (nach Christi Himmelfahrt)",
+        "Bridge Day (after Corpus Christi)": "Brückentag (nach Fronleichnam)"
       },
     "display_columns": {
         "date": "Datum",
