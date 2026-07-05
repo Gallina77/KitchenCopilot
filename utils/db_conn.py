@@ -15,9 +15,18 @@ load_dotenv(PROJECT_ROOT / ".env")
 
 
 def get_active_connection_name():
-    """Selects the secrets.toml connection block based on APP_ENV (defaults to 'test')."""
+    """Selects the secrets.toml connection block based on APP_ENV (defaults to 'test').
+
+    'ci' is a third, deliberate-only option for automated test runs against a
+    database dedicated to them - unrecognized/unset values still fall back to
+    'test', so a typo can never land on prod or the CI-only database.
+    """
     app_env = os.getenv("APP_ENV", "test").strip().lower()
-    return "kitchencopilot_db_prod" if app_env == "prod" else "kitchencopilot_db_test"
+    if app_env == "prod":
+        return "kitchencopilot_db_prod"
+    if app_env == "ci":
+        return "kitchencopilot_db_ci"
+    return "kitchencopilot_db_test"
 
 
 def get_engine():

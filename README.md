@@ -170,6 +170,44 @@ The notebook includes:
 - Model training with scikit-learn
 - Model persistence for production use
 
+## Running Tests
+
+The test suite (`pytest`) always runs against a Postgres database dedicated
+solely to automated test runs (`APP_ENV` is force-set to `ci` in
+`tests/conftest.py`, regardless of your local `.env`) - separate from both the
+prod and manual dev/QA test databases described in the Postgres migration
+notes. Each run seeds a known dataset and cleans it up again afterwards.
+
+This CI database is a disposable local Postgres container (not another
+Supabase project - keeps this off the Supabase free-tier project limit
+entirely), started with Docker Compose:
+```bash
+docker compose up -d ci_db
+```
+
+Add its connection to your local `.streamlit/secrets.toml` (fixed local-only
+credentials, safe to keep in plain text since nothing but this container uses
+them):
+```toml
+[connections.kitchencopilot_db_ci]
+url = "postgresql://postgres:postgres@localhost:5432/kitchencopilot_ci"
+```
+If that block is missing, every test run fails immediately with a `KeyError`
+from `get_engine()`. Once the container is running, create the schema once
+(needed again only if you recreate the container/volume with `docker compose
+down -v`):
+```bash
+PYTHONPATH=. python scripts/init_ci_db.py
+```
+
+```bash
+PYTHONPATH=. pytest
+```
+
+CI (`.github/workflows/tests.yml`) does the equivalent automatically on every
+push/PR to `main`, using GitHub Actions' own ephemeral Postgres service
+container - no secrets or hosted database required for CI either.
+
 ## Usage Guide
 
 ### Generating Predictions
