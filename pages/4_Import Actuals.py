@@ -5,7 +5,69 @@ from babel.dates import format_date
 from utils import csv_validation, get_translations, get_missing_actuals, save_actuals
 from components.sidebar import render_language_toggle
 
+def update_actual_meals():
+    # Runs as the data_editor's on_change callback, BEFORE the script
+    # reruns. Streamlit only tells us which cell(s) just changed (row
+    # position -> {column: new_value}), not the full row.
+    #
+    # IMPORTANT CAVEAT this function works around: once a data_editor
+    # with a given `key` has been drawn once, Streamlit will NOT redraw
+    # an individual cell just because we quietly changed something in
+    # session_state — the on-screen grid only fully refreshes when its
+    # `key` changes (a remount). So computing the new total isn't enough;
+    # we also have to bump the widget's key to force it to redraw with
+    # that total visible. But remounting means the NEW widget instance
+    # starts from whatever dataframe we hand it — any not-yet-saved edits
+    # sitting in the OLD key's diff would be lost unless we bake them into
+    # that dataframe first. Hence "meals_df_working": a live scratch copy
+    # that this callback keeps up to date, which the grid always renders
+    # from, kept separate from "meals_df" (the true last-saved baseline
+    # used later to work out what actually needs saving).
+    locale = st.session_state.lang.lower()
+    version = st.session_state.get("meals_editor_version", 0)
+    editor_key = f"meals_editor_v2_{locale}_{version}"
 
+    if editor_key not in st.session_state:
+        return
+
+    edited_rows = st.session_state[editor_key].get("edited_rows", {})
+    working_df = st.session_state.get("meals_df_working")
+
+    if working_df is None or not edited_rows:
+        return
+
+    needs_redraw = False
+
+    for row_position, changes in edited_rows.items():
+        row_position = int(row_position)
+        veg_touched = "actual_meals_veg" in changes
+        non_veg_touched = "actual_meals_non_veg" in changes
+
+        if veg_touched or non_veg_touched:
+            veg = changes.get(
+                "actual_meals_veg", working_df.iloc[row_position]["actual_meals_veg"]
+            )
+            non_veg = changes.get(
+                "actual_meals_non_veg",
+                working_df.iloc[row_position]["actual_meals_non_veg"],
+            )
+            veg = 0 if pd.isna(veg) else int(veg)
+            non_veg = 0 if pd.isna(non_veg) else int(non_veg)
+            changes["actual_meals"] = veg + non_veg
+            needs_redraw = True
+
+    if not needs_redraw:
+        return
+
+    # Bake every pending edit for every row (not just this one) into the
+    # working copy, since the remount is about to discard the diff.
+    for row_position, changes in edited_rows.items():
+        row_position = int(row_position)
+        for col, val in changes.items():
+            working_df.iat[row_position, working_df.columns.get_loc(col)] = val
+
+    st.session_state["meals_df_working"] = working_df
+    st.session_state["meals_editor_version"] = version + 1
 
 # ============================================
 # PAGE CONFIG (must be first)
@@ -60,6 +122,22 @@ def load_missing_actuals():
 if "meals_df" not in st.session_state:
     st.session_state["meals_df"] = load_missing_actuals()
 
+# Separate check on purpose: if meals_df already existed in this session
+# (e.g. the app was already open when this feature was added, or Streamlit
+# carried session state across a hot-reload), the block above gets skipped
+# entirely — but meals_df_working still needs to exist. Checking for it
+# independently means it always gets created, regardless of what state
+# meals_df happened to already be in.
+if "meals_df_working" not in st.session_state:
+    st.session_state["meals_df_working"] = (
+        st.session_state["meals_df"].copy()
+        if st.session_state["meals_df"] is not None
+        else None
+    )
+
+if "meals_editor_version" not in st.session_state:
+    st.session_state["meals_editor_version"] = 0
+
 
 # ============================================
 # PAGE TITLE 
@@ -104,6 +182,11 @@ if uploaded_file is not None:
                     # the "still missing actuals" list below, instead of the
                     # manual-edit table silently showing stale data.
                     st.session_state["meals_df"] = load_missing_actuals()
+                    st.session_state["meals_df_working"] = (
+                        st.session_state["meals_df"].copy()
+                        if st.session_state["meals_df"] is not None
+                        else None
+                    )
 
                     # Dedicated flag for THIS section's success message. It is
                     # intentionally NOT cleared here — per your preference, it
@@ -131,12 +214,14 @@ st.caption(t["manual_update_instructions"])
 
 if st.session_state["meals_df"] is not None and not st.session_state["meals_df"].empty:
     
-    # 1. Generate a completely new temporary copy every single rerun
-    display_df = st.session_state["meals_df"].copy()
+    # 1. Generate a completely new temporary copy every single rerun.
+    # Sourced from meals_df_working (not meals_df) so any auto-filled
+    # totals from update_actual_meals are what the grid actually shows.
+    display_df = st.session_state["meals_df_working"].copy()
     
     # 2. This transforms '2026-06-30' -> 'Dienstag, 30. Juni' if current_lang == 'de'
     display_df['date_display'] = pd.to_datetime(display_df['date']).apply(
-        lambda d: format_date(d, format='EEEE, dd. MMMM', locale=locale)
+        lambda d: format_date(d, format='EE, dd. MMMM', locale=locale)
     )
 
     # 2.2. Get the theme translations 
@@ -164,13 +249,20 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
 
     # 4. FIX: The language code inside the key forces Streamlit to blow away the 
     # English cached UI and draw a fresh German one immediately when toggled.
+    # The version number does the same thing for auto-filled totals: every
+    # time update_actual_meals computes a new actual_meals value, it bumps
+    # this counter, which changes the key and forces the grid to redraw
+    # with that value visible (see the callback's comment for why a plain
+    # session_state update alone wouldn't be enough).
+    editor_version = st.session_state.get("meals_editor_version", 0)
     edited_df = st.data_editor(
         display_df, 
-        key=f"meals_editor_v2_{locale}", # Changed name to completely clear old cache
+        key=f"meals_editor_v2_{locale}_{editor_version}",
         column_config=column_configuration, 
         column_order=["date_display", "day_theme", "final_prediction", 
                       "predicted_meals_veg", "predicted_meals_non_veg",
-                      "actual_meals", "actual_meals_veg", "actual_meals_non_veg"],
+                      "actual_meals_veg", "actual_meals_non_veg", "actual_meals"],
+        on_change=update_actual_meals,
         hide_index=True
     )
 
@@ -207,6 +299,11 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
                 # FIX: refresh meals_df from the database, same as the CSV
                 # path above, so both save flows behave consistently.
                 st.session_state["meals_df"] = load_missing_actuals()
+                st.session_state["meals_df_working"] = (
+                    st.session_state["meals_df"].copy()
+                    if st.session_state["meals_df"] is not None
+                    else None
+                )
 
                 # Dedicated flag for THIS section — not auto-cleared, stays
                 # until the next successful manual save.

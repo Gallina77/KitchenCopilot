@@ -5,7 +5,7 @@
     "browse_files_label": "Upload CSV file",
     "csv_import_instructions": "Upload a CSV with these columns: **date** (YYYY-MM-DD, or *Datum*), **actual_meals** (or *Total*), **actual_meals_veg** (or *veg*), **actual_meals_non_veg** (or *non-veg*). Veg + non-veg must add up to the total for every row. You'll see a preview before anything is saved.",
     "update_manually": "Update manually",
-    "manual_update_instructions": "Click any cell in the table below to manually enter or correct the actual meal counts for a specific day, then click Save.",
+    "manual_update_instructions": "Click any cell in the table below to manually enter or correct the actual meal counts for a specific day. Enter the veg and non-veg counts and the total fills in automatically — you can still overwrite it yourself if needed. Then click Save.",
     "csv_save_success": "✓ Actual sales imported successfully.",
     "manual_save_success": "✓ Changes saved manually.",
     "error_msg_validation_meals_count": "Validation failed: actual_meals must equal actual_meals_veg + actual_meals_non_veg",
@@ -14,6 +14,7 @@
     "error_invalid_values": "Some rows have invalid values — make sure dates use YYYY-MM-DD format and that actual_meals, actual_meals_veg, and actual_meals_non_veg are whole numbers.",
     "error_sum_mismatch": "Validation failed: Total does not match veg + non-veg sum",
     "error_message_no_data": "No actuals to enter yet. Generate a forecast first — once a predicted date has passed, it will show up here for you to fill in."
+   
   },
   "DE": {
     "page_title": "Importiere aktuelle Zahlen",
@@ -21,7 +22,7 @@
     "browse_files_label": "CSV-Datei hochladen",
     "csv_import_instructions": "Lade eine CSV-Datei mit folgenden Spalten hoch: **date** (JJJJ-MM-TT, oder *Datum*), **actual_meals** (oder *Gesamt*), **actual_meals_veg** (oder *vegetarisch*), **actual_meals_non_veg** (oder *non-veg*). Vegetarisch + nicht-vegetarisch muss in jeder Zeile der Gesamtsumme entsprechen. Vor dem Speichern siehst du eine Vorschau.",
     "update_manually": "Aktualisiere manuell",
-    "manual_update_instructions": "Klicke auf eine beliebige Zelle in der Tabelle unten, um die tatsächlichen Mahlzeitenzahlen für einen bestimmten Tag manuell einzutragen oder zu korrigieren, und klicke anschließend auf Speichern.",
+    "manual_update_instructions": "Klicken Sie auf eine beliebige Zelle in der Tabelle unten, um die tatsächlichen Essenszahlen für einen bestimmten Tag manuell einzugeben oder zu korrigieren. Geben Sie die Werte für vegetarisch und nicht-vegetarisch ein — die Gesamtzahl wird automatisch berechnet und kann bei Bedarf weiterhin manuell überschrieben werden. Klicken Sie anschließend auf Speichern.",
     "csv_save_success": "✓ Ist-Werte erfolgreich importiert.",
     "manual_save_success": "✓ Änderungen manuell gespeichert.",
     "error_msg_validation_meals_count": "Validierung fehlgeschlagen: Gesamtmahlzeiten muss die Summe von 🥦 + 🍗 sein.",
@@ -29,7 +30,7 @@
     "error_csv_missing_columns":"Validierung fehlgeschlagen: Spalten fehlen oder sind falsch benannt.",
     "error_invalid_values": "Einige Zeilen enthalten ungültige Werte — stelle sicher, dass Datumsangaben im Format JJJJ-MM-TT vorliegen und dass actual_meals, actual_meals_veg und actual_meals_non_veg ganze Zahlen sind.",
     "error_sum_mismatch": "Validierung fehlgeschlagen: Summe stimmt nicht mit vegetarisch + nicht-vegetarisch überein",
-    "error_message_no_data": "Es gibt noch keine offenen Ist-Werte. Erstelle zuerst eine Prognose – sobald ein vorhergesagtes Datum vergangen ist, erscheint es hier zur Eingabe."
+    "error_message_no_data": "Es gibt noch keine offenen Ist-Werte. Erstelle zuerst eine Prognose – sobald ein vorhergesagtes Datum vergangen ist, erscheint es hier zur Eingabe." 
   }
 
 }
