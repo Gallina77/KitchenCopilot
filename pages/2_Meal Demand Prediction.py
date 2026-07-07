@@ -54,7 +54,7 @@ if not data.empty:
             peak_day = data.loc[data['final_prediction'].idxmax()]
             st.metric(
                 label=t["metrics_label_peak_demand_day"],
-                value = format_date(peak_day['date'], format='EEE, MMM dd',
+                value = format_date(peak_day['date'], format='EE, MMM dd',
                                     locale=st.session_state.lang.lower()),
                 delta=f"{int(peak_day['final_prediction'])} {t['metrics_meals_label']}"
             )
@@ -78,7 +78,7 @@ if not data.empty:
     locale = st.session_state.lang.lower()
 
     chart_data['date'] = chart_data['date'].apply(
-    lambda d: format_date(d, format='EEE MM/dd', locale=locale)
+    lambda d: format_date(d, format='EE MM/dd', locale=locale)
     )
     chart_data = chart_data.set_index('date')
     fig = go.Figure()
@@ -123,7 +123,7 @@ if not data.empty:
     # Format the display dataframe
     display_df = data.copy()
     display_df['date'] = display_df['date'].apply(
-        lambda d: format_date(d, format='EEEE, dd. MMMM', locale=locale)
+        lambda d: format_date(d, format='EE, dd. MMMM', locale=locale)
     )
 
     display_df['final_prediction'] = display_df['final_prediction'].astype(int)

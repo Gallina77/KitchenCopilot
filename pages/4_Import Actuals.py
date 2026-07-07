@@ -136,7 +136,7 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
     
     # 2. This transforms '2026-06-30' -> 'Dienstag, 30. Juni' if current_lang == 'de'
     display_df['date_display'] = pd.to_datetime(display_df['date']).apply(
-        lambda d: format_date(d, format='EEEE, dd. MMMM', locale=locale)
+        lambda d: format_date(d, format='EE, dd. MMMM', locale=locale)
     )
 
     # 2.2. Get the theme translations 

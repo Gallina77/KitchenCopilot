@@ -262,7 +262,7 @@ if st.session_state['form_submitted']:
     if not df.empty:
         locale = st.session_state.lang.lower()
         df['date'] = df['date'].apply(
-            lambda d: format_date(d, format='EEEE, dd.MMMM', locale=locale)
+            lambda d: format_date(d, format='EE, dd.MMMM', locale=locale)
         )
 
         table_columns = [
