@@ -18,9 +18,9 @@
     "display_columns": {
         "date": "Date",
         "day_theme": "Theme",
-        "final_prediction": "Predicted Meals",
+        "final_prediction": "Total",
         "predicted_meals_veg": "Veg",
-        "predicted_meals_non_veg": "Non-Veg",
+        "predicted_meals_non_veg": "Meat",
         "temperature_max": "Temp (°C)",
         "weather_condition": "Weather",
         "holiday_desc": "Holiday",
@@ -58,9 +58,9 @@
     "display_columns": {
         "date": "Datum",
         "day_theme": "Thema",
-        "final_prediction": "Prognostizierte Mahlzeiten",
+        "final_prediction": "Gesamt",
         "predicted_meals_veg": "Veg.",
-        "predicted_meals_non_veg": "Nicht-Veg.",
+        "predicted_meals_non_veg": "Fleisch",
         "temperature_max": "Temp (°C)",
         "weather_condition": "Wetter",
         "holiday_desc": "Feiertag",
