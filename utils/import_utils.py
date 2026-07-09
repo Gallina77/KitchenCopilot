@@ -11,7 +11,10 @@ COLUMN_ALIASES = {
     "actual_meals": ["actual_meals", "total", "gesamt"],
     "actual_meals_veg": ["actual_meals_veg", "veg", "vegetarisch"],
     "actual_meals_non_veg": ["actual_meals_non_veg", "non-veg"],
+    "actual_meals_salad": ["salad", "salat"],
 }
+
+
 
 # Define your schema using Pydantic BaseModel
 class DataFrameSchema(BaseModel):
@@ -20,6 +23,7 @@ class DataFrameSchema(BaseModel):
     actual_meals: int
     actual_meals_veg: int
     actual_meals_non_veg: int
+    actual_meals_salat: int
 
 
 def csv_validation(df):
@@ -86,7 +90,6 @@ def value_validation(df):
     except ValueError as e:
         # Surface a translated, human-readable message instead of the raw
         # Pydantic error (field names, type codes, a link to pydantic.dev).
-        print(f"value_validation failed: {e}")
         ok = False
         message = t["error_invalid_values"]
 
