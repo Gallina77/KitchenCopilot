@@ -22,7 +22,7 @@
         "day_theme": "Theme",
         "final_prediction": "Total",
         "predicted_meals_veg": "Veg",
-        "predicted_meals_non_veg": "Non-Veg",
+        "predicted_meals_non_veg": "Meat",
         "predicted_meals_salad": "Salad",
         "temperature_max": "Temp (°C)",
         "weather_condition": "Weather",
@@ -36,7 +36,7 @@
     "insights_error": "AI planning notes are temporarily unavailable. Please try again later.",
     "spinner_message": "Generating insights...",
     "veg_label": "veg",
-    "non_veg_label": "non-veg",
+    "non_veg_label": "meat",
     "peak_day_badge": "🔥 Peak Demand",
     "overridden_badge": "✏️ Overridden", 
     "download_table_pdf": "📥 Download this table as PDF"
@@ -54,7 +54,7 @@
     "chart_data": {
         "predicted_meals": "Gesamtprognose",
         "predicted_meals_veg": "Vegetarisch",
-        "predicted_meals_non_veg": "Nicht-Vegetarisch",
+        "predicted_meals_non_veg": "Fleisch",
         "predicted_meals_salad": "Salat"
     },
     "chart_caption": "Die blaue Linie zeigt die gesamte prognostizierte Nachfrage, grün vegetarisch, orange nicht-vegetarisch",
@@ -65,7 +65,7 @@
         "day_theme": "Thema",
         "final_prediction": "Gesamt",
         "predicted_meals_veg": "Veg.",
-        "predicted_meals_non_veg": "Nicht-Veg.",
+        "predicted_meals_non_veg": "Fleisch",
         "predicted_meals_salad": "Salat",
         "temperature_max": "Temp (°C)",
         "weather_condition": "Wetter",
@@ -78,8 +78,8 @@
     "insights_no_data": "Keine Hinweise verfügbar. Bitte generieren Sie zuerst eine Vorhersage.",
     "insights_error": "KI-Planungshinweise sind vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.",
     "spinner_message": "Generiere Hinweise...",
-    "veg_label": "veg.",
-    "non_veg_label": "nicht-veg.",
+    "veg_label": "Veg.",
+    "non_veg_label": "Fleisch",
     "peak_day_badge": "🔥 Spitzenbedarf",
     "overridden_badge": "✏️ Überschrieben",
     "download_table_pdf": "📥 Lade diese Tabelle als PDF herunter"
