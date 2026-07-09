@@ -4,13 +4,15 @@
     "metrics_subheader": "Key Insights",
     "metrics_label_total_predicted_meals": "Total Predicted Meals (Next 7 Working Days)",
     "metrics_label_daily_average_predicted_meals": "Daily Average",
+    "metrics_label_total_salad":"Total Salad Meals/kg",
     "metrics_label_peak_demand_day": "Peak Demand Day",
     "metrics_meals_label": "meals",
     "chart_subheader": "Demand Forecast",
     "chart_data": {
         "predicted_meals": "Predicted Meals",
         "predicted_meals_veg": "Veg",
-        "predicted_meals_non_veg": "Non-Veg"
+        "predicted_meals_non_veg": "Non-Veg",
+        "predicted_meals_salad": "Salad"
     },
     "chart_caption": "Blue line shows total predicted meal demand, green shows vegetarian, orange shows non-vegetarian",
     "error_message_no_data": "No prediction data available for today. Please generate a forecast first.",
@@ -18,9 +20,10 @@
     "display_columns": {
         "date": "Date",
         "day_theme": "Theme",
-        "final_prediction": "Predicted Meals",
+        "final_prediction": "Total",
         "predicted_meals_veg": "Veg",
         "predicted_meals_non_veg": "Non-Veg",
+        "predicted_meals_salad": "Salad",
         "temperature_max": "Temp (°C)",
         "weather_condition": "Weather",
         "holiday_desc": "Holiday",
@@ -42,14 +45,16 @@
     "metrics_subheader": "Kennzahlen",
     "metrics_label_total_predicted_meals": "Prognostizierte Gesamtmahlzeiten (nächste 7 Werktage)",
     "metrics_label_daily_average_predicted_meals": "Täglicher Durchschnitt",
+    "metrics_label_total_salad":"Gesamt Salat/kg",
     "metrics_label_peak_demand_day": "Spitzenbedarf Tag",
     "metrics_meals_label": "Mahlzeiten",
     "error_message_no_data": "Keine Prognosedaten verfügbar. Bitte generieren Sie zuerst eine Vorhersage.",
     "chart_subheader": "Nachfrageprognose",
     "chart_data": {
-        "predicted_meals": "Prognostizierte Mahlzeiten",
+        "predicted_meals": "Gesamtprognose",
         "predicted_meals_veg": "Vegetarisch",
-        "predicted_meals_non_veg": "Nicht-Vegetarisch"
+        "predicted_meals_non_veg": "Nicht-Vegetarisch",
+        "predicted_meals_salad": "Salat"
     },
     "chart_caption": "Die blaue Linie zeigt die gesamte prognostizierte Nachfrage, grün vegetarisch, orange nicht-vegetarisch",
     "detailed_data_subheader": "Detaillierte Prognosen",
@@ -57,9 +62,10 @@
     "display_columns": {
         "date": "Datum",
         "day_theme": "Thema",
-        "final_prediction": "Prognostizierte Mahlzeiten",
+        "final_prediction": "Gesamt",
         "predicted_meals_veg": "Veg.",
         "predicted_meals_non_veg": "Nicht-Veg.",
+        "predicted_meals_salad": "Salat",
         "temperature_max": "Temp (°C)",
         "weather_condition": "Wetter",
         "holiday_desc": "Feiertag",

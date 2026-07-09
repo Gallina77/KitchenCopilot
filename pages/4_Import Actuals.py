@@ -158,7 +158,6 @@ if uploaded_file is not None:
     try:
         dataframe = pd.read_csv(uploaded_file, sep=None, engine='python')
     except Exception as e:
-        print(f"CSV read failed: {e}")
         dataframe = None
         st.error(t["error_csv_unreadable"])
 
@@ -238,12 +237,15 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
         "day_theme": st.column_config.TextColumn(label=labels.get("day_theme", "Theme"), disabled=True),
         "final_prediction": st.column_config.NumberColumn(label=labels.get("final_prediction",
                                                                            "Forecast Total"), format="%d", disabled=True),
+        "predicted_meals_salad": st.column_config.NumberColumn(label=labels.get("predicted_meals_salad",
+                                                                              "Forecast Salad"), format="%d", disabled=True),
         "predicted_meals_veg": st.column_config.NumberColumn(label=labels.get("predicted_meals_veg",
                                                                               "Forecast Veg"), format="%d", disabled=True),
         "predicted_meals_non_veg": st.column_config.NumberColumn(label=labels.get("predicted_meals_non_veg", "Forecast Non-Veg"), format="%d", disabled=True),
         "actual_meals": st.column_config.NumberColumn(label=labels.get("actual_meals", "Actual Total"), format="%d"),
         "actual_meals_veg": st.column_config.NumberColumn(label=labels.get("actual_meals_veg", "Actual Veg"), format="%d"),
         "actual_meals_non_veg": st.column_config.NumberColumn(label=labels.get("actual_meals_non_veg", "Actual Non-Veg"), format="%d"),
+        "actual_meals_salad": st.column_config.NumberColumn(label=labels.get("actual_meals_salad", "Actual Salad"), format="%d"),
         "date": None,  # hide the raw datetime column from the editor
     }
 
@@ -259,9 +261,9 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
         display_df, 
         key=f"meals_editor_v2_{locale}_{editor_version}",
         column_config=column_configuration, 
-        column_order=["date_display", "day_theme", "final_prediction", 
+        column_order=["date_display", "day_theme", "final_prediction", "predicted_meals_salad",
                       "predicted_meals_veg", "predicted_meals_non_veg",
-                      "actual_meals_veg", "actual_meals_non_veg", "actual_meals"],
+                      "actual_meals_salad", "actual_meals_veg", "actual_meals_non_veg", "actual_meals"],
         on_change=update_actual_meals,
         hide_index=True
     )
@@ -284,7 +286,7 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
             st.dataframe(bad_rows)
         else:
             original_df = st.session_state["meals_df"]
-            cols_to_check = ['actual_meals', 'actual_meals_veg', 'actual_meals_non_veg']
+            cols_to_check = ['actual_meals', 'actual_meals_veg', 'actual_meals_non_veg', 'actual_meals_salad']
 
             # Use a sentinel so NA-vs-NA compares as "unchanged" instead of "unknown"
             SENTINEL = -9999
@@ -295,6 +297,7 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
             changed_rows = edited_df.loc[changed_mask, ['date'] + cols_to_check]
 
             is_success, message = save_actuals(changed_rows)
+            st.write(is_success, message)
             if is_success:
                 # FIX: refresh meals_df from the database, same as the CSV
                 # path above, so both save flows behave consistently.

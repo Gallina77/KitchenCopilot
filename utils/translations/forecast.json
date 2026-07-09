@@ -18,7 +18,9 @@
     "save_forecast_button": "Save Forecast",
     "save_success": "✓ Forecast saved successfully.",
     "save_error": "✗ Error saving forecast",
-    "view_dashboard": "View Dashboard"
+    "view_dashboard": "View Dashboard",
+    "salad": "🥙 Salad",
+    "salad_manual_hint": "manuel – no Forecast"
 
   
 
@@ -43,7 +45,9 @@
     "save_forecast_button": "Speicher Prognose",
     "save_success": "✓ Prognosen erfolgreich gespeichert.",
     "save_error": "✗ Fehler beim Speichern der Prognosen",
-    "view_dashboard": "Gehe zur Übersicht"
+    "view_dashboard": "Gehe zur Übersicht",
+    "salad": "🥙 Salat",
+    "salad_manual_hint": "manuell – keine Prognose"
 
 
   }

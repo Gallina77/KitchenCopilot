@@ -25,9 +25,10 @@ def apply_custom_styling(df):
         df.style.format({
             'pct_error': '{:.0f}%',
             'pct_error_veg': '{:.0f}%',
-            'pct_error_non_veg': '{:.0f}%'
+            'pct_error_non_veg': '{:.0f}%',
+            'pct_error_salad': '{:.0f}%'
         }).map(style_difference, subset=[
-            'pct_error', 'pct_error_veg', 'pct_error_non_veg'
+            'pct_error', 'pct_error_veg', 'pct_error_non_veg', 'pct_error_salad'
         ])
     )
     return styled_df
@@ -68,7 +69,7 @@ def save_prediction(df):
             columns = [
                 'date', 'weekday', 'month', 'day_theme', 'temperature_max', 'weather_condition',
                 'is_bridge_day', 'is_school_break', 'holiday_desc',
-                'predicted_meals', 'predicted_meals_veg', 'predicted_meals_non_veg',
+                'predicted_meals', 'predicted_meals_veg', 'predicted_meals_non_veg','predicted_meals_salad',
                 'prediction_timestamp', 'override_meal_prediction', 'override_reason', 'final_prediction'
             ]
             columns_sql = ", ".join(columns)
@@ -97,12 +98,14 @@ def save_actuals(df):
         try:
             df['date'] = pd.to_datetime(df['date']).dt.date
             sql_query = text("""
-                INSERT INTO actual_sales (date, actual_meals, actual_meals_veg, actual_meals_non_veg)
-                VALUES (:date, :actual_meals, :actual_meals_veg, :actual_meals_non_veg)
+                INSERT INTO actual_sales (date, actual_meals, actual_meals_veg, actual_meals_non_veg, actual_meals_salad)
+                VALUES (:date, :actual_meals, :actual_meals_veg, :actual_meals_non_veg, :actual_meals_salad)
                 ON CONFLICT(date) DO UPDATE SET
                     actual_meals = excluded.actual_meals,
                     actual_meals_veg = excluded.actual_meals_veg,
-                    actual_meals_non_veg = excluded.actual_meals_non_veg
+                    actual_meals_non_veg = excluded.actual_meals_non_veg,
+                    actual_meals_salad = excluded.actual_meals_salad
+                    
             """)
 
             for _, row in df.iterrows():
@@ -112,6 +115,7 @@ def save_actuals(df):
                         "actual_meals": row["actual_meals"],
                         "actual_meals_veg": row["actual_meals_veg"],
                         "actual_meals_non_veg": row["actual_meals_non_veg"],
+                        "actual_meals_salad": row["actual_meals_salad"]
                     }
                 )
             session.commit()
@@ -145,12 +149,12 @@ def get_future_predictions():
 
 def get_missing_actuals():
     conn = get_connection()
-    sql_query = "SELECT p.date, p.final_prediction, p.day_theme, p.predicted_meals_veg, p.predicted_meals_non_veg, "\
-    "a.actual_meals, a.actual_meals_veg, a.actual_meals_non_veg FROM predictions p LEFT JOIN actual_sales a ON p.date = a.date  "\
+    sql_query = "SELECT p.date, p.final_prediction, p.day_theme, p.predicted_meals_veg, " \
+    "p.predicted_meals_non_veg, predicted_meals_salad,"\
+    "a.actual_meals, a.actual_meals_veg, a.actual_meals_non_veg, a.actual_meals_salad FROM predictions p LEFT JOIN actual_sales a ON p.date = a.date  "\
     "WHERE a.date IS NULL ORDER BY p.date ASC"
     df = conn.query(sql_query, ttl=0)
     df['date'] = pd.to_datetime(df['date'])
-    print(df)
     return df
 
 
@@ -160,8 +164,8 @@ def get_actuals_and_predictions(start_date, end_date):
     # predictions.date is upserted (one row per date - see save_prediction),
     # so no "keep latest prediction_timestamp per date" filtering is needed.
     sql_query = "SELECT p.date, p.final_prediction, p.prediction_timestamp, p.day_theme, " \
-    "p.predicted_meals_veg, p.predicted_meals_non_veg, " \
-    "a.actual_meals, a.actual_meals_veg, a.actual_meals_non_veg  " \
+    "p.predicted_meals_veg, p.predicted_meals_non_veg, p.predicted_meals_salad, " \
+    "a.actual_meals, a.actual_meals_veg, a.actual_meals_non_veg, a.actual_meals_salad " \
     "FROM predictions p INNER JOIN actual_sales a ON p.date = a.date " \
     "WHERE a.date >= :start_date AND a.date <= :end_date " \
     "ORDER BY p.date ASC"
@@ -174,13 +178,14 @@ def get_actuals_and_predictions(start_date, end_date):
     df['difference'] = df['actual_meals'] - df['final_prediction']
     df['pct_error'] = (df['actual_meals'] - df['final_prediction'])/df['final_prediction'].replace(0, np.nan)
   
-    # New: per-category differences for the error breakdown chart
+    #per-category differences for the error breakdown chart
     df['difference_veg'] = df['actual_meals_veg'] - df['predicted_meals_veg']
     df['difference_non_veg'] = df['actual_meals_non_veg'] - df['predicted_meals_non_veg']
-    df['difference_veg'] = df['actual_meals_veg'] - df['predicted_meals_veg']
-    df['difference_non_veg'] = df['actual_meals_non_veg'] - df['predicted_meals_non_veg']
+    df['difference_salad'] = df['actual_meals_salad'] - df['predicted_meals_salad']
+
     df['pct_error_veg'] = (df['actual_meals_veg'] - df['predicted_meals_veg']) / df['predicted_meals_veg'].replace(0, np.nan)
     df['pct_error_non_veg'] = (df['actual_meals_non_veg'] - df['predicted_meals_non_veg']) / df['predicted_meals_non_veg'].replace(0, np.nan)
+    df['pct_error_salad'] = (df['actual_meals_salad'] - df['predicted_meals_salad']) / df['predicted_meals_salad'].replace(0, np.nan)
 
 
     return df

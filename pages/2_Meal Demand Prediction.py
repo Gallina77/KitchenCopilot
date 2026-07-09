@@ -35,6 +35,7 @@ if not data.empty:
             total_meals = data['final_prediction'].sum()
             total_veg = data['predicted_meals_veg'].sum()
             total_non_veg = data['predicted_meals_non_veg'].sum()
+            
             st.metric(
                 label=t["metrics_label_total_predicted_meals"],
                 value=f"{int(total_meals):,}"
@@ -62,6 +63,13 @@ if not data.empty:
                 f"🥦 {int(peak_day['predicted_meals_veg'])} {t['veg_label']}  |  "
                 f"🍗 {int(peak_day['predicted_meals_non_veg'])} {t['non_veg_label']}"
             )
+    with col4:
+        with st.container(border=True):
+            total_salad = data['predicted_meals_salad'].sum()
+            st.metric(
+                label=t["metrics_label_total_salad"],
+                value=f"{int(total_salad)}"
+            )
 
 else:
     st.error(t["error_message_no_data"])
@@ -74,11 +82,11 @@ st.subheader(t["chart_subheader"])
 
 if not data.empty:
     # Prepare data for chart
-    chart_data = data[['date', 'final_prediction', 'predicted_meals_veg', 'predicted_meals_non_veg']].copy()
+    chart_data = data[['date', 'final_prediction', 'predicted_meals_veg', 'predicted_meals_non_veg', 'predicted_meals_salad']].copy()
     locale = st.session_state.lang.lower()
 
     chart_data['date'] = chart_data['date'].apply(
-    lambda d: format_date(d, format='EEE MM/dd', locale=locale)
+    lambda d: format_date(d, format='EE dd/MM', locale=locale)
     )
     chart_data = chart_data.set_index('date')
     fig = go.Figure()
@@ -106,6 +114,13 @@ if not data.empty:
         name=chart_data_labels['predicted_meals_non_veg'],
         line=dict(color='#e67e22', width=2)
     ))
+    fig.add_trace(go.Scatter(
+        x=chart_data.index,
+        y=chart_data['predicted_meals_salad'],
+        mode='lines+markers',
+        name=chart_data_labels['predicted_meals_salad'],
+        line=dict(color='#9b59b6', width=3)
+    ))
 
     st.plotly_chart(fig, use_container_width=True)
 
@@ -129,6 +144,9 @@ if not data.empty:
     display_df['final_prediction'] = display_df['final_prediction'].astype(int)
     display_df['predicted_meals_veg'] = display_df['predicted_meals_veg'].astype(int)
     display_df['predicted_meals_non_veg'] = display_df['predicted_meals_non_veg'].astype(int)
+    #- Table: add `predicted_meals_salad` to the `astype(int)` 
+    # casts and to `display_columns` (translations) so it shows in the detailed table.
+    display_df['predicted_meals_salad'] = display_df['predicted_meals_salad'].astype(int)
     display_df['prediction_timestamp'] = display_df['prediction_timestamp'].dt.strftime('%Y-%m-%d %H:%M')
     condition = display_df['weather_condition'].apply(lambda x: x.lower())
     display_df['weather_condition'] = condition.map(t['weather_condition'])

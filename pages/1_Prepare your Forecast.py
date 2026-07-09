@@ -194,7 +194,8 @@ if st.session_state['predictions_generated']:
                             unsafe_allow_html=True
                         )
 
-                    # Row 3: Override (only when toggle ON)
+
+                # Row 3: Override (only when toggle ON)
                 if override_on:
                     st.markdown(
                         "<hr style='margin: 4px 0; border: none; border-top: 1px solid #3d4251;'>",
@@ -216,6 +217,22 @@ if st.session_state['predictions_generated']:
                             key=f"override_reason_{date_key}",
                             placeholder=t["override_reason_placeholder"]
                         )
+            # --- NEU: Salat (kg) ---
+                st.divider()
+                s_col1, s_col2 = st.columns([3, 2])
+                with s_col1:
+                    st.markdown(t['salad'])
+                    st.caption(t['salad_manual_hint'])  # z.B. "manuell – keine Prognose"
+                with s_col2:
+                    st.number_input(
+                                    t['salad'],
+                                    min_value=0,
+                                    step=1,
+                                    key=f"salad_{date_key}",
+                                    label_visibility="collapsed",
+                                )
+
+            
     # Action buttons
     st.divider()
     col1, col2 = st.columns(2)
@@ -235,6 +252,9 @@ if st.session_state['predictions_generated']:
                 for idx, row in df.iterrows():
                     date_key = row['date'].strftime('%Y-%m-%d') if hasattr(row['date'], 'strftime') else str(row['date'])
                     
+                    # Salad is independent of the override toggle — always capture it per row
+                    df.at[idx, 'predicted_meals_salad'] = st.session_state.get(f"salad_{date_key}", 0)
+
                     # Check if override toggle is ON for this day
                     if st.session_state.get(f"override_{date_key}", False):
                         override_value = st.session_state.get(f"override_value_{date_key}")
@@ -247,6 +267,7 @@ if st.session_state['predictions_generated']:
                         veg, non_veg = split_veg_non_veg(row.get('day_theme'), override_value)
                         df.at[idx, 'predicted_meals_veg'] = veg
                         df.at[idx, 'predicted_meals_non_veg'] = non_veg
+                       
                     else:
                         df.at[idx, 'override_meal_prediction'] = None
                         df.at[idx, 'override_reason'] = None
@@ -291,6 +312,8 @@ else:
         st.session_state['form_submitted'] = True
         df = prepare_data(start_date, int(number_of_days))
         df_pred = get_prediction(df)
+        #Model does not produce this column, so it needs a default before the review screen renders
+        df_pred['predicted_meals_salad'] = 0
         st.session_state['forecast_df'] = df_pred
         st.session_state['predictions_generated'] = True
         st.rerun()
