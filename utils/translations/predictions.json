@@ -38,7 +38,8 @@
     "veg_label": "veg",
     "non_veg_label": "meat",
     "peak_day_badge": "🔥 Peak Demand",
-    "overridden_badge": "✏️ Overridden"
+    "overridden_badge": "✏️ Overridden", 
+    "download_table_pdf": "📥 Download this table as PDF"
   },
   "DE": {
     "predictions_page_title": "Prognosen zur Essensnachfrage",
@@ -80,7 +81,8 @@
     "veg_label": "Veg.",
     "non_veg_label": "Fleisch",
     "peak_day_badge": "🔥 Spitzenbedarf",
-    "overridden_badge": "✏️ Überschrieben"
+    "overridden_badge": "✏️ Überschrieben",
+    "download_table_pdf": "📥 Lade diese Tabelle als PDF herunter"
 }
 
 
