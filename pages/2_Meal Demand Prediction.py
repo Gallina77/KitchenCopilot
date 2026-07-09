@@ -4,7 +4,7 @@ import numpy as np
 import json
 from datetime import datetime, timedelta
 from babel.dates import format_date
-from utils import get_future_predictions, get_llm_planning_insights
+from utils import get_future_predictions, get_llm_planning_insights, convert_df_to_pdf
 from components.sidebar import render_language_toggle
 from utils.translations_utils import get_translations
 import plotly.graph_objects as go
@@ -55,7 +55,7 @@ if not data.empty:
             peak_day = data.loc[data['final_prediction'].idxmax()]
             st.metric(
                 label=t["metrics_label_peak_demand_day"],
-                value = format_date(peak_day['date'], format='EEE, MMM dd',
+                value = format_date(peak_day['date'], format='EE, MMM dd',
                                     locale=st.session_state.lang.lower()),
                 delta=f"{int(peak_day['final_prediction'])} {t['metrics_meals_label']}"
             )
@@ -138,7 +138,7 @@ if not data.empty:
     # Format the display dataframe
     display_df = data.copy()
     display_df['date'] = display_df['date'].apply(
-        lambda d: format_date(d, format='EEEE, dd. MMMM', locale=locale)
+        lambda d: format_date(d, format='EE, dd. MMMM', locale=locale)
     )
 
     display_df['final_prediction'] = display_df['final_prediction'].astype(int)
@@ -165,6 +165,27 @@ if not data.empty:
     )
 else:
     st.error(t["error_message_no_data"])
+
+try:
+
+    cleaned_data_export = display_df.drop(['weekday', 'month', 'is_bridge_day', 'weather_condition', 
+                                    'temperature_max', 'override_meal_prediction', 'override_reason', 
+                                    'is_bank_holiday', 'is_school_break', 'holiday_desc', 'predicted_meals', 'prediction_timestamp'
+                                    ], axis=1)
+    display_df_export = cleaned_data_export[[col for col in display_columns.keys() if col in cleaned_data_export.columns]].rename(columns=display_columns)
+
+    pdf_data = convert_df_to_pdf(display_df_export)
+
+    
+    st.download_button(
+        label=t['download_table_pdf'],
+        data=pdf_data,
+        file_name="stretched_table_report.pdf",
+        mime="application/pdf",
+        use_container_width=True # Matches the stretch design of your table
+    )
+except Exception as e:
+    st.error(f"Could not prepare PDF download: {e}")  
 
      
 # === FOOTER INSIGHTS ===

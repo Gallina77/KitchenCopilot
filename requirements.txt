@@ -13,3 +13,4 @@ psycopg2-binary==2.9.10
 pydantic==2.12.5
 pandantic==1.0.1
 joblib==1.5.3
+fpdf2 == 2.8.7

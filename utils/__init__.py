@@ -8,6 +8,7 @@ from .converters import normalize_datetime
 from .llm_insights import get_llm_insights_for_actuals_vs_predicted, get_llm_planning_insights
 from .translations_utils import get_translations
 from .import_utils import csv_validation
-# This allows: from utils import get_weather
+from .export_pdf import convert_df_to_pdf
+
 
 
