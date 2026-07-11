@@ -245,7 +245,7 @@ if st.session_state["meals_df"] is not None and not st.session_state["meals_df"]
         "actual_meals": st.column_config.NumberColumn(label=labels.get("actual_meals", "Actual Total"), format="%d"),
         "actual_meals_veg": st.column_config.NumberColumn(label=labels.get("actual_meals_veg", "Actual Veg"), format="%d"),
         "actual_meals_non_veg": st.column_config.NumberColumn(label=labels.get("actual_meals_non_veg", "Actual Non-Veg"), format="%d"),
-        "actual_meals_salad": st.column_config.NumberColumn(label=labels.get("actual_meals_salad", "Actual Salad"), format="%d"),
+        "actual_meals_salad": st.column_config.NumberColumn(label=labels.get("actual_meals_salad", "Actual Salad"), format="%.2f"),
         "date": None,  # hide the raw datetime column from the editor
     }
 

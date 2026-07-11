@@ -226,8 +226,7 @@ if st.session_state['predictions_generated']:
                 with s_col2:
                     st.number_input(
                                     t['salad'],
-                                    min_value=0,
-                                    step=1,
+                                    step=0.25,
                                     key=f"salad_{date_key}",
                                     label_visibility="collapsed",
                                 )
