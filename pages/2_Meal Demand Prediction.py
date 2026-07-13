@@ -68,7 +68,7 @@ if not data.empty:
             total_salad = data['predicted_meals_salad'].sum()
             st.metric(
                 label=t["metrics_label_total_salad"],
-                value=f"{int(total_salad)}"
+                value=f"{float(total_salad)}"
             )
 
 else:
@@ -146,7 +146,7 @@ if not data.empty:
     display_df['predicted_meals_non_veg'] = display_df['predicted_meals_non_veg'].astype(int)
     #- Table: add `predicted_meals_salad` to the `astype(int)` 
     # casts and to `display_columns` (translations) so it shows in the detailed table.
-    display_df['predicted_meals_salad'] = display_df['predicted_meals_salad'].astype(int)
+    display_df['predicted_meals_salad'] = display_df['predicted_meals_salad'].astype(float)
     display_df['prediction_timestamp'] = display_df['prediction_timestamp'].dt.strftime('%Y-%m-%d %H:%M')
     condition = display_df['weather_condition'].apply(lambda x: x.lower())
     display_df['weather_condition'] = condition.map(t['weather_condition'])
