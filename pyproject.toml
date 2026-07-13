@@ -9,3 +9,13 @@ version = "1.0"
 [tool.setuptools.packages.find]
 include = ["utils", "utils.*"]
 exclude = ["tests", "tests.*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "unit: pure-logic tests, no I/O, no external dependencies",
+    "db: hits the real Supabase test-tier database",
+    "llm: hits the real Anthropic API",
+    "slow: notably slower than the rest of the suite (AppTest, model-artifact loading)",
+]
+addopts = "-ra --strict-markers"
