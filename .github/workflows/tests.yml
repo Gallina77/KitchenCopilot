@@ -1,0 +1,50 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-fast-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run mocked/pure-logic test suite
+        run: pytest -m "not db and not llm" --cov=utils --cov=components
+
+  db-integration:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.SUPABASE_TEST_DB_URL != '' }}
+    needs: lint-and-fast-tests
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write test-tier secrets.toml
+        run: |
+          mkdir -p .streamlit
+          cat > .streamlit/secrets.toml <<EOF
+          [connections.kitchencopilot_db_test]
+          url = "${{ secrets.SUPABASE_TEST_DB_URL }}"
+          EOF
+
+      - name: Run real-DB integration tests
+        env:
+          APP_ENV: test
+        run: pytest -m db

@@ -15,7 +15,6 @@ COLUMN_ALIASES = {
 }
 
 
-
 # Define your schema using Pydantic BaseModel
 class DataFrameSchema(BaseModel):
     """"""
@@ -23,7 +22,7 @@ class DataFrameSchema(BaseModel):
     actual_meals: int
     actual_meals_veg: int
     actual_meals_non_veg: int
-    actual_meals_salat: int
+    actual_meals_salad: int
 
 
 def csv_validation(df):
