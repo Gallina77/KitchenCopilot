@@ -24,7 +24,6 @@ jobs:
 
   db-integration:
     runs-on: ubuntu-latest
-    if: ${{ secrets.SUPABASE_TEST_DB_URL != '' }}
     needs: lint-and-fast-tests
     steps:
       - uses: actions/checkout@v4
@@ -36,7 +35,14 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Check whether test DB secret is configured
+        id: check_secret
+        env:
+          SUPABASE_TEST_DB_URL: ${{ secrets.SUPABASE_TEST_DB_URL }}
+        run: echo "has_secret=${{ env.SUPABASE_TEST_DB_URL != '' }}" >> "$GITHUB_OUTPUT"
+
       - name: Write test-tier secrets.toml
+        if: steps.check_secret.outputs.has_secret == 'true'
         run: |
           mkdir -p .streamlit
           cat > .streamlit/secrets.toml <<EOF
@@ -45,6 +51,7 @@ jobs:
           EOF
 
       - name: Run real-DB integration tests
+        if: steps.check_secret.outputs.has_secret == 'true'
         env:
           APP_ENV: test
         run: pytest -m db
