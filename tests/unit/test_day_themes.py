@@ -9,12 +9,10 @@ from utils.day_themes import DAY_THEMES, THEME_VEG_RATIO
 
 pytestmark = pytest.mark.unit
 
-
 @pytest.mark.parametrize("theme", THEME_VEG_RATIO.keys())
 def test_veg_non_veg_ratio_sums_to_one(theme):
     veg_ratio, non_veg_ratio = THEME_VEG_RATIO[theme]
     assert veg_ratio + non_veg_ratio == pytest.approx(1.0, abs=0.01)
-
 
 def test_every_day_theme_has_a_veg_ratio_entry():
     # Guards against drift if a new weekday/theme is ever added to one dict

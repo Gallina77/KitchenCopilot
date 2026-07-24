@@ -2,34 +2,47 @@ import pandas as pd
 from datetime import datetime
 from utils import get_holidays, get_weather, day_themes
 
-# After building the date DataFrame, add: `df['day_theme'] = df['date'].dt.day_name().map(DAY_THEMES)`
-# `day_theme` will then be one-hot encoded at inference time alongside `weekday`, `month`, `weather_condition`
-
 def prepare_data(start_date, number_of_days):
+    start, end, weather_type, business_days = compute_date_range_and_weather_type(start_date, number_of_days, today=None)
 
+    # Fetch weather data using those dates
+    weather_df = get_weather(start_date=start, end_date=end, type=weather_type)
+    # Fetch holidays from the database
+    holidays = get_holidays(start, end)
+    
+    df = build_data_features(business_days)
+    df = merge_weather(df, weather_df)
+    holidays = clean_holidays_data(holidays)
+    df = merge_and_clean_holidays(df, holidays)
+    return df
+
+def compute_date_range_and_weather_type(start_date, number_of_days, today):
     business_days = pd.date_range(start=start_date, periods=number_of_days, freq='B')
-
-    # Calculate start and end dates from business_days
     start_date_str = business_days.min().strftime('%Y-%m-%d')
     end_date_str = business_days.max().strftime('%Y-%m-%d')
-
     #Determine if we need to go back in history or if we shall get a forecast 
+    now = today if today is not None else datetime.today().date()
     this_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-    now = datetime.today().date()
     if this_date < now: 
         weather_type = "past"
     else: 
         weather_type = "forecast"
 
-     # NOW fetch weather data using those dates
-    weather_df = get_weather(start_date=start_date_str, end_date=end_date_str, type=weather_type)
+    return start_date_str, end_date_str, weather_type, business_days
 
-    # Create base DataFrame with date features
+def build_data_features(business_days):
     df = pd.DataFrame({'date': business_days})
-    df['weekday'] = df['date'].dt.day_name()      # Add back
-    df['month'] = df['date'].dt.month_name() 
-    df['day_theme'] = df['date'].dt.day_name().map(day_themes.DAY_THEMES)
+    df['date'] = pd.to_datetime(df['date'])
 
+    if not df['date'].dt.dayofweek.lt(5).all():
+        raise ValueError("business_days must only contain weekdays (Mon–Fri)")
+
+    df['weekday'] = df['date'].dt.day_name()
+    df['month'] = df['date'].dt.month_name()
+    df['day_theme'] = df['weekday'].map(day_themes.DAY_THEMES)
+    return df
+
+def merge_weather(df, weather_df):
     # Merge weather data
     df = df.merge(
             weather_df[['date', 'weather_icon', 'temperature_max', 'weather_condition']], 
@@ -37,10 +50,9 @@ def prepare_data(start_date, number_of_days):
             left_on='date',
             right_on='date'
     )
+    return df
 
-    # Fetch holidays from the database
-    holidays = get_holidays(start_date_str, end_date_str)
-    
+def clean_holidays_data(holidays):
     # Prepare Holidays Data
     holidays['date'] = pd.to_datetime(holidays['date'])
 
@@ -48,6 +60,9 @@ def prepare_data(start_date, number_of_days):
     holidays['is_school_break'] = holidays['is_school_break'].astype(bool)
     holidays['is_bridge_day'] = holidays['is_bridge_day'].astype(bool)
 
+    return holidays
+
+def merge_and_clean_holidays(df, holidays): 
     # Merge holiday data
     df = df.merge(
         holidays[['date', 'description', 'is_bank_holiday', 'is_school_break', 'is_bridge_day']],
@@ -68,7 +83,6 @@ def prepare_data(start_date, number_of_days):
     df['holiday_desc'] = df['holiday_desc'].fillna('').astype(str)
 
     return df
-
 
 def render_badges(row,t):
     badges = []

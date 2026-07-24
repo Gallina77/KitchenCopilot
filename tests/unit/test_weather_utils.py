@@ -11,10 +11,7 @@ import pytest
 import responses
 
 from utils.weather_utils import categorize_weather, get_weather
-from tests.fixtures.weather_responses import (
-    response_missing_daily_key,
-    valid_daily_response,
-)
+from tests.fixtures.weather_responses import response_missing_daily_key,valid_daily_response
 
 pytestmark = pytest.mark.unit
 

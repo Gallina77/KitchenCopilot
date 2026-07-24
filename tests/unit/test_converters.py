@@ -1,9 +1,8 @@
 from datetime import datetime
-
 import pytest
-
 from utils.converters import normalize_datetime
 
+#Run only tests with a particular label: pytest -m unit
 pytestmark = pytest.mark.unit
 
 
